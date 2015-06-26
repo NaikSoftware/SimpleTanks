@@ -15,7 +15,7 @@ public class MainActivity extends Activity {
 	private static final String TAG = MainActivity.class.getName();
 
 	private GameMode gameMode;
-	private GameServer gameConn;
+	private GameConnection gameConn;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,10 +39,11 @@ public class MainActivity extends Activity {
 								if (pos == 0) { // Start server
 									gameMode = GameMode.SERVER;
 									gameConn = new GameServer(MainActivity.this);
-									gameConn.start();
 								} else if (pos == 1) { // Connect to server
 									gameMode = GameMode.CLIENT;
+									gameConn = new GameClient(MainActivity.this);
 								}
+								gameConn.start();
 							}
 						}).show();
 				break;

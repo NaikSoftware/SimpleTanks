@@ -1,10 +1,13 @@
 package ua.naiksoftware.simpletanks;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceInfo;
@@ -27,7 +30,10 @@ public class GameServer extends GameConnection {
 
 	private static final String TAG = GameServer.class.getSimpleName();
 	
-	private final byte END_WAITING = 66;
+	private static final byte END_WAITING = 66;
+	private static final byte CONNECT_REQUEST = 1;
+	
+	public static final String KEY_SERVER_NAME = "key_name";
 	
 	private JmDNS jmdns;
 	private Activity activity;
@@ -35,6 +41,7 @@ public class GameServer extends GameConnection {
 	private ClientsListAdapter clientsListAdapter;
 	private ArrayList<Client> clientsList;
 	private Handler background;
+	private String servName;
 	
 	public GameServer(Activity activity) {
 		super(activity);
@@ -70,6 +77,7 @@ public class GameServer extends GameConnection {
 					if (servName.isEmpty()) {
 						showToast(R.string.serv_name_empty_notice);
 					} else { // Все нормально
+						GameServer.this.servName = servName;
 						createNetwork();
 					}
 				}
@@ -132,6 +140,9 @@ public class GameServer extends GameConnection {
 						jmdns = JmDNS.create();
 			            ServiceInfo serviceInfo = ServiceInfo.create(SERVICE_TYPE, HOSTNAME,
 			            		PORT, "SimpleTanks server on " + android.os.Build.DEVICE);
+			            serviceInfo.setText(new Hashtable<String, String>() {{
+			            	put(KEY_SERVER_NAME, servName);
+			            }});
 			            jmdns.registerService(serviceInfo);
 			            Log.i(TAG, "Started GameServer...");
 					} catch (IOException e) {
@@ -173,18 +184,18 @@ public class GameServer extends GameConnection {
 						showToast("End waiting detected");
 						stopMulticastDNS();
 						break;
+					} else if (code == CONNECT_REQUEST) { // Кто-то хочет присоединиться к игре
+						clientsList.add(new Client(clientSock));
+						inUI(new Runnable() {
+							
+							@Override
+							public void run() {
+								clientsListAdapter.notifyDataSetChanged();
+							}
+						});
+						showToast("Connected new client");
+						Log.i(TAG, "Connected new client");
 					}
-					Client client = new Client("New", clientSock);
-					clientsList.add(client);
-					inUI(new Runnable() {
-						
-						@Override
-						public void run() {
-							clientsListAdapter.notifyDataSetChanged();
-						}
-					});
-					showToast("Connected new client");
-					Log.i(TAG, "Connected new client");
 				}
 			} catch (IOException e) {
 				Log.e(TAG, "Server exception in accept thread", e);
@@ -232,10 +243,14 @@ public class GameServer extends GameConnection {
 		
 		String name;
 		Socket socket;
+		DataInputStream in;
+		DataOutputStream out;
 		
-		Client(String name, Socket socket) {
-			this.name = name;
+		Client(Socket socket) throws IOException {
 			this.socket = socket;
+			in = new DataInputStream(socket.getInputStream());
+			out = new DataOutputStream(socket.getOutputStream());
+			name = in.readUTF();
 		}
 	}
 	

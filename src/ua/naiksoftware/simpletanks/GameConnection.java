@@ -18,7 +18,7 @@ public abstract class GameConnection {
 	
 	protected static final String SERVICE_TYPE = "_simpletanks._tcp.local.";
 	protected static final int PORT = 5431;
-	protected static final String HOSTNAME = "SimpleTanksHost";
+	protected static final String HOSTNAME = android.os.Build.DEVICE;
 	
 	private Activity activity;
 	private WifiManager.MulticastLock multicastLock;
@@ -37,6 +37,7 @@ public abstract class GameConnection {
 		wifi = (WifiManager) activity.getSystemService(Context.WIFI_SERVICE);
 		if (wifi == null) {
 			Toast.makeText(activity, "Not detected WiFi on device", Toast.LENGTH_LONG).show();
+			return;
 		}
 		ConnectivityManager connectivityManager = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
 		if(!wifi.isWifiEnabled() || connectivityManager == null || !InetUtils.isConnected(connectivityManager)) {
@@ -56,12 +57,11 @@ public abstract class GameConnection {
 
 	        	});
 			return;
-		} else {
-			Log.i(TAG, "WiFi connected, IP: " + InetUtils.getIpAddr(wifi));
 		}
-
+		
+		Log.i(TAG, "WiFi connected, IP: " + InetUtils.getIpAddr(wifi));
 		Log.i(TAG, "Starting Mutlicast Lock...");
-		multicastLock = wifi.createMulticastLock(getClass().getName());
+		multicastLock = wifi.createMulticastLock(TAG);
 		multicastLock.setReferenceCounted(true);
 		multicastLock.acquire();
 		
