@@ -125,27 +125,34 @@ public class GameClient extends GameConnection implements ServiceListener {
 	public void serviceAdded(ServiceEvent event) {
 		Log.i(TAG, "Service added: " + event.getType() + "\n Info: " + event.getInfo());
 		// Для вызова serviceResolved(...)
-        jmdns.requestServiceInfo(event.getType(), event.getName(), 1 /* timeout 1ms*/);
+        jmdns.requestServiceInfo(event.getType(), event.getName(), 400 /* timeout 1ms*/);
 	}
 
 	@Override
-	public void serviceRemoved(ServiceEvent event) {
+	public void serviceRemoved(final ServiceEvent event) {
 		Log.i(TAG, "Service removed: " + event.getType() + "\n Info: " + event.getInfo());
-		serversList.remove(new Server(event.getInfo().getHostAddresses()[0]));
-		serversListAdapter.notifyDataSetChanged();
-	}
-
-	@Override
-	public void serviceResolved(ServiceEvent event) {
-		Log.i(TAG, "Service resolved: " + event.getType() + "\n Info: " + event.getInfo());
-		String name = event.getInfo().getPropertyString(GameServer.KEY_SERVER_NAME);
-		String descr = event.getInfo().getServer();
-		String ip = event.getInfo().getInetAddresses()[0].getHostAddress();
-		serversList.add(new Server(name, descr, ip));
+		final Server srv = new Server(event.getInfo().getHostAddresses()[0]);
 		inUI(new Runnable() {
 			
 			@Override
 			public void run() {
+				serversList.remove(srv);
+				serversListAdapter.notifyDataSetChanged();
+			}
+		});
+	}
+
+	@Override
+	public void serviceResolved(final ServiceEvent event) {
+		Log.i(TAG, "Service resolved: " + event.getType() + "\n Info: " + event.getInfo());
+		inUI(new Runnable() {
+			
+			@Override
+			public void run() {
+				String name = event.getInfo().getPropertyString(GameServer.KEY_SERVER_NAME);
+				String descr = event.getInfo().getName();
+				String ip = event.getInfo().getInetAddresses()[0].getHostAddress();
+				serversList.add(new Server(name, descr, ip));
 				serversListAdapter.notifyDataSetChanged();
 			}
 		});

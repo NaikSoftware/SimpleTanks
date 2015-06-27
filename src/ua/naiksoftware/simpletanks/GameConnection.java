@@ -62,7 +62,7 @@ public abstract class GameConnection {
 		Log.i(TAG, "WiFi connected, IP: " + InetUtils.getIpAddr(wifi));
 		Log.i(TAG, "Starting Mutlicast Lock...");
 		multicastLock = wifi.createMulticastLock(TAG);
-		multicastLock.setReferenceCounted(true);
+		multicastLock.setReferenceCounted(false);
 		multicastLock.acquire();
 		
 		onWifiConnected(wifi);

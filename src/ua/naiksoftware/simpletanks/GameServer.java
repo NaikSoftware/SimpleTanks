@@ -3,6 +3,7 @@ package ua.naiksoftware.simpletanks;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -41,7 +42,7 @@ public class GameServer extends GameConnection {
 	private ClientsListAdapter clientsListAdapter;
 	private ArrayList<Client> clientsList;
 	private Handler background;
-	private String servName;
+	private volatile String servName;
 	
 	public GameServer(Activity activity) {
 		super(activity);
@@ -106,7 +107,7 @@ public class GameServer extends GameConnection {
 	}
 	
 	@Override
-	protected void onWifiConnected(WifiManager wifi) {
+	protected void onWifiConnected(final WifiManager wifi) {
 		final View view = LayoutInflater.from(activity).inflate(R.layout.server_wait_clients_dialog, null);
 		clientsList = new ArrayList<>();
 		clientsListAdapter = new ClientsListAdapter(activity, 0, clientsList);
@@ -137,7 +138,8 @@ public class GameServer extends GameConnection {
 					try {
 						server = new Server();
 						server.start();
-						jmdns = JmDNS.create();
+						InetAddress deviceIpAddress = InetAddress.getByName(InetUtils.getIpAddr(wifi));
+						jmdns = JmDNS.create(deviceIpAddress, HOSTNAME);
 			            ServiceInfo serviceInfo = ServiceInfo.create(SERVICE_TYPE, HOSTNAME,
 			            		PORT, "SimpleTanks server on " + android.os.Build.DEVICE);
 			            serviceInfo.setText(new Hashtable<String, String>() {{
