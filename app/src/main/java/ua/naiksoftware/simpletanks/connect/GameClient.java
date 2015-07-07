@@ -1,4 +1,4 @@
-package ua.naiksoftware.simpletanks;
+package ua.naiksoftware.simpletanks.connect;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -22,6 +22,9 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import ua.naiksoftware.simpletanks.R;
+import ua.naiksoftware.simpletanks.User;
+
 public class GameClient extends GameConnection implements ServiceListener {
 
     private static final String TAG = GameClient.class.getSimpleName();
@@ -32,7 +35,8 @@ public class GameClient extends GameConnection implements ServiceListener {
     private ServersListAdapter serversListAdapter;
     private final Object lock = new Object();
     private Server server;
-    private final UserData userData = new UserData();
+    private User myUser;
+    private ArrayList<User> users = new ArrayList<User>(2);
 
     public GameClient(Activity activity) {
         super(activity);
@@ -52,7 +56,8 @@ public class GameClient extends GameConnection implements ServiceListener {
                         if (clientName.isEmpty()) {
                             toast(R.string.client_name_empty_notice);
                         } else { // Все нормально
-                            userData.name = clientName;
+                            myUser = new User(clientName, System.currentTimeMillis(), activity.getString(R.string.my_device));
+                            users.add(myUser);
                             inBG(new Runnable() {
 
                                 @Override
@@ -223,7 +228,8 @@ public class GameClient extends GameConnection implements ServiceListener {
          */
         void connect() {
             final View v = LayoutInflater.from(activity).inflate(R.layout.client_connect_dialog, null);
-            ((TextView)v.findViewById(R.id.client_conn_to)).setText(activity.getString(R.string.connecting_to) + " " + name);
+            final TextView clientsInfo = (TextView)v.findViewById(R.id.client_users_on_server);
+                    ((TextView) v.findViewById(R.id.client_conn_to)).setText(activity.getString(R.string.connecting_to) + " " + name);
             final AlertDialog dialog = new AlertDialog.Builder(activity)
                     .setView(v)
                     .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -247,14 +253,16 @@ public class GameClient extends GameConnection implements ServiceListener {
                     try {
                         socket = new Socket(ip, PORT);
                         socket.getOutputStream().write(GameServer.CONNECT_REQUEST);
-                        DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-                        out.writeUTF(userData.name);
-                        DataInputStream in = new DataInputStream(socket.getInputStream());
+                        final DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+                        out.writeUTF(myUser.getName());
+                        out.writeLong(myUser.getId());
+                        final DataInputStream in = new DataInputStream(socket.getInputStream());
                         final String map = in.readUTF();
                         inUI(new Runnable() {
                             @Override
                             public void run() {
-                                ((TextView) v.findViewById(R.id.client_map_on_server)).setText(map);
+                                ((TextView) v.findViewById(R.id.client_map_on_server))
+                                        .setText(activity.getString(R.string.map) + ": " + map);
                             }
                         });
                         int response;
@@ -263,6 +271,20 @@ public class GameClient extends GameConnection implements ServiceListener {
                             if (response == GameServer.CONN_CANCELLED) {
                                 stopWaiting(dialog, true);
                                 return;
+                            } else if (response == GameServer.ADD_USER || response == GameServer.REMOVE_USER) {
+                                switch (response) {
+                                    case GameServer.ADD_USER :
+                                        users.add(new User(in.readUTF(), in.readLong(), in.readUTF()));
+                                        break;
+                                    case GameServer.REMOVE_USER:
+                                        users.remove(new User(in.readLong()));
+                                }
+                                inUI(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        clientsInfo.setText(getUsersInfo());
+                                    }
+                                });
                             } else if (response == GameServer.START_PLAY) {
                                 stopWaiting(dialog, false);
                                 toast("Play!!!");
@@ -312,4 +334,16 @@ public class GameClient extends GameConnection implements ServiceListener {
         }
     }
 
+    private String getUsersInfo() {
+        StringBuilder builder = new StringBuilder();
+        for (User user : users) {
+            builder.append(user.getName()).append(" - ").append(user.getIp()).append("\n");
+        }
+        return builder.toString();
+    }
+
+    @Override
+    public ArrayList<User> getUsers() {
+        return users;
+    }
 }

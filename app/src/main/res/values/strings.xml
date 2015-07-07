@@ -19,12 +19,16 @@
 	<string name="select_server_ip">Select server IP</string>
 	<string name="network_ip_not_detected">Network IP not detected</string>
 	<string name="server_stopped">Server stopped</string>
+	<string name="owner_server">owner server</string>
 	
 	<!-- Client -->
 	<string name="client_settings">Settings</string>
 	<string name="client_name">Nickname</string>
 	<string name="client_name_empty_notice">Nickname empty!!!</string>
 	<string name="select_server_from_list">Select server from list</string>
+	<string name="users_on_server">Users on server</string>
+	<string name="map">Map</string>
+	<string name="my_device">my device</string>
 	
 	<!-- Common -->
 	<string name="start_game">Start game</string>

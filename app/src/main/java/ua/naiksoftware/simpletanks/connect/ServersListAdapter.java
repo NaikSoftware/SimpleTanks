@@ -1,8 +1,10 @@
-package ua.naiksoftware.simpletanks;
+package ua.naiksoftware.simpletanks.connect;
 
 import java.util.List;
 
-import ua.naiksoftware.simpletanks.GameClient.Server;
+import ua.naiksoftware.simpletanks.connect.GameClient.Server;
+import ua.naiksoftware.simpletanks.R;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;

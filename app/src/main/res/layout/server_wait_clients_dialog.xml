@@ -16,6 +16,6 @@
         android:id="@+id/clientsList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:listSelector="@drawable/row_selector" />
+        android:padding="20dp"/>
 
 </LinearLayout>

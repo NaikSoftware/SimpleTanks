@@ -1,10 +1,15 @@
-package ua.naiksoftware.simpletanks;
+package ua.naiksoftware.simpletanks.connect;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import ua.naiksoftware.simpletanks.R;
+import ua.naiksoftware.simpletanks.User;
 import ua.naiksoftware.utils.InetUtils;
 
 import android.app.Activity;
@@ -45,6 +50,8 @@ public abstract class GameConnection {
     public abstract void start();
 
     public abstract void stop();
+
+    public abstract ArrayList<User> getUsers();
 
     protected void createNetwork(boolean takeMdnsPackets) {
         this.takeMdnsPackets = takeMdnsPackets;
@@ -163,7 +170,4 @@ public abstract class GameConnection {
         background.submit(r);
     }
 
-    public static class UserData {
-        public String name;
-    }
 }

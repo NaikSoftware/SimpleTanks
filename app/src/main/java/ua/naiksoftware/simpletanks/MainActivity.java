@@ -2,21 +2,16 @@ package ua.naiksoftware.simpletanks;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.app.*;
 import android.content.*;
 import android.view.*;
 
-import java.io.*;
-
-import android.os.*;
-
-import ua.naiksoftware.utils.*;
-
-import android.util.*;
+import ua.naiksoftware.simpletanks.connect.GameClient;
+import ua.naiksoftware.simpletanks.connect.GameConnection;
+import ua.naiksoftware.simpletanks.connect.GameMode;
+import ua.naiksoftware.simpletanks.connect.GameServer;
 
 public class MainActivity extends Activity {
 

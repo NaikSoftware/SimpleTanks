@@ -1,4 +1,4 @@
-package ua.naiksoftware.simpletanks;
+package ua.naiksoftware.simpletanks.connect;
 
 import android.app.*;
 import android.content.*;
@@ -12,6 +12,9 @@ import java.util.*;
 
 import javax.jmdns.*;
 
+import ua.naiksoftware.simpletanks.R;
+import ua.naiksoftware.simpletanks.User;
+
 public class GameServer extends GameConnection {
 
     private static final String TAG = GameServer.class.getSimpleName();
@@ -21,8 +24,9 @@ public class GameServer extends GameConnection {
 
     public static final int START_PLAY = 3;
     public static final int CONN_CANCELLED = 4;
-    public static final int UPDATE_USERS = 5;
-    public static final int PING_CLIENT = 6;
+    public static final int ADD_USER = 5;
+    public static final int REMOVE_USER = 6;
+    public static final int PING_CLIENT = 7;
 
     public static final String KEY_SERVER_NAME = "key_name";
 
@@ -30,9 +34,9 @@ public class GameServer extends GameConnection {
     private Activity activity;
     private Server server;
     private ClientsListAdapter clientsListAdapter;
-    private ArrayList<Client> clientsList;
-    private volatile String servName;
+    private ArrayList<Client> clientsList; // Клиенты сервера
     private final Object lock = new Object();
+    private User myUser; // Игрок, запускающий сервер
 
     public GameServer(Activity activity) {
         super(activity);
@@ -52,7 +56,7 @@ public class GameServer extends GameConnection {
                         if (servName.isEmpty()) {
                             toast(R.string.serv_name_empty_notice);
                         } else { // Все нормально
-                            GameServer.this.servName = servName;
+                            myUser = new User(servName, System.currentTimeMillis(), activity.getString(R.string.owner_server));
                             inBG(new Runnable() {
 
                                 @Override
@@ -112,7 +116,7 @@ public class GameServer extends GameConnection {
                                         ServiceInfo serviceInfo = ServiceInfo.create(SERVICE_TYPE, HOSTNAME, PORT, "SimpleTanks server on " + android.os.Build.DEVICE);
                                         serviceInfo.setText(new Hashtable<String, String>() {
                                             {
-                                                put(KEY_SERVER_NAME, servName);
+                                                put(KEY_SERVER_NAME, myUser.getName());
                                             }
                                         });
                                         jmdns.registerService(serviceInfo);
@@ -189,6 +193,15 @@ public class GameServer extends GameConnection {
                         for (Client client : clientsList) {
                             if (!client.ping()) {
                                 clientsList.remove(client);
+                                for (Client cli : clientsList) {
+                                    DataOutputStream out = cli.getOut();
+                                    try {
+                                        out.writeInt(REMOVE_USER);
+                                        out.writeLong(client.getId());
+                                    } catch (IOException e) {
+                                        e.printStackTrace();// ignore, handle errors in accept thread
+                                    }
+                                }
                                 updateListView();
                                 break;
                             }
@@ -218,15 +231,12 @@ public class GameServer extends GameConnection {
                         Log.d(TAG, "End waiting clients code detected");
                         toast("End waiting detected");
                         break;
-                    } else if (code == CONNECT_REQUEST) { // Кто-то хочет
-                        // присоединиться к игре
-                        clientsList.add(new Client(clientSock));
-                        updateListView();
-                        DataOutputStream out  = new DataOutputStream(clientSock.getOutputStream());
-                        out.writeUTF(servName + " map");
-                        toast("Connected new client");
-                        Log.i(TAG, "Connected new client");
+                    } else if (code == CONNECT_REQUEST) { // Кто-то хочет присоединиться к игре
+                       acceptNewClient(clientSock);
                     }
+                }
+                for (Client client : clientsList) {
+                    client.startGameRequest();
                 }
             } catch (IOException e) {
                 Log.e(TAG, "Server exception in accept thread", e);
@@ -239,6 +249,39 @@ public class GameServer extends GameConnection {
                 }
             }
         }
+
+        void acceptNewClient(Socket clientSock) throws IOException {
+            /* Создаем нового клиента и отсылаем ему данные о владельце сервера */
+            Client newClient = new Client(clientSock);
+            DataOutputStream out = newClient.getOut();
+            out.writeInt(ADD_USER);
+            out.writeUTF(myUser.getName());
+            out.writeLong(myUser.getId());
+            out.writeUTF(myUser.getIp());
+            /* Теперь обновляем список юзеров сервера у всех клиентов */
+            clientsList.add(newClient);
+            for (Client client : clientsList) {
+                if (client == newClient) {
+                    continue;
+                }
+                out = client.getOut();
+                out.writeInt(ADD_USER);
+                out.writeUTF(newClient.getName());
+                out.writeLong(newClient.getId());
+                out.writeUTF(newClient.getIp());
+                /* А новому клиенту шлем остальных */
+                out = newClient.getOut();
+                out.writeInt(ADD_USER);
+                out.writeUTF(client.getName());
+                out.writeLong(client.getId());
+                out.writeUTF(client.getIp());
+            }
+
+            updateListView();
+            Log.i(TAG, "Connected new client");
+        }
+
+
 
         void updateListView() {
             inUI(new Runnable() {
@@ -287,18 +330,25 @@ public class GameServer extends GameConnection {
         }
     }
 
-    static class Client {
+    class Client extends User {
 
-        String name;
         final Socket socket;
         DataInputStream in;
         DataOutputStream out;
 
         Client(Socket socket) throws IOException {
+            super(0);
             this.socket = socket;
             in = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
-            name = in.readUTF();
+            setName(in.readUTF());
+            setId(in.readLong());
+            setIp(socket.getInetAddress().getHostAddress());
+            out.writeUTF(myUser.getName() + " default map"); // Отсылаем карту сервера
+        }
+
+        public DataOutputStream getOut() {
+            return out;
         }
 
         boolean ping() {
@@ -310,9 +360,23 @@ public class GameServer extends GameConnection {
             return true;
         }
 
+        void startGameRequest() throws IOException {
+            out.writeInt(START_PLAY);
+        }
+
         void close() throws IOException {
             socket.close();
         }
+    }
+
+    @Override
+    public ArrayList<User> getUsers() {
+        ArrayList<User> users = new ArrayList<User>(clientsList.size());
+        for (Client client : clientsList) {
+            users.add(client);
+        }
+        users.add(myUser);
+        return users;
     }
 
 }

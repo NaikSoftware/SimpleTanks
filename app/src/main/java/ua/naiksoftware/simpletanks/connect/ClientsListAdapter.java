@@ -1,4 +1,4 @@
-package ua.naiksoftware.simpletanks;
+package ua.naiksoftware.simpletanks.connect;
 
 import java.util.List;
 
@@ -8,6 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import ua.naiksoftware.simpletanks.R;
 
 public class ClientsListAdapter extends ArrayAdapter<GameServer.Client> {
 
@@ -23,16 +25,20 @@ public class ClientsListAdapter extends ArrayAdapter<GameServer.Client> {
 			convertView = LayoutInflater.from(getContext()).inflate(R.layout.clients_row, null);
 			viewHolder = new ViewHolder();
 			viewHolder.clientName = (TextView) convertView.findViewById(R.id.clients_row_name);
+			viewHolder.clientIp = (TextView) convertView.findViewById(R.id.clients_row_ip);
 			convertView.setTag(viewHolder);
 		} else {
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
-		viewHolder.clientName.setText(getItem(position).name);
+		GameServer.Client client = getItem(position);
+		viewHolder.clientName.setText(client.getName());
+		viewHolder.clientIp.setText(client.getIp().toString());
 		return convertView;
 	}
 	
 	private static class ViewHolder {
 		TextView clientName;
+		TextView clientIp;
 	}
 
 }
