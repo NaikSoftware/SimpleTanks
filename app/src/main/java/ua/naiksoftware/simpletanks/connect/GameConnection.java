@@ -51,7 +51,9 @@ public abstract class GameConnection {
 
     public abstract void stop();
 
-    public abstract ArrayList<User> getUsers();
+    public abstract ArrayList<? extends User> getUsers();
+
+    public abstract User getMyUser();
 
     protected void createNetwork(boolean takeMdnsPackets) {
         this.takeMdnsPackets = takeMdnsPackets;

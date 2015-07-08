@@ -57,7 +57,6 @@ public class GameClient extends GameConnection implements ServiceListener {
                             toast(R.string.client_name_empty_notice);
                         } else { // Все нормально
                             myUser = new User(clientName, System.currentTimeMillis(), activity.getString(R.string.my_device));
-                            users.add(myUser);
                             inBG(new Runnable() {
 
                                 @Override
@@ -345,5 +344,10 @@ public class GameClient extends GameConnection implements ServiceListener {
     @Override
     public ArrayList<User> getUsers() {
         return users;
+    }
+
+    @Override
+    public User getMyUser() {
+        return myUser;
     }
 }

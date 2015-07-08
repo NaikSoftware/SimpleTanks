@@ -370,13 +370,12 @@ public class GameServer extends GameConnection {
     }
 
     @Override
-    public ArrayList<User> getUsers() {
-        ArrayList<User> users = new ArrayList<User>(clientsList.size());
-        for (Client client : clientsList) {
-            users.add(client);
-        }
-        users.add(myUser);
-        return users;
+    public ArrayList<Client> getUsers() {
+        return clientsList;
     }
 
+    @Override
+    public User getMyUser() {
+        return myUser;
+    }
 }

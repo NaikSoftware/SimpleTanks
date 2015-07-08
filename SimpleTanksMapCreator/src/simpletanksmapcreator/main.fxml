@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane prefHeight="433.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="simpletanksmapcreator.MainController">
+   <columnConstraints>
+      <ColumnConstraints />
+      <ColumnConstraints />
+      <ColumnConstraints hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints maxHeight="38.0" minHeight="38.0" prefHeight="38.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="365.0" vgrow="SOMETIMES" />
+      <RowConstraints maxHeight="-Infinity" minHeight="32.0" prefHeight="32.0" vgrow="SOMETIMES" />
+   </rowConstraints>
+   <children>
+      <HBox GridPane.columnIndex="2">
+         <children>
+            <Label alignment="CENTER" layoutX="14.0" layoutY="14.0" maxHeight="1.7976931348623157E308" text="Map name">
+               <font>
+                  <Font size="15.0" />
+               </font>
+               <padding>
+                  <Insets right="20.0" />
+               </padding>
+            </Label>
+            <TextField fx:id="mapName" layoutX="83.0" layoutY="9.0" />
+            <Label alignment="CENTER" maxHeight="1.7976931348623157E308" text="Width:">
+               <font>
+                  <Font size="15.0" />
+               </font>
+               <HBox.margin>
+                  <Insets left="20.0" />
+               </HBox.margin>
+            </Label>
+            <TextField fx:id="width" prefHeight="25.0" prefWidth="42.0" />
+            <Label alignment="CENTER" maxHeight="1.7976931348623157E308" text="Height:">
+               <font>
+                  <Font size="15.0" />
+               </font>
+               <HBox.margin>
+                  <Insets left="20.0" />
+               </HBox.margin>
+            </Label>
+            <TextField fx:id="height" prefHeight="25.0" prefWidth="42.0" />
+            <Button fx:id="updateBtn" mnemonicParsing="false" text="Update">
+               <HBox.margin>
+                  <Insets left="20.0" />
+               </HBox.margin>
+            </Button>
+         </children>
+         <GridPane.margin>
+            <Insets top="10.0" />
+         </GridPane.margin>
+         <padding>
+            <Insets left="5.0" right="5.0" />
+         </padding>
+      </HBox>
+      <ScrollPane fx:id="scrollPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" pannable="true" GridPane.columnIndex="2" GridPane.rowIndex="1">
+         <content>
+            <Canvas fx:id="canvas" height="200.0" width="200.0" />
+         </content>
+      </ScrollPane>
+      <GridPane prefHeight="35.0" prefWidth="577.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
+        <columnConstraints>
+          <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="477.0" />
+          <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="64.0" minWidth="64.0" prefWidth="64.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Button fx:id="saveBtn" mnemonicParsing="false" prefHeight="23.0" prefWidth="54.0" text="Save" GridPane.columnIndex="1">
+               <GridPane.margin>
+                  <Insets right="10.0" />
+               </GridPane.margin>
+            </Button>
+            <Label maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="35.0" prefWidth="156.0" text="NaikSoftware, 2015">
+               <GridPane.margin>
+                  <Insets left="10.0" />
+               </GridPane.margin>
+            </Label>
+         </children>
+      </GridPane>
+   </children>
+</GridPane>
