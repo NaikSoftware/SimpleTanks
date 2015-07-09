@@ -14,7 +14,7 @@ import ua.naiksoftware.simpletanks.R;
  */
 public class ResKeeper {
 
-    private static final HashMap<ImageID, Bitmap> cacheImages = new HashMap<>();
+    private static final HashMap<ImageID, Bitmap> cacheImages = new HashMap<ImageID, Bitmap>();
 
     public static Bitmap getImage(ImageID imageID, Resources resources) {
         Bitmap bitmap = cacheImages.get(imageID);

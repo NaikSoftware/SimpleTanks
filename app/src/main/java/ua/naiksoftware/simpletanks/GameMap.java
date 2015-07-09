@@ -3,6 +3,7 @@ package ua.naiksoftware.simpletanks;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.Log;
 
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -14,20 +15,21 @@ import ua.naiksoftware.simpletanks.res.ResKeeper;
 /**
  * Created by Naik on 08.07.15.
  */
-public class Map {
+public class GameMap {
 
-    private String mapName;
+    public final String name;
     private int tileSize;
     private Tile[][] tiles;
     private int mapW, mapH;
     private int mapX, mapY;
     private final Paint tilePaint = new Paint();
 
-    public Map(InputStream input, Resources res) throws IOException {
+    public GameMap(InputStream input, Resources res) throws IOException {
         DataInputStream dis = new DataInputStream(input);
-        mapName = dis.readUTF();
+        name = dis.readUTF();
         mapW = dis.readInt();
         mapH = dis.readInt();
+        tiles = new Tile[mapW][mapH];
         for (int i = 0; i < mapW; i++) {
             for (int j = 0; j < mapH; j++) {
                 switch (dis.readByte()) {
@@ -56,5 +58,12 @@ public class Map {
     public void setPosition(int x, int y) {
         mapX = x;
         mapY = y;
+    }
+
+    public static String assetsPathFromID(int id) {
+        switch (id) {
+            case 1: return "simple.map";
+        }
+        throw new IllegalArgumentException("GameMap with ID " + id + " not exists");
     }
 }

@@ -17,11 +17,14 @@ import android.content.DialogInterface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import ua.naiksoftware.simpletanks.GameMap;
+import ua.naiksoftware.simpletanks.GameView;
 import ua.naiksoftware.simpletanks.R;
 import ua.naiksoftware.simpletanks.User;
 
@@ -37,6 +40,10 @@ public class GameClient extends GameConnection implements ServiceListener {
     private Server server;
     private User myUser;
     private ArrayList<User> users = new ArrayList<User>(2);
+    private int mapID;
+    private GameMap gameMap;
+    private DataOutputStream output;
+    private DataInputStream input;
 
     public GameClient(Activity activity) {
         super(activity);
@@ -214,6 +221,8 @@ public class GameClient extends GameConnection implements ServiceListener {
         String name, descr;
         String ip;
         Socket socket;
+        DataInputStream in;
+        DataOutputStream out;
 
         Server(String name, String descr, String ip) {
             this.name = name;
@@ -252,11 +261,12 @@ public class GameClient extends GameConnection implements ServiceListener {
                     try {
                         socket = new Socket(ip, PORT);
                         socket.getOutputStream().write(GameServer.CONNECT_REQUEST);
-                        final DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+                        out = new DataOutputStream(socket.getOutputStream());
                         out.writeUTF(myUser.getName());
                         out.writeLong(myUser.getId());
-                        final DataInputStream in = new DataInputStream(socket.getInputStream());
+                        in = new DataInputStream(socket.getInputStream());
                         final String map = in.readUTF();
+                        mapID = in.readInt();
                         inUI(new Runnable() {
                             @Override
                             public void run() {
@@ -287,6 +297,7 @@ public class GameClient extends GameConnection implements ServiceListener {
                             } else if (response == GameServer.START_PLAY) {
                                 stopWaiting(dialog, false);
                                 toast("Play!!!");
+                                startPlay();
                             }
                             try {
                                 Thread.sleep(200);
@@ -333,6 +344,47 @@ public class GameClient extends GameConnection implements ServiceListener {
         }
     }
 
+    private void startPlay() {
+        inBG(new Runnable() {
+            @Override
+            public void run() {
+                // Подготовка ресурсов
+                input = server.in;
+                output = server.out;
+                try {
+                    gameMap = new GameMap(activity.getAssets().open(GameMap.assetsPathFromID(mapID)), activity.getResources());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    try {
+                        output.writeInt(GameServer.CODE_ERROR);
+                        output.flush();
+                        stop();
+                    } catch (IOException e2) {
+                        Log.e(TAG, "Error in sending error code to server", e2);
+                    }
+                    return;
+                }
+                // Если все ОК, то отсылаем серверу статус готовности к игре
+                try {
+                    output.writeInt(GameServer.CODE_ERROR);
+                    output.flush();
+                    // Начинаем игру
+                    inUI(new Runnable() {
+                        @Override
+                        public void run() {
+                            GameView gameView = new GameView(activity, GameClient.this);
+                            View v = LayoutInflater.from(activity).inflate(R.layout.play_screen, null);
+                            ((ViewGroup)v.findViewById(R.id.game_map_layout)).addView(gameView);
+                            activity.setContentView(v);
+                        }
+                    });
+                } catch (IOException e) {
+                    Log.e(TAG, "Starting game error", e);
+                }
+            }
+        });
+    }
+
     private String getUsersInfo() {
         StringBuilder builder = new StringBuilder();
         for (User user : users) {
@@ -349,5 +401,10 @@ public class GameClient extends GameConnection implements ServiceListener {
     @Override
     public User getMyUser() {
         return myUser;
+    }
+
+    @Override
+    public GameMap getGameMap() {
+        return gameMap;
     }
 }

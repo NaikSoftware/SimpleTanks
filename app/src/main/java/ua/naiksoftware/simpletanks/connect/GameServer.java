@@ -12,6 +12,8 @@ import java.util.*;
 
 import javax.jmdns.*;
 
+import ua.naiksoftware.simpletanks.GameMap;
+import ua.naiksoftware.simpletanks.GameView;
 import ua.naiksoftware.simpletanks.R;
 import ua.naiksoftware.simpletanks.User;
 
@@ -28,6 +30,9 @@ public class GameServer extends GameConnection {
     public static final int REMOVE_USER = 6;
     public static final int PING_CLIENT = 7;
 
+    public static final int CODE_ERROR = 8;
+    public static final int CODE_OK = 9;
+
     public static final String KEY_SERVER_NAME = "key_name";
 
     private JmDNS jmdns;
@@ -37,6 +42,8 @@ public class GameServer extends GameConnection {
     private ArrayList<Client> clientsList; // Клиенты сервера
     private final Object lock = new Object();
     private User myUser; // Игрок, запускающий сервер
+    private int mapID = 1;
+    private GameMap gameMap;
 
     public GameServer(Activity activity) {
         super(activity);
@@ -61,6 +68,23 @@ public class GameServer extends GameConnection {
 
                                 @Override
                                 public void run() {
+                                    InputStream inputStream = null;
+                                    try {
+                                        inputStream = activity.getAssets().open(GameMap.assetsPathFromID(mapID));
+                                        gameMap = new GameMap(inputStream, activity.getResources());
+                                    } catch (IOException e) {
+                                        Log.e(TAG, "Error loading game map", e);
+                                        toast(R.string.error_loading_map);
+                                        return;
+                                    } finally {
+                                        if (inputStream != null) {
+                                            try {
+                                                inputStream.close();
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    }
                                     synchronized (lock) {
                                         createNetwork(false);
                                     }
@@ -85,6 +109,7 @@ public class GameServer extends GameConnection {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         server.acceptClients();
+                        startPlay();
                     }
                 })
                 .setCancelable(false)
@@ -344,7 +369,8 @@ public class GameServer extends GameConnection {
             setName(in.readUTF());
             setId(in.readLong());
             setIp(socket.getInetAddress().getHostAddress());
-            out.writeUTF(myUser.getName() + " default map"); // Отсылаем карту сервера
+            out.writeUTF(gameMap.name); // Отсылаем карту сервера
+            out.writeInt(mapID);
         }
 
         public DataOutputStream getOut() {
@@ -377,5 +403,48 @@ public class GameServer extends GameConnection {
     @Override
     public User getMyUser() {
         return myUser;
+    }
+
+    @Override
+    public GameMap getGameMap() {
+        return gameMap;
+    }
+
+    private void startPlay() {
+        // Ожидаем готовности клиентов
+        final AlertDialog dialog = new AlertDialog.Builder(activity)
+                .setView(new ProgressBar(activity))
+                .setCancelable(false)
+                .show();
+        inBG(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < clientsList.size(); i++) {
+                    Client client = clientsList.get(i);
+                    try {
+                        int code = client.in.readInt();
+                        if (code != CODE_OK) {
+                            throw new IOException("Client " + client.getName() + " sends fail code");
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        toast("Client " + client.getName() + " disconnected");
+                        clientsList.remove(client);
+                        i--;
+                    }
+                }
+                // Клиенты ответили
+                inUI(new Runnable() {
+                    @Override
+                    public void run() {
+                        dialog.dismiss();
+                        GameView gameView = new GameView(activity, GameServer.this);
+                        View v = LayoutInflater.from(activity).inflate(R.layout.play_screen, null);
+                        ((ViewGroup)v.findViewById(R.id.game_map_layout)).addView(gameView);
+                        activity.setContentView(v);
+                    }
+                });
+            }
+        });
     }
 }

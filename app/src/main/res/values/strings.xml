@@ -36,5 +36,6 @@
 	<string name="turn_on_wifi">Turn on WiFi?</string>
 	<string name="connect_error">Connection failed</string>
 	<string name="connecting_to">Connecting to</string>
+	<string name="error_loading_map">Error loading game map</string>
 
 </resources>
