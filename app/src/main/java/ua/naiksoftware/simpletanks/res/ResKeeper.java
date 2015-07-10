@@ -22,7 +22,8 @@ public class ResKeeper {
             return bitmap;
         }
         switch (imageID) {
-            case BRICK: bitmap = BitmapFactory.decodeResource(resources, R.drawable.brick);
+            case BRICK: bitmap = BitmapFactory.decodeResource(resources, R.drawable.brick); break;
+            case TANK_1: bitmap = BitmapFactory.decodeResource(resources, R.drawable.tank1); break;
         }
         if (bitmap != null) {
             cacheImages.put(imageID, bitmap);

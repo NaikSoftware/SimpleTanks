@@ -15,7 +15,7 @@ import ua.naiksoftware.simpletanks.connect.GameServer;
 
 public class MainActivity extends Activity {
 
-    private static final String TAG = MainActivity.class.getName();
+    private static final String TAG = MainActivity.class.getSimpleName();
 
     private GameMode gameMode;
     private GameConnection gameConn;
@@ -26,6 +26,7 @@ public class MainActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.main);
         ((Button) findViewById(R.id.btnPlay)).setOnClickListener(btnListener);
+        Log.d(TAG, "___STARTED___");
     }
 
     View.OnClickListener btnListener = new View.OnClickListener() {
@@ -59,6 +60,7 @@ public class MainActivity extends Activity {
         if (gameConn != null) {
             gameConn.stop();
         }
+        Log.d(TAG, "___DESTROYED___");
         super.onDestroy();
     }
 }

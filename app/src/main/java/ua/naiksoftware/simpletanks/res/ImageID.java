@@ -5,5 +5,6 @@ package ua.naiksoftware.simpletanks.res;
  */
 public enum ImageID {
 
-    BRICK, VOID
+    BRICK, VOID,
+    TANK_1
 }

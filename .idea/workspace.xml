@@ -14,27 +14,28 @@
     </layouts>
   </component>
   <component name="AndroidLogFilters">
-    <option name="TOOL_WINDOW_LOG_LEVEL" value="INFO" />
+    <option name="TOOL_WINDOW_LOG_LEVEL" value="ERROR" />
     <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Show only selected application" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a4f702f8-5e50-451a-b946-ea9ce652b867" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/utils/Pool.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/arrow_down_selector.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/arrow_left_selector.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/arrow_right_selector.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/arrow_up_selector.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/drawable/fire_button_selector.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/res/layout/play_screen.xml" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/app/src/main/res/assets/simple.map" afterPath="" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/Map.java" afterPath="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/GameMap.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/ClientGameHolder.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/GameHolder.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/Log.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/ServerGameHolder.java" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/app/src/main/res/drawable-hdpi/tank1b.png" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" afterPath="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/GameClient.java" afterPath="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/GameClient.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/GameConnection.java" afterPath="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/GameConnection.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/GameMap.java" afterPath="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/GameMap.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/GameServer.java" afterPath="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/GameServer.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/GameThread.java" afterPath="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/GameThread.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/GameView.java" afterPath="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/GameView.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/res/ImageID.java" afterPath="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/res/ImageID.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/MainActivity.java" afterPath="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/MainActivity.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/res/ResKeeper.java" afterPath="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/res/ResKeeper.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/User.java" afterPath="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/User.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/layout/play_screen.xml" afterPath="$PROJECT_DIR$/app/src/main/res/layout/play_screen.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" afterPath="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -57,37 +58,14 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="GameServer.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="GameServer.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/GameServer.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.24489796">
-              <caret line="413" column="38" selection-start-line="413" selection-start-column="38" selection-end-line="413" selection-end-column="38" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="425" column="63" selection-start-line="425" selection-start-column="63" selection-end-line="425" selection-end-column="63" />
               <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#1744#3831#0" expanded="true" />
-                <element signature="e#2340#3763#0" expanded="true" />
-                <element signature="e#2966#2992#0" expanded="true" />
-                <element signature="e#3762#3763#0" expanded="true" />
-                <element signature="e#3830#3831#0" expanded="true" />
-                <element signature="e#4432#4451#0" expanded="true" />
-                <element signature="e#4453#4725#0" expanded="true" />
-                <element signature="e#4724#4725#0" expanded="true" />
-                <element signature="e#4825#5044#0" expanded="true" />
-                <element signature="e#5043#5044#0" expanded="true" />
-                <element signature="e#5141#5166#0" expanded="true" />
-                <element signature="e#5299#7014#0" expanded="true" />
-                <element signature="e#5528#6972#0" expanded="true" />
-                <element signature="e#6971#6972#0" expanded="true" />
-                <element signature="e#7013#7014#0" expanded="true" />
-                <element signature="e#7138#7822#0" expanded="true" />
-                <element signature="e#7755#7778#0" expanded="true" />
-                <element signature="e#7821#7822#0" expanded="true" />
-                <element signature="e#15262#15263#0" expanded="true" />
-                <element signature="e#15296#15297#0" expanded="true" />
-                <element signature="e#15341#15342#0" expanded="true" />
-                <element signature="e#15370#15371#0" expanded="true" />
-                <element signature="e#15419#15420#0" expanded="true" />
-                <element signature="e#15449#15450#0" expanded="true" />
+                <element signature="e#15278#15279#0" expanded="true" />
+                <element signature="e#15312#15313#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -97,36 +75,52 @@
         <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/GameClient.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="377" column="55" selection-start-line="377" selection-start-column="55" selection-end-line="377" selection-end-column="55" />
+              <caret line="393" column="120" selection-start-line="393" selection-start-column="120" selection-end-line="393" selection-end-column="120" />
               <folding>
-                <element signature="method#stopWaiting#0;class#Server#0;class#GameClient#0" expanded="false" />
                 <element signature="method#stop#0;class#Server#0;class#GameClient#0" expanded="false" />
                 <element signature="method#equals#0;class#Server#0;class#GameClient#0" expanded="false" />
-                <element signature="method#getUsersInfo#0;class#GameClient#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="strings.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
+      <file leaf-file-name="ServerGameHolder.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/ServerGameHolder.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-13.68">
-              <caret line="38" column="68" selection-start-line="38" selection-start-column="68" selection-end-line="38" selection-end-column="68" />
-              <folding />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="70" column="34" selection-start-line="70" selection-start-column="34" selection-end-line="70" selection-end-column="34" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="play_screen.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/play_screen.xml">
-          <provider editor-type-id="android-designer">
-            <state />
-          </provider>
+      <file leaf-file-name="ClientGameHolder.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/ClientGameHolder.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-46.92857">
-              <caret line="73" column="52" selection-start-line="73" selection-start-column="52" selection-end-line="73" selection-end-column="52" />
-              <folding />
+            <state vertical-scroll-proportion="0.51804423">
+              <caret line="41" column="5" selection-start-line="41" selection-start-column="5" selection-end-line="41" selection-end-column="5" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#700#712#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="User.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/User.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="103" column="21" selection-start-line="103" selection-start-column="21" selection-end-line="103" selection-end-column="21" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#1974#1975#0" expanded="true" />
+                <element signature="e#2005#2006#0" expanded="true" />
+                <element signature="e#2087#2088#0" expanded="true" />
+                <element signature="e#2118#2119#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -135,13 +129,8 @@
         <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/GameThread.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="38" column="29" selection-start-line="38" selection-start-column="29" selection-end-line="38" selection-end-column="29" />
-              <folding>
-                <element signature="e#776#777#0" expanded="true" />
-                <element signature="e#814#815#0" expanded="true" />
-                <element signature="e#1402#1403#0" expanded="true" />
-                <element signature="e#1438#1439#0" expanded="true" />
-              </folding>
+              <caret line="14" column="50" selection-start-line="14" selection-start-column="50" selection-end-line="14" selection-end-column="50" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -150,22 +139,8 @@
         <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/GameMap.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="51" column="26" selection-start-line="51" selection-start-column="26" selection-end-line="51" selection-end-column="26" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Tile.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/Tile.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="20" column="5" selection-start-line="20" selection-start-column="5" selection-end-line="20" selection-end-column="5" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
+              <caret line="50" column="35" selection-start-line="50" selection-start-column="35" selection-end-line="50" selection-end-column="35" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -177,9 +152,9 @@
       <list>
         <option value="layoutResourceFile" />
         <option value="Enum" />
-        <option value="Class" />
         <option value="layoutResourceFile_vertical" />
         <option value="resourceFile" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -1504,28 +1479,32 @@
         <option value="$PROJECT_DIR$/app/src/main/res/layout/clients_row.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/server_wait_clients_dialog.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/client_connect_dialog.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/User.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/ClientsListAdapter.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/res/ImageID.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/Tile.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/drawable/arrow_up_selector.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/drawable/arrow_down_selector.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/drawable/arrow_left_selector.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/drawable/arrow_right_selector.xml" />
         <option value="$PROJECT_DIR$/app/src/main/res/drawable/fire_button_selector.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/GameView.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/GameConnection.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/Map.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/utils/Pool.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/GameConnection.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/GameHolder.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/Tile.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/res/ImageID.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/res/ResKeeper.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/values/strings.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/MainActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/GameMap.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/GameThread.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/GameView.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/play_screen.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/GameClient.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/Log.java" />
+        <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/MainActivity.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/ServerGameHolder.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/GameThread.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/GameServer.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/GameClient.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/User.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/GameMap.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/ClientGameHolder.java" />
       </list>
     </option>
   </component>
@@ -1568,6 +1547,9 @@
     </navigator>
     <panes>
       <pane id="ProjectPane" />
+      <pane id="Scratches" />
+      <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="AndroidView">
         <subPane>
           <PATH>
@@ -1603,10 +1585,6 @@
               <option name="myItemId" value="res" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="values" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderTypeNode" />
-            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -1624,20 +1602,6 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="layout" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderTypeNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="SimpleTanks" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="res" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -1752,9 +1716,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
-      <pane id="Scratches" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -1763,7 +1724,7 @@
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="OverrideImplement.combined" value="true" />
     <property name="OverrideImplement.overriding.sorted" value="false" />
-    <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_SERIALS" value="0123456789ABCDEF" />
+    <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_SERIALS" value="HT2ALW302519" />
     <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_AVD" value="VirtualAndroid" />
     <property name="FullScreen" value="false" />
     <property name="UI_DESIGNER_EDITOR_MODE.PaletteToolWindowManager.WIDTH" value="256" />
@@ -1983,26 +1944,26 @@
     <editor active="true" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32893288" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.0" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32893288" sideWeight="0.5021299" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24600638" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.0" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32893288" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32893288" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.0" sideWeight="0.4978701" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Android" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.02530253" sideWeight="0.4978701" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.13471779" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32893288" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.17625134" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.0" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.37073708" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.1760176" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -2026,230 +1987,125 @@
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/GameClient.java</url>
+          <line>341</line>
+          <properties />
+          <option name="timeStamp" value="57" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/ServerGameHolder.java</url>
+          <line>41</line>
+          <properties />
+          <option name="timeStamp" value="85" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/ServerGameHolder.java</url>
+          <line>44</line>
+          <properties />
+          <option name="timeStamp" value="86" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/ServerGameHolder.java</url>
+          <line>48</line>
+          <properties />
+          <option name="timeStamp" value="90" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/ServerGameHolder.java</url>
+          <line>49</line>
+          <properties />
+          <option name="timeStamp" value="92" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/ServerGameHolder.java</url>
+          <line>51</line>
+          <properties />
+          <option name="timeStamp" value="93" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/ServerGameHolder.java</url>
+          <line>52</line>
+          <properties />
+          <option name="timeStamp" value="94" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/ServerGameHolder.java</url>
+          <line>53</line>
+          <properties />
+          <option name="timeStamp" value="97" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/ServerGameHolder.java</url>
+          <line>54</line>
+          <properties />
+          <option name="timeStamp" value="98" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/ServerGameHolder.java</url>
+          <line>55</line>
+          <properties />
+          <option name="timeStamp" value="99" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/ServerGameHolder.java</url>
+          <line>58</line>
+          <properties />
+          <option name="timeStamp" value="100" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/ServerGameHolder.java</url>
+          <line>59</line>
+          <properties />
+          <option name="timeStamp" value="101" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/ServerGameHolder.java</url>
+          <line>60</line>
+          <properties />
+          <option name="timeStamp" value="103" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/ServerGameHolder.java</url>
+          <line>71</line>
+          <properties />
+          <option name="timeStamp" value="104" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/GameServer.java</url>
-          <line>88</line>
+          <line>399</line>
           <properties />
-          <option name="timeStamp" value="7" />
+          <option name="timeStamp" value="105" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/GameMap.java</url>
-          <line>27</line>
+          <url>file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/GameServer.java</url>
+          <line>426</line>
           <properties />
-          <option name="timeStamp" value="9" />
+          <option name="timeStamp" value="106" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/GameMap.java</url>
-          <line>28</line>
+          <url>file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/GameServer.java</url>
+          <line>427</line>
           <properties />
-          <option name="timeStamp" value="10" />
+          <option name="timeStamp" value="107" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/GameMap.java</url>
-          <line>29</line>
+          <url>file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/GameServer.java</url>
+          <line>431</line>
           <properties />
-          <option name="timeStamp" value="11" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/GameMap.java</url>
-          <line>30</line>
-          <properties />
-          <option name="timeStamp" value="12" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/GameMap.java</url>
-          <line>39</line>
-          <properties />
-          <option name="timeStamp" value="13" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/GameMap.java</url>
-          <line>32</line>
-          <properties />
-          <option name="timeStamp" value="24" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/res/ResKeeper.java</url>
-          <line>24</line>
-          <properties />
-          <option name="timeStamp" value="25" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/res/ResKeeper.java</url>
-          <line>21</line>
-          <properties />
-          <option name="timeStamp" value="26" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/res/ResKeeper.java</url>
-          <line>19</line>
-          <properties />
-          <option name="timeStamp" value="27" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/res/ResKeeper.java</url>
-          <line>27</line>
-          <properties />
-          <option name="timeStamp" value="28" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/res/ResKeeper.java</url>
-          <line>29</line>
-          <properties />
-          <option name="timeStamp" value="29" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/GameMap.java</url>
-          <line>34</line>
-          <properties />
-          <option name="timeStamp" value="30" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/GameMap.java</url>
-          <line>35</line>
-          <properties />
-          <option name="timeStamp" value="31" />
+          <option name="timeStamp" value="108" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="32" />
+      <option name="time" value="109" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/GameMap.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/res/ResKeeper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="36" column="28" selection-start-line="36" selection-start-column="28" selection-end-line="36" selection-end-column="28" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#381#398#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/Tile.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="21" column="0" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/GameConnection.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="55" column="37" selection-start-line="55" selection-start-column="37" selection-end-line="55" selection-end-column="37" />
-          <folding>
-            <element signature="e#2445#2446#0" expanded="false" />
-            <element signature="e#2509#2510#0" expanded="false" />
-            <element signature="e#3258#3259#0" expanded="false" />
-            <element signature="e#3303#3304#0" expanded="false" />
-            <element signature="e#4585#4586#0" expanded="false" />
-            <element signature="e#4617#4618#0" expanded="false" />
-            <element signature="e#5036#5037#0" expanded="false" />
-            <element signature="e#5073#5074#0" expanded="false" />
-            <element signature="e#5536#5537#0" expanded="false" />
-            <element signature="e#5587#5588#0" expanded="false" />
-            <element signature="e#5626#5627#0" expanded="false" />
-            <element signature="e#5652#5653#0" expanded="false" />
-            <element signature="e#5691#5692#0" expanded="false" />
-            <element signature="e#5727#5728#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/GameClient.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="31" column="26" selection-start-line="31" selection-start-column="26" selection-end-line="31" selection-end-column="26" />
           <folding>
             <element signature="imports" expanded="false" />
-            <element signature="e#1286#1292#0" expanded="false" />
-            <element signature="e#2157#2190#0" expanded="false" />
-            <element signature="e#2329#2367#0" expanded="false" />
-            <element signature="e#3353#3354#0" expanded="false" />
-            <element signature="e#3407#3408#0" expanded="false" />
-            <element signature="e#8713#8755#0" expanded="false" />
-            <element signature="e#10434#10466#0" expanded="false" />
-            <element signature="e#11552#11553#0" expanded="false" />
-            <element signature="e#11667#11668#0" expanded="false" />
-            <element signature="e#12405#12427#0" expanded="false" />
-            <element signature="method#stopWaiting#0;class#Server#0;class#GameClient#0" expanded="false" />
-            <element signature="e#12759#12760#0" expanded="false" />
-            <element signature="e#12815#12816#0" expanded="false" />
-            <element signature="method#stop#0;class#Server#0;class#GameClient#0" expanded="false" />
-            <element signature="method#equals#0;class#Server#0;class#GameClient#0" expanded="false" />
-            <element signature="method#getUsersInfo#0;class#GameClient#0" expanded="false" />
-            <element signature="e#15361#15362#0" expanded="false" />
-            <element signature="e#15389#15390#0" expanded="false" />
-            <element signature="e#15434#15435#0" expanded="false" />
-            <element signature="e#15463#15464#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/GameView.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="2" column="28" selection-start-line="2" selection-start-column="28" selection-end-line="2" selection-end-column="28" />
-          <folding>
-            <element signature="e#637#638#0" expanded="false" />
-            <element signature="e#671#672#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/GameThread.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="34" column="14" selection-start-line="34" selection-start-column="14" selection-end-line="34" selection-end-column="14" />
-          <folding>
-            <element signature="e#776#777#0" expanded="true" />
-            <element signature="e#814#815#0" expanded="true" />
-            <element signature="e#1402#1403#0" expanded="true" />
-            <element signature="e#1438#1439#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/GameMap.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/res/ResKeeper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="36" column="28" selection-start-line="36" selection-start-column="28" selection-end-line="36" selection-end-column="28" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#381#398#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/Tile.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="21" column="0" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -2259,20 +2115,25 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="53" column="47" selection-start-line="53" selection-start-column="47" selection-end-line="53" selection-end-column="47" />
           <folding>
-            <element signature="e#2445#2446#0" expanded="false" />
-            <element signature="e#2509#2510#0" expanded="false" />
-            <element signature="e#3258#3259#0" expanded="false" />
-            <element signature="e#3303#3304#0" expanded="false" />
-            <element signature="e#4585#4586#0" expanded="false" />
-            <element signature="e#4617#4618#0" expanded="false" />
-            <element signature="e#5036#5037#0" expanded="false" />
-            <element signature="e#5073#5074#0" expanded="false" />
-            <element signature="e#5536#5537#0" expanded="false" />
-            <element signature="e#5587#5588#0" expanded="false" />
-            <element signature="e#5626#5627#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#2288#2310#0" expanded="false" />
+            <element signature="e#2510#2511#0" expanded="false" />
+            <element signature="e#2574#2575#0" expanded="false" />
+            <element signature="e#2889#2921#0" expanded="false" />
+            <element signature="e#3323#3324#0" expanded="false" />
+            <element signature="e#3368#3369#0" expanded="false" />
+            <element signature="e#3494#3515#0" expanded="false" />
+            <element signature="e#4398#4420#0" expanded="false" />
+            <element signature="e#4650#4651#0" expanded="false" />
+            <element signature="e#4682#4683#0" expanded="false" />
+            <element signature="e#5101#5102#0" expanded="false" />
+            <element signature="e#5138#5139#0" expanded="false" />
+            <element signature="e#5601#5602#0" expanded="false" />
             <element signature="e#5652#5653#0" expanded="false" />
             <element signature="e#5691#5692#0" expanded="false" />
-            <element signature="e#5727#5728#0" expanded="false" />
+            <element signature="e#5717#5718#0" expanded="false" />
+            <element signature="e#5756#5757#0" expanded="false" />
+            <element signature="e#5792#5793#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -2282,27 +2143,8 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="339" column="91" selection-start-line="339" selection-start-column="91" selection-end-line="339" selection-end-column="91" />
           <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#1286#1292#0" expanded="false" />
-            <element signature="e#2157#2190#0" expanded="false" />
-            <element signature="e#2329#2367#0" expanded="false" />
-            <element signature="e#3353#3354#0" expanded="false" />
-            <element signature="e#3407#3408#0" expanded="false" />
-            <element signature="e#8713#8755#0" expanded="false" />
-            <element signature="e#10434#10466#0" expanded="false" />
-            <element signature="e#11552#11553#0" expanded="false" />
-            <element signature="e#11667#11668#0" expanded="false" />
-            <element signature="e#12405#12427#0" expanded="false" />
-            <element signature="method#stopWaiting#0;class#Server#0;class#GameClient#0" expanded="false" />
-            <element signature="e#12759#12760#0" expanded="false" />
-            <element signature="e#12815#12816#0" expanded="false" />
             <element signature="method#stop#0;class#Server#0;class#GameClient#0" expanded="false" />
             <element signature="method#equals#0;class#Server#0;class#GameClient#0" expanded="false" />
-            <element signature="method#getUsersInfo#0;class#GameClient#0" expanded="false" />
-            <element signature="e#15361#15362#0" expanded="false" />
-            <element signature="e#15389#15390#0" expanded="false" />
-            <element signature="e#15434#15435#0" expanded="false" />
-            <element signature="e#15463#15464#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -2348,20 +2190,25 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="134" column="30" selection-start-line="134" selection-start-column="30" selection-end-line="134" selection-end-column="30" />
           <folding>
-            <element signature="e#2445#2446#0" expanded="false" />
-            <element signature="e#2509#2510#0" expanded="false" />
-            <element signature="e#3258#3259#0" expanded="false" />
-            <element signature="e#3303#3304#0" expanded="false" />
-            <element signature="e#4585#4586#0" expanded="false" />
-            <element signature="e#4617#4618#0" expanded="false" />
-            <element signature="e#5036#5037#0" expanded="false" />
-            <element signature="e#5073#5074#0" expanded="false" />
-            <element signature="e#5536#5537#0" expanded="false" />
-            <element signature="e#5587#5588#0" expanded="false" />
-            <element signature="e#5626#5627#0" expanded="false" />
+            <element signature="imports" expanded="false" />
+            <element signature="e#2288#2310#0" expanded="false" />
+            <element signature="e#2510#2511#0" expanded="false" />
+            <element signature="e#2574#2575#0" expanded="false" />
+            <element signature="e#2889#2921#0" expanded="false" />
+            <element signature="e#3323#3324#0" expanded="false" />
+            <element signature="e#3368#3369#0" expanded="false" />
+            <element signature="e#3494#3515#0" expanded="false" />
+            <element signature="e#4398#4420#0" expanded="false" />
+            <element signature="e#4650#4651#0" expanded="false" />
+            <element signature="e#4682#4683#0" expanded="false" />
+            <element signature="e#5101#5102#0" expanded="false" />
+            <element signature="e#5138#5139#0" expanded="false" />
+            <element signature="e#5601#5602#0" expanded="false" />
             <element signature="e#5652#5653#0" expanded="false" />
             <element signature="e#5691#5692#0" expanded="false" />
-            <element signature="e#5727#5728#0" expanded="false" />
+            <element signature="e#5717#5718#0" expanded="false" />
+            <element signature="e#5756#5757#0" expanded="false" />
+            <element signature="e#5792#5793#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -2371,27 +2218,8 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#1286#1292#0" expanded="false" />
-            <element signature="e#2157#2190#0" expanded="false" />
-            <element signature="e#2329#2367#0" expanded="false" />
-            <element signature="e#3353#3354#0" expanded="false" />
-            <element signature="e#3407#3408#0" expanded="false" />
-            <element signature="e#8713#8755#0" expanded="false" />
-            <element signature="e#10434#10466#0" expanded="false" />
-            <element signature="e#11552#11553#0" expanded="false" />
-            <element signature="e#11667#11668#0" expanded="false" />
-            <element signature="e#12405#12427#0" expanded="false" />
-            <element signature="method#stopWaiting#0;class#Server#0;class#GameClient#0" expanded="false" />
-            <element signature="e#12759#12760#0" expanded="false" />
-            <element signature="e#12815#12816#0" expanded="false" />
             <element signature="method#stop#0;class#Server#0;class#GameClient#0" expanded="false" />
             <element signature="method#equals#0;class#Server#0;class#GameClient#0" expanded="false" />
-            <element signature="method#getUsersInfo#0;class#GameClient#0" expanded="false" />
-            <element signature="e#15361#15362#0" expanded="false" />
-            <element signature="e#15389#15390#0" expanded="false" />
-            <element signature="e#15434#15435#0" expanded="false" />
-            <element signature="e#15463#15464#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -2422,13 +2250,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.3942857">
           <caret line="23" column="28" selection-start-line="23" selection-start-column="28" selection-end-line="23" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/Programs/android-sdk-linux/sources/android-19/android/os/Handler.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="1.0011429">
-          <caret line="86" column="16" selection-start-line="86" selection-start-column="16" selection-end-line="86" selection-end-column="16" />
         </state>
       </provider>
     </entry>
@@ -2488,20 +2309,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/User.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="12" column="21" selection-start-line="12" selection-start-column="21" selection-end-line="12" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/res/ImageID.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="7" column="15" selection-start-line="7" selection-start-column="15" selection-end-line="7" selection-end-column="15" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable/arrow_up_selector.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -2542,34 +2349,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/GameConnection.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="56" column="41" selection-start-line="56" selection-start-column="41" selection-end-line="56" selection-end-column="41" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#2223#2245#0" expanded="false" />
-            <element signature="e#2445#2446#0" expanded="false" />
-            <element signature="e#2509#2510#0" expanded="false" />
-            <element signature="e#2824#2856#0" expanded="false" />
-            <element signature="e#3258#3259#0" expanded="false" />
-            <element signature="e#3303#3304#0" expanded="false" />
-            <element signature="e#3429#3450#0" expanded="false" />
-            <element signature="e#4333#4355#0" expanded="false" />
-            <element signature="e#4585#4586#0" expanded="false" />
-            <element signature="e#4617#4618#0" expanded="false" />
-            <element signature="e#5036#5037#0" expanded="false" />
-            <element signature="e#5073#5074#0" expanded="false" />
-            <element signature="e#5536#5537#0" expanded="false" />
-            <element signature="e#5587#5588#0" expanded="false" />
-            <element signature="e#5626#5627#0" expanded="false" />
-            <element signature="e#5652#5653#0" expanded="false" />
-            <element signature="e#5691#5692#0" expanded="false" />
-            <element signature="e#5727#5728#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/utils/Pool.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -2578,36 +2357,158 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/Tile.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="20" column="5" selection-start-line="20" selection-start-column="5" selection-end-line="20" selection-end-column="5" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable-hdpi/brick.png">
       <provider selected="true" editor-type-id="images">
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/res/ResKeeper.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/Tile.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="14" column="24" selection-start-line="14" selection-start-column="24" selection-end-line="14" selection-end-column="24" />
+          <caret line="21" column="0" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
           <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#381#398#0" expanded="true" />
+            <element signature="imports" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/GameMap.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/GameHolder.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="51" column="26" selection-start-line="51" selection-start-column="26" selection-end-line="51" selection-end-column="26" />
+          <caret line="21" column="0" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/res/ImageID.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.1632653">
+          <caret line="8" column="10" selection-start-line="8" selection-start-column="10" selection-end-line="8" selection-end-column="10" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/res/ResKeeper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.30612245">
+          <caret line="22" column="9" selection-start-line="22" selection-start-column="9" selection-end-line="22" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Programs/android-sdk-linux/sources/android-19/android/util/Log.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="159" column="0" selection-start-line="159" selection-start-column="0" selection-end-line="159" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Programs/android-sdk-linux/sources/android-19/android/util/ArrayMap.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="465" column="0" selection-start-line="465" selection-start-column="0" selection-end-line="465" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Programs/android-sdk-linux/sources/android-19/android/os/Bundle.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="519" column="0" selection-start-line="519" selection-start-column="0" selection-end-line="519" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Programs/android-sdk-linux/sources/android-19/android/os/Message.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="418" column="0" selection-start-line="418" selection-start-column="0" selection-end-line="418" selection-end-column="0" />
+          <folding>
+            <element signature="e#13360#13361#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Programs/android-sdk-linux/sources/android-19/android/os/MessageQueue.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="358" column="0" selection-start-line="358" selection-start-column="0" selection-end-line="358" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/Programs/android-sdk-linux/sources/android-19/android/os/Handler.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="502" column="0" selection-start-line="502" selection-start-column="0" selection-end-line="502" selection-end-column="0" />
+          <folding>
+            <element signature="e#20842#20843#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/GameConnection.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.53061223">
+          <caret line="155" column="6" selection-start-line="155" selection-start-column="6" selection-end-line="155" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6706731">
+          <caret line="31" column="63" selection-start-line="31" selection-start-column="63" selection-end-line="31" selection-end-column="63" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/GameView.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.22813036">
+          <caret line="36" column="0" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/play_screen.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.089440994">
+          <caret line="4" column="35" selection-start-line="4" selection-start-column="35" selection-end-line="4" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.2857143">
+          <caret line="14" column="78" selection-start-line="14" selection-start-column="78" selection-end-line="14" selection-end-column="78" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/Log.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="30" column="23" selection-start-line="30" selection-start-column="23" selection-end-line="30" selection-end-column="23" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1088#1089#0" expanded="true" />
+            <element signature="e#1119#1120#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/MainActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.3469388">
+          <caret line="17" column="72" selection-start-line="17" selection-start-column="72" selection-end-line="17" selection-end-column="72" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -2617,102 +2518,72 @@
     <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/GameThread.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="38" column="29" selection-start-line="38" selection-start-column="29" selection-end-line="38" selection-end-column="29" />
+          <caret line="14" column="50" selection-start-line="14" selection-start-column="50" selection-end-line="14" selection-end-column="50" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/GameServer.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="425" column="63" selection-start-line="425" selection-start-column="63" selection-end-line="425" selection-end-column="63" />
           <folding>
-            <element signature="e#776#777#0" expanded="true" />
-            <element signature="e#814#815#0" expanded="true" />
-            <element signature="e#1402#1403#0" expanded="true" />
-            <element signature="e#1438#1439#0" expanded="true" />
+            <element signature="e#15278#15279#0" expanded="true" />
+            <element signature="e#15312#15313#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.432247">
-          <caret line="14" column="78" selection-start-line="14" selection-start-column="78" selection-end-line="14" selection-end-column="78" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/MainActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.18524872">
-          <caret line="8" column="22" selection-start-line="8" selection-start-column="22" selection-end-line="8" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/GameView.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6122449">
-          <caret line="36" column="23" selection-start-line="36" selection-start-column="23" selection-end-line="36" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/values/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-13.68">
-          <caret line="38" column="68" selection-start-line="38" selection-start-column="68" selection-end-line="38" selection-end-column="68" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/play_screen.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-46.92857">
-          <caret line="73" column="52" selection-start-line="73" selection-start-column="52" selection-end-line="73" selection-end-column="52" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/GameClient.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="377" column="55" selection-start-line="377" selection-start-column="55" selection-end-line="377" selection-end-column="55" />
+          <caret line="393" column="120" selection-start-line="393" selection-start-column="120" selection-end-line="393" selection-end-column="120" />
           <folding>
-            <element signature="method#stopWaiting#0;class#Server#0;class#GameClient#0" expanded="false" />
             <element signature="method#stop#0;class#Server#0;class#GameClient#0" expanded="false" />
             <element signature="method#equals#0;class#Server#0;class#GameClient#0" expanded="false" />
-            <element signature="method#getUsersInfo#0;class#GameClient#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/GameServer.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/User.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.24489796">
-          <caret line="413" column="38" selection-start-line="413" selection-start-column="38" selection-end-line="413" selection-end-column="38" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="103" column="21" selection-start-line="103" selection-start-column="21" selection-end-line="103" selection-end-column="21" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#1744#3831#0" expanded="true" />
-            <element signature="e#2340#3763#0" expanded="true" />
-            <element signature="e#2966#2992#0" expanded="true" />
-            <element signature="e#3762#3763#0" expanded="true" />
-            <element signature="e#3830#3831#0" expanded="true" />
-            <element signature="e#4432#4451#0" expanded="true" />
-            <element signature="e#4453#4725#0" expanded="true" />
-            <element signature="e#4724#4725#0" expanded="true" />
-            <element signature="e#4825#5044#0" expanded="true" />
-            <element signature="e#5043#5044#0" expanded="true" />
-            <element signature="e#5141#5166#0" expanded="true" />
-            <element signature="e#5299#7014#0" expanded="true" />
-            <element signature="e#5528#6972#0" expanded="true" />
-            <element signature="e#6971#6972#0" expanded="true" />
-            <element signature="e#7013#7014#0" expanded="true" />
-            <element signature="e#7138#7822#0" expanded="true" />
-            <element signature="e#7755#7778#0" expanded="true" />
-            <element signature="e#7821#7822#0" expanded="true" />
-            <element signature="e#15262#15263#0" expanded="true" />
-            <element signature="e#15296#15297#0" expanded="true" />
-            <element signature="e#15341#15342#0" expanded="true" />
-            <element signature="e#15370#15371#0" expanded="true" />
-            <element signature="e#15419#15420#0" expanded="true" />
-            <element signature="e#15449#15450#0" expanded="true" />
+            <element signature="e#1974#1975#0" expanded="true" />
+            <element signature="e#2005#2006#0" expanded="true" />
+            <element signature="e#2087#2088#0" expanded="true" />
+            <element signature="e#2118#2119#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/GameMap.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="50" column="35" selection-start-line="50" selection-start-column="35" selection-end-line="50" selection-end-column="35" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/ServerGameHolder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="70" column="34" selection-start-line="70" selection-start-column="34" selection-end-line="70" selection-end-column="34" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/ua/naiksoftware/simpletanks/connect/ClientGameHolder.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.51804423">
+          <caret line="41" column="5" selection-start-line="41" selection-start-column="5" selection-end-line="41" selection-end-column="5" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#700#712#0" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -5,12 +5,45 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/life_icon"
+            android:layout_marginLeft="5dp"/>
+        <TextView
+            android:id="@+id/lifes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"/>
+        <ProgressBar
+            android:layout_width="0px"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:layout_marginRight="20dp"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/mine_icon"/>
+        <TextView
+            android:id="@+id/mines"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_marginRight="5dp"/>
+    </LinearLayout>
+
+    <FrameLayout
         android:id="@+id/game_map_layout"
         android:layout_width="match_parent"
         android:layout_height="0px"
         android:layout_weight="1">
 
-    </LinearLayout>
+    </FrameLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"

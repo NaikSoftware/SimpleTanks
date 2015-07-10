@@ -29,6 +29,7 @@
 	<string name="users_on_server">Users on server</string>
 	<string name="map">Map</string>
 	<string name="my_device">my device</string>
+	<string name="server_disconnected">Disconnected from server</string>
 	
 	<!-- Common -->
 	<string name="start_game">Start game</string>
@@ -37,5 +38,7 @@
 	<string name="connect_error">Connection failed</string>
 	<string name="connecting_to">Connecting to</string>
 	<string name="error_loading_map">Error loading game map</string>
+
+	<!-- Game -->
 
 </resources>

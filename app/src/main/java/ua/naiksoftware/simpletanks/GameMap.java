@@ -18,9 +18,9 @@ import ua.naiksoftware.simpletanks.res.ResKeeper;
 public class GameMap {
 
     public final String name;
-    private int tileSize;
-    private Tile[][] tiles;
-    private int mapW, mapH;
+    public final int TILE_SIZE;
+    public final Tile[][] tiles;
+    public final int mapW, mapH;
     private int mapX, mapY;
     private final Paint tilePaint = new Paint();
 
@@ -37,16 +37,16 @@ public class GameMap {
                 }
             }
         }
-        tileSize = ResKeeper.getImage(ImageID.BRICK, res).getWidth();
+        TILE_SIZE = ResKeeper.getImage(ImageID.BRICK, res).getWidth();
     }
 
     public void draw(Canvas canvas) {
         int x, y;
         Tile tile;
         for (int i = 0; i < mapW; i++) {
-            y = mapY + i * tileSize;
+            x = mapX + i * TILE_SIZE;
             for (int j = 0; j < mapH; j++) {
-                x = mapX + j * tileSize;
+                y = mapY + j * TILE_SIZE;
                 tile = tiles[i][j];
                 if (tile != null) {
                     canvas.drawBitmap(tile.bitmap, x, y, tilePaint);
@@ -63,6 +63,7 @@ public class GameMap {
     public static String assetsPathFromID(int id) {
         switch (id) {
             case 1: return "simple.map";
+            case 2: return "small_test.map";
         }
         throw new IllegalArgumentException("GameMap with ID " + id + " not exists");
     }

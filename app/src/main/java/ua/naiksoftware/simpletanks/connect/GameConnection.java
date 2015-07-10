@@ -1,5 +1,7 @@
 package ua.naiksoftware.simpletanks.connect;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.ArrayList;

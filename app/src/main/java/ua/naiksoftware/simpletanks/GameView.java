@@ -1,10 +1,9 @@
 package ua.naiksoftware.simpletanks;
 
-import android.app.Activity;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import ua.naiksoftware.simpletanks.connect.GameConnection;
+import ua.naiksoftware.simpletanks.connect.GameHolder;
 
 /**
  * Created by Naik on 08.07.15.
@@ -13,9 +12,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private GameThread gameThread;
 
-    public GameView(Activity activity, GameConnection gameConnection) {
-        super(activity);
-        gameThread = new GameThread(getHolder(), activity, gameConnection);
+    public GameView(GameHolder gameHolder) {
+        super(gameHolder.getActivity());
+        gameThread = new GameThread(getHolder(), gameHolder);
         getHolder().addCallback(this);
     }
 
@@ -31,16 +30,26 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
+        destroy();
+    }
+
+    public void destroy() {
+        if (gameThread == null) {
+            return;
+        }
         gameThread.setRunning(false);
-        gameThread.interrupt();
         boolean retry = true;
         while (retry) {
             try {
-                gameThread.join();
+                if (gameThread.isAlive() && Thread.currentThread() != gameThread) {
+                    gameThread.join();
+                }
                 retry = false;
             } catch (InterruptedException e) {
+                e.printStackTrace();
                 // если не получилось, то будем пытаться еще и еще
             }
         }
+        gameThread = null;
     }
 }

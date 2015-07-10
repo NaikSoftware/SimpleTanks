@@ -44,6 +44,7 @@ public class GameClient extends GameConnection implements ServiceListener {
     private GameMap gameMap;
     private DataOutputStream output;
     private DataInputStream input;
+    private GameView gameView;
 
     public GameClient(Activity activity) {
         super(activity);
@@ -63,7 +64,7 @@ public class GameClient extends GameConnection implements ServiceListener {
                         if (clientName.isEmpty()) {
                             toast(R.string.client_name_empty_notice);
                         } else { // Все нормально
-                            myUser = new User(clientName, System.currentTimeMillis(), activity.getString(R.string.my_device));
+                            myUser = new User(clientName, activity.getString(R.string.my_device), 1);
                             inBG(new Runnable() {
 
                                 @Override
@@ -179,6 +180,10 @@ public class GameClient extends GameConnection implements ServiceListener {
 
     @Override
     public void stop() {
+        if (gameView != null) {
+            gameView.destroy();
+            toast(R.string.server_disconnected);
+        }
         inBG(new Runnable() {
 
             @Override
@@ -195,6 +200,15 @@ public class GameClient extends GameConnection implements ServiceListener {
                         }
                     } catch (Exception ex) {
                         Log.e(TAG, ex.getMessage(), ex);
+                    }
+                    if (gameView != null) {
+                        inUI(new Runnable() {
+                            @Override
+                            public void run() {
+                                activity.setContentView(R.layout.main);
+                            }
+                        });
+                        gameView = null;
                     }
                     toast("Client stopped");
                 }
@@ -283,10 +297,10 @@ public class GameClient extends GameConnection implements ServiceListener {
                             } else if (response == GameServer.ADD_USER || response == GameServer.REMOVE_USER) {
                                 switch (response) {
                                     case GameServer.ADD_USER :
-                                        users.add(new User(in.readUTF(), in.readLong(), in.readUTF()));
+                                        users.add(new User(in.readUTF(), in.readLong(), in.readUTF(), 1));
                                         break;
                                     case GameServer.REMOVE_USER:
-                                        users.remove(new User(in.readLong()));
+                                        users.remove(new User(in.readLong(), 1));
                                 }
                                 inUI(new Runnable() {
                                     @Override
@@ -298,6 +312,7 @@ public class GameClient extends GameConnection implements ServiceListener {
                                 stopWaiting(dialog, false);
                                 toast("Play!!!");
                                 startPlay();
+                                return;
                             }
                             try {
                                 Thread.sleep(200);
@@ -364,15 +379,20 @@ public class GameClient extends GameConnection implements ServiceListener {
                     }
                     return;
                 }
-                // Если все ОК, то отсылаем серверу статус готовности к игре
+                for (User user : users) {
+                    user.loadResources(activity.getResources());
+                }
+                myUser.loadResources(activity.getResources());
+                // Если все ОК, то отсылаем серверу статус готовности к игре и размер для расчета масштаб
                 try {
-                    output.writeInt(GameServer.CODE_ERROR);
-                    output.flush();
+                    output.writeInt(GameServer.CODE_OK);
+                    final int serverTileSize = input.readInt();
                     // Начинаем игру
                     inUI(new Runnable() {
                         @Override
                         public void run() {
-                            GameView gameView = new GameView(activity, GameClient.this);
+                            ClientGameHolder gameHolder = new ClientGameHolder(GameClient.this, activity, serverTileSize);
+                            gameView = new GameView(gameHolder);
                             View v = LayoutInflater.from(activity).inflate(R.layout.play_screen, null);
                             ((ViewGroup)v.findViewById(R.id.game_map_layout)).addView(gameView);
                             activity.setContentView(v);
@@ -385,11 +405,16 @@ public class GameClient extends GameConnection implements ServiceListener {
         });
     }
 
+    public Server getServer() {
+        return server;
+    }
+
     private String getUsersInfo() {
         StringBuilder builder = new StringBuilder();
         for (User user : users) {
             builder.append(user.getName()).append(" - ").append(user.getIp()).append("\n");
         }
+        builder.append(myUser.getName()).append(" - ").append(myUser.getIp()).append("\n");
         return builder.toString();
     }
 

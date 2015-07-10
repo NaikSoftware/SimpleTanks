@@ -5,23 +5,26 @@ import android.graphics.Canvas;
 import android.view.SurfaceHolder;
 
 import ua.naiksoftware.simpletanks.connect.GameConnection;
+import ua.naiksoftware.simpletanks.connect.GameHolder;
 
 /**
  * Created by Naik on 08.07.15.
  */
 public class GameThread extends Thread {
 
+    private static final int COLOR_BG = 0xFF5F9EA0;
+
     private boolean running;
     private SurfaceHolder surfaceHolder;
     private Activity activity;
-    private GameConnection gameConnection;
+    private GameHolder gameHolder;
     private GameMap gameMap;
 
-    public GameThread(SurfaceHolder surfaceHolder, Activity activity, GameConnection gameConnection) {
+    public GameThread(SurfaceHolder surfaceHolder, GameHolder gameHolder) {
         this.surfaceHolder = surfaceHolder;
-        this.activity = activity;
-        this.gameConnection = gameConnection;
-        gameMap = gameConnection.getGameMap();
+        this.gameHolder = gameHolder;
+        activity = gameHolder.getActivity();
+        gameMap = gameHolder.getGameConnection().getGameMap();
     }
 
     public void setRunning(boolean running) {
@@ -39,7 +42,7 @@ public class GameThread extends Thread {
                     continue;
                 }
                 synchronized (surfaceHolder) {
-                    draw(canvas);
+                    draw(canvas, gameHolder.processActions(0));
                 }
             } finally {
                 if (canvas != null) {
@@ -49,7 +52,9 @@ public class GameThread extends Thread {
         }
     }
 
-    private void draw(Canvas canvas) {
+    private void draw(Canvas canvas, int deltaTime) {
+        canvas.drawColor(COLOR_BG);
         gameMap.draw(canvas);
+        gameHolder.drawObjects(canvas, deltaTime);
     }
 }

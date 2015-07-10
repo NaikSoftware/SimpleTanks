@@ -42,7 +42,7 @@ public class GameServer extends GameConnection {
     private ArrayList<Client> clientsList; // Клиенты сервера
     private final Object lock = new Object();
     private User myUser; // Игрок, запускающий сервер
-    private int mapID = 1;
+    private int mapID = 2; // 2 - hardcoded test map
     private GameMap gameMap;
 
     public GameServer(Activity activity) {
@@ -63,7 +63,7 @@ public class GameServer extends GameConnection {
                         if (servName.isEmpty()) {
                             toast(R.string.serv_name_empty_notice);
                         } else { // Все нормально
-                            myUser = new User(servName, System.currentTimeMillis(), activity.getString(R.string.owner_server));
+                            myUser = new User(servName, activity.getString(R.string.owner_server), 1);
                             inBG(new Runnable() {
 
                                 @Override
@@ -358,11 +358,11 @@ public class GameServer extends GameConnection {
     class Client extends User {
 
         final Socket socket;
-        DataInputStream in;
-        DataOutputStream out;
+        final DataInputStream in;
+        final DataOutputStream out;
 
         Client(Socket socket) throws IOException {
-            super(0);
+            super(0, 1);
             this.socket = socket;
             in = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
@@ -411,7 +411,7 @@ public class GameServer extends GameConnection {
     }
 
     private void startPlay() {
-        // Ожидаем готовности клиентов
+        // Ожидаем готовности клиентов и готовим ресурсы
         final AlertDialog dialog = new AlertDialog.Builder(activity)
                 .setView(new ProgressBar(activity))
                 .setCancelable(false)
@@ -423,9 +423,11 @@ public class GameServer extends GameConnection {
                     Client client = clientsList.get(i);
                     try {
                         int code = client.in.readInt();
+                        client.out.writeInt(gameMap.TILE_SIZE);
                         if (code != CODE_OK) {
                             throw new IOException("Client " + client.getName() + " sends fail code");
                         }
+                        client.loadResources(activity.getResources());
                     } catch (IOException e) {
                         e.printStackTrace();
                         toast("Client " + client.getName() + " disconnected");
@@ -433,12 +435,14 @@ public class GameServer extends GameConnection {
                         i--;
                     }
                 }
+                myUser.loadResources(activity.getResources());
                 // Клиенты ответили
                 inUI(new Runnable() {
                     @Override
                     public void run() {
                         dialog.dismiss();
-                        GameView gameView = new GameView(activity, GameServer.this);
+                        ServerGameHolder gameHolder = new ServerGameHolder(GameServer.this, activity);
+                        GameView gameView = new GameView(gameHolder);
                         View v = LayoutInflater.from(activity).inflate(R.layout.play_screen, null);
                         ((ViewGroup)v.findViewById(R.id.game_map_layout)).addView(gameView);
                         activity.setContentView(v);
