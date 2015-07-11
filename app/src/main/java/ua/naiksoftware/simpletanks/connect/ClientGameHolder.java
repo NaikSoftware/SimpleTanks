@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import ua.naiksoftware.simpletanks.Log;
+import ua.naiksoftware.simpletanks.R;
 import ua.naiksoftware.simpletanks.User;
 
 /**
@@ -26,6 +27,7 @@ public class ClientGameHolder implements GameHolder {
     private final DataOutputStream output;
     private final DataInputStream input;
     private final float scale;
+    private int click = NO_CLICK;
 
     public ClientGameHolder(GameClient gameClient, Activity activity, int serverTileSize) {
         this.gameClient = gameClient;
@@ -38,28 +40,47 @@ public class ClientGameHolder implements GameHolder {
             usersMap.put(user.getId(), user);
         }
         usersMap.put(myUser.getId(), myUser);
-        scale = gameClient.getGameMap().TILE_SIZE / (float)serverTileSize;
+        scale = gameClient.getGameMap().TILE_SIZE / (float) serverTileSize;
     }
 
     @Override
-    public int processActions(int click) {
+    public void onViewCreated() {
+
+    }
+
+    @Override
+    public void processActions(int deltaTime) {
         User user;
-        for (int i = 0, size = users.size() + 1; i < size; i++) {
-            try {
-                user = usersMap.get(input.readLong());
-                user.setX(input.readInt() * scale);
-                user.setY(input.readInt() * scale);
-            } catch (IOException e) {
-                e.printStackTrace();
-                gameClient.stop();
-                break;
+        try {
+            while (true) {
+                switch (input.readInt()) {
+                    case GameServer.SEND_DATA:
+                        for (int i = 0, size = users.size() + 1; i < size; i++) {
+                            user = usersMap.get(input.readLong());
+                            user.setX(input.readInt() * scale);
+                            user.setY(input.readInt() * scale);
+                            user.setDirection(input.readInt());
+                        }
+                        break;
+                    case GameServer.REMOVE_USER:
+                        user = usersMap.get(input.readLong());
+                        users.remove(user);
+                        String msg = activity.getString(R.string.user) + " " + user.getName() + " " + activity.getString(R.string.disconnected);
+                        gameClient.toast(msg);
+                        break;
+                    case GameServer.CODE_OK:
+                        int serverDeltaTime = input.readInt();
+                        return;
+                }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+            gameClient.stop();
         }
-        return 0;
     }
 
     @Override
-    public void drawObjects(Canvas canvas, int deltaTime) {
+    public void drawObjects(Canvas canvas) {
         for (int i = 0, size = users.size(); i < size; i++) {
             users.get(i).draw(canvas);
         }

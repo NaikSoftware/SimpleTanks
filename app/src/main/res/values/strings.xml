@@ -20,6 +20,8 @@
 	<string name="network_ip_not_detected">Network IP not detected</string>
 	<string name="server_stopped">Server stopped</string>
 	<string name="owner_server">owner server</string>
+	<string name="game_map">Game map</string>
+	<string name="have_not_clients">Have not clients</string>
 	
 	<!-- Client -->
 	<string name="client_settings">Settings</string>
@@ -38,6 +40,9 @@
 	<string name="connect_error">Connection failed</string>
 	<string name="connecting_to">Connecting to</string>
 	<string name="error_loading_map">Error loading game map</string>
+	<string name="error_reading_map_list">Error reading map list</string>
+	<string name="user">User</string>
+	<string name="disconnected">disconnected</string>
 
 	<!-- Game -->
 

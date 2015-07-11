@@ -15,10 +15,12 @@ import ua.naiksoftware.simpletanks.res.ResKeeper;
  */
 public class User {
 
-    public static final int LEFT = 1;
-    public static final int RIGHT = 2;
-    public static final int DOWN = 3;
-    public static final int UP = 4;
+    public static final int LEFT = 0;
+    public static final int RIGHT = 1;
+    public static final int DOWN = 2;
+    public static final int UP = 3;
+    public static final int FIRE = 5;
+    public static final int MINE = 6;
 
     private String name;
     private String ip;
@@ -27,9 +29,11 @@ public class User {
     private int direction;
     private int x;
     private int y;
+    private final Bitmap[] bitmapArray = new Bitmap[4];
     private Bitmap bitmap;
     private static final Paint paint = new Paint();
     private final int type;
+    private float speed;
 
     public User(long id, int type) {
         this.id = id;
@@ -41,6 +45,7 @@ public class User {
         id = System.currentTimeMillis() + new Random().nextInt(100);
         this.ip = ip;
         this.type = type;
+        direction = UP;
     }
 
     public User(String name, long id, String ip, int type) {
@@ -48,12 +53,18 @@ public class User {
         this.id = id;
         this.ip = ip;
         this.type = type;
+        direction = UP;
     }
 
     public void loadResources(Resources res) {
         switch (type) {
-            case 1: bitmap = ResKeeper.getImage(ImageID.TANK_1, res);
+            case 1:
+                bitmapArray[3] = ResKeeper.getImage(ImageID.TANK_1_UP, res);
+                bitmapArray[2] = ResKeeper.getImage(ImageID.TANK_1_DOWN, res);
+                bitmapArray[1] = ResKeeper.getImage(ImageID.TANK_1_RIGHT, res);
+                bitmapArray[0] = ResKeeper.getImage(ImageID.TANK_1_LEFT, res);
         }
+        bitmap = bitmapArray[direction];
     }
 
     public long getId() {
@@ -81,11 +92,35 @@ public class User {
     }
 
     public void draw(Canvas canvas) {
+        moved = false;
         canvas.drawBitmap(bitmap, x, y, paint);
     }
 
     public void setMove(int click) {
+        moved = true;
+        setDirection(click);
+    }
 
+    public void move(int click, int deltaTime) {
+        setMove(click);
+        int diff = (int)(speed * deltaTime);
+        switch (click) {
+            case UP: y -= diff; break;
+            case DOWN: y += diff; break;
+            case LEFT: x -= diff; break;
+            case RIGHT: x += diff; break;
+        }
+    }
+
+    public void setDirection(int direction) {
+        if (direction != this.direction) {
+            this.direction = direction;
+            bitmap = bitmapArray[direction];
+        }
+    }
+
+    public int getDirection() {
+        return direction;
     }
 
     public int getX() {
@@ -102,6 +137,14 @@ public class User {
 
     public void setY(float y) {
         this.y = (int)y;
+    }
+
+    public float getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(float speed) {
+        this.speed = speed;
     }
 
     @Override

@@ -155,7 +155,7 @@ public abstract class GameConnection {
         }
     };
 
-    protected void toast(String str) {
+    public void toast(String str) {
         Bundle b = new Bundle();
         b.putString(MSG_KEY, str);
         Message msg = new Message();

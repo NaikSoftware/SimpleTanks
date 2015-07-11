@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ua.naiksoftware.simpletanks.R;
+import ua.naiksoftware.utils.BitmapUtil;
 
 /**
  * Created by Naik on 08.07.15.
@@ -23,7 +24,10 @@ public class ResKeeper {
         }
         switch (imageID) {
             case BRICK: bitmap = BitmapFactory.decodeResource(resources, R.drawable.brick); break;
-            case TANK_1: bitmap = BitmapFactory.decodeResource(resources, R.drawable.tank1); break;
+            case TANK_1_UP: bitmap = BitmapFactory.decodeResource(resources, R.drawable.tank1); break;
+            case TANK_1_DOWN: bitmap = BitmapUtil.reflect(getImage(ImageID.TANK_1_UP, resources), BitmapUtil.ReflectType.VERTICAL); break;
+            case TANK_1_LEFT: bitmap = BitmapUtil.rotate(getImage(ImageID.TANK_1_UP, resources), -90); break;
+            case TANK_1_RIGHT: bitmap = BitmapUtil.rotate(getImage(ImageID.TANK_1_UP, resources), 90); break;
         }
         if (bitmap != null) {
             cacheImages.put(imageID, bitmap);

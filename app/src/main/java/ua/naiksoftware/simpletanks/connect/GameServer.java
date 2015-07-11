@@ -29,6 +29,7 @@ public class GameServer extends GameConnection {
     public static final int ADD_USER = 5;
     public static final int REMOVE_USER = 6;
     public static final int PING_CLIENT = 7;
+    public static final int SEND_DATA = 8;
 
     public static final int CODE_ERROR = 8;
     public static final int CODE_OK = 9;
@@ -42,8 +43,8 @@ public class GameServer extends GameConnection {
     private ArrayList<Client> clientsList; // Клиенты сервера
     private final Object lock = new Object();
     private User myUser; // Игрок, запускающий сервер
-    private int mapID = 2; // 2 - hardcoded test map
     private GameMap gameMap;
+    private String pathToMap;
 
     public GameServer(Activity activity) {
         super(activity);
@@ -53,6 +54,17 @@ public class GameServer extends GameConnection {
     @Override
     public void start() {
         final View view = LayoutInflater.from(activity).inflate(R.layout.server_dialog_layout, null);
+        final Spinner mapsSpinner = (Spinner)view.findViewById(R.id.map_spinner);
+        final Map<String, String> maps;
+        try {
+            maps =  GameMap.readMapsList(activity.getResources());
+            mapsSpinner.setAdapter(new ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1,
+                   maps.keySet().toArray(new String[maps.keySet().size()])));
+        } catch (IOException e) {
+            e.printStackTrace();
+            toast(R.string.error_reading_map_list);
+            return;
+        }
         new AlertDialog.Builder(activity)
                 .setView(view)
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
@@ -70,7 +82,8 @@ public class GameServer extends GameConnection {
                                 public void run() {
                                     InputStream inputStream = null;
                                     try {
-                                        inputStream = activity.getAssets().open(GameMap.assetsPathFromID(mapID));
+                                        pathToMap = maps.get(mapsSpinner.getSelectedItem());
+                                        inputStream = activity.getAssets().open(pathToMap);
                                         gameMap = new GameMap(inputStream, activity.getResources());
                                     } catch (IOException e) {
                                         Log.e(TAG, "Error loading game map", e);
@@ -108,7 +121,11 @@ public class GameServer extends GameConnection {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        server.acceptClients();
+                        if (clientsList.size() < 1) {
+                            toast(R.string.have_not_clients);
+                            stop();
+                            return;
+                        }
                         startPlay();
                     }
                 })
@@ -249,6 +266,8 @@ public class GameServer extends GameConnection {
                 clientsList.clear();
                 while (true) {
                     Socket clientSock = serverSocket.accept();
+                    clientSock.setSoTimeout(10000);
+                    clientSock.setSoLinger(true, 0);
                     int code = clientSock.getInputStream().read();
                     toast("Client code received " + code);
                     if (code == END_WAITING // Принимаем сообщение конца ожидания только от себя, на всякий случай
@@ -324,10 +343,10 @@ public class GameServer extends GameConnection {
                 @Override
                 public void run() {
                     try {
-                        pingClientThread.interrupt();
-                        pingClientThread = null;
                         stopMulticastReceiving();
                         stopMDNS();
+                        pingClientThread.interrupt();
+                        pingClientThread = null;
                         Socket s = new Socket(myIp, PORT);
                         s.getOutputStream().write(END_WAITING);
                         s.getOutputStream().flush();
@@ -369,8 +388,7 @@ public class GameServer extends GameConnection {
             setName(in.readUTF());
             setId(in.readLong());
             setIp(socket.getInetAddress().getHostAddress());
-            out.writeUTF(gameMap.name); // Отсылаем карту сервера
-            out.writeInt(mapID);
+            out.writeUTF(pathToMap); // Отсылаем карту сервера
         }
 
         public DataOutputStream getOut() {
@@ -419,6 +437,7 @@ public class GameServer extends GameConnection {
         inBG(new Runnable() {
             @Override
             public void run() {
+                server.acceptClients();
                 for (int i = 0; i < clientsList.size(); i++) {
                     Client client = clientsList.get(i);
                     try {

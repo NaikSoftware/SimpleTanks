@@ -1,13 +1,19 @@
 package ua.naiksoftware.simpletanks;
 
+import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.ArrayMap;
 import android.util.Log;
 
 import java.io.DataInputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import ua.naiksoftware.simpletanks.res.ImageID;
 import ua.naiksoftware.simpletanks.res.ResKeeper;
@@ -60,11 +66,16 @@ public class GameMap {
         mapY = y;
     }
 
-    public static String assetsPathFromID(int id) {
-        switch (id) {
-            case 1: return "simple.map";
-            case 2: return "small_test.map";
+    public static Map<String, String> readMapsList(Resources res) throws IOException {
+        Map<String,String> maps = new HashMap<String, String>();
+        AssetManager assets = res.getAssets();
+        for (String path : assets.list("")) {
+            try {
+                maps.put(new DataInputStream(assets.open(path)).readUTF(), path);
+            } catch (IOException e) {
+                // ignore for skip built-in folders (images, sounds, webkit) ...
+            }
         }
-        throw new IllegalArgumentException("GameMap with ID " + id + " not exists");
+        return maps;
     }
 }

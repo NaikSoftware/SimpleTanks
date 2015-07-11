@@ -12,6 +12,7 @@ import ua.naiksoftware.simpletanks.connect.GameClient;
 import ua.naiksoftware.simpletanks.connect.GameConnection;
 import ua.naiksoftware.simpletanks.connect.GameMode;
 import ua.naiksoftware.simpletanks.connect.GameServer;
+import ua.naiksoftware.simpletanks.res.ResKeeper;
 
 public class MainActivity extends Activity {
 
@@ -60,6 +61,7 @@ public class MainActivity extends Activity {
         if (gameConn != null) {
             gameConn.stop();
         }
+        ResKeeper.clearImageCache();
         Log.d(TAG, "___DESTROYED___");
         super.onDestroy();
     }

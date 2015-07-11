@@ -4,6 +4,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import ua.naiksoftware.simpletanks.connect.GameHolder;
+import ua.naiksoftware.simpletanks.res.ResKeeper;
 
 /**
  * Created by Naik on 08.07.15.
@@ -11,15 +12,18 @@ import ua.naiksoftware.simpletanks.connect.GameHolder;
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private GameThread gameThread;
+    private GameHolder gameHolder;
 
     public GameView(GameHolder gameHolder) {
         super(gameHolder.getActivity());
         gameThread = new GameThread(getHolder(), gameHolder);
         getHolder().addCallback(this);
+        this.gameHolder = gameHolder;
     }
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
+        gameHolder.onViewCreated();
         gameThread.start();
     }
 

@@ -19,8 +19,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import ua.naiksoftware.simpletanks.GameMap;
@@ -40,7 +42,6 @@ public class GameClient extends GameConnection implements ServiceListener {
     private Server server;
     private User myUser;
     private ArrayList<User> users = new ArrayList<User>(2);
-    private int mapID;
     private GameMap gameMap;
     private DataOutputStream output;
     private DataInputStream input;
@@ -279,13 +280,19 @@ public class GameClient extends GameConnection implements ServiceListener {
                         out.writeUTF(myUser.getName());
                         out.writeLong(myUser.getId());
                         in = new DataInputStream(socket.getInputStream());
-                        final String map = in.readUTF();
-                        mapID = in.readInt();
+                        final String pathToMap = in.readUTF();
+                        try {
+                            gameMap = new GameMap(activity.getAssets().open(pathToMap), activity.getResources());
+                        } catch (IOException e) {
+                            toast(activity.getString(R.string.error_loading_map) + " " + pathToMap);
+                            stopWaiting(dialog, true);
+                            return;
+                        }
                         inUI(new Runnable() {
                             @Override
                             public void run() {
                                 ((TextView) v.findViewById(R.id.client_map_on_server))
-                                        .setText(activity.getString(R.string.map) + ": " + map);
+                                        .setText(activity.getString(R.string.map) + ": " + gameMap.name);
                             }
                         });
                         int response;
@@ -366,19 +373,7 @@ public class GameClient extends GameConnection implements ServiceListener {
                 // Подготовка ресурсов
                 input = server.in;
                 output = server.out;
-                try {
-                    gameMap = new GameMap(activity.getAssets().open(GameMap.assetsPathFromID(mapID)), activity.getResources());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    try {
-                        output.writeInt(GameServer.CODE_ERROR);
-                        output.flush();
-                        stop();
-                    } catch (IOException e2) {
-                        Log.e(TAG, "Error in sending error code to server", e2);
-                    }
-                    return;
-                }
+                // Если что-то пойдет не так, отсылаем CODE_ERROR
                 for (User user : users) {
                     user.loadResources(activity.getResources());
                 }
