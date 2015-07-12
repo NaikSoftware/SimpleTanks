@@ -4,13 +4,11 @@ import android.app.Activity;
 import android.graphics.Canvas;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageButton;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 import ua.naiksoftware.simpletanks.GameMap;
 import ua.naiksoftware.simpletanks.Log;
@@ -145,6 +143,7 @@ public class ServerGameHolder implements GameHolder {
             case User.LEFT:
             case User.RIGHT:
                 user.move(click, deltaTime);
+                gameMap.intersectWithUser(user);
         }
     }
 

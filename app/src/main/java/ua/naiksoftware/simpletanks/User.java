@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 
 import java.util.Random;
 
@@ -34,6 +35,9 @@ public class User {
     private static final Paint paint = new Paint();
     private final int type;
     private float speed;
+    private final Rect boundsRect = new Rect();
+    private int transparentWidth;
+    private int spriteSize;
 
     public User(long id, int type) {
         this.id = id;
@@ -65,6 +69,8 @@ public class User {
                 bitmapArray[0] = ResKeeper.getImage(ImageID.TANK_1_LEFT, res);
         }
         bitmap = bitmapArray[direction];
+        spriteSize = bitmap.getWidth();
+        transparentWidth = spriteSize / 8;
     }
 
     public long getId() {
@@ -121,6 +127,15 @@ public class User {
 
     public int getDirection() {
         return direction;
+    }
+
+    public Rect getBoundsRect() {
+        if (direction == UP || direction == DOWN) {
+            boundsRect.set(x + transparentWidth, y, x + spriteSize - transparentWidth, y + spriteSize);
+        } else {
+            boundsRect.set(x, y + transparentWidth, x + spriteSize, y + spriteSize - transparentWidth);
+        }
+        return boundsRect;
     }
 
     public int getX() {
