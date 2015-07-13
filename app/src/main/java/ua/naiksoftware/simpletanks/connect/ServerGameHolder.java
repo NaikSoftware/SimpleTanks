@@ -2,6 +2,7 @@ package ua.naiksoftware.simpletanks.connect;
 
 import android.app.Activity;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -72,15 +73,23 @@ public class ServerGameHolder implements GameHolder {
     @Override
     public void processActions(int deltaTime) {
         int size = clients.size();
-        // Получаем изменения от клиентов (нажатия на кнопки)
-        // Обновляем мир
+        // Получаем изменения от клиентов (нажатия на кнопки) и сразу обновляем мир
+        DataOutputStream out;
+        GameServer.Client client;
+        User user;
         for (int i = 0; i < size; i++) {
-            //processUser(clients.get(i), userClick);
+            client = clients.get(i);
+            try {
+                int userClick = client.in.readInt();
+                processUser(client, userClick, deltaTime);
+            } catch (IOException e) {
+                e.printStackTrace();
+                removeUser(client);
+                size--;
+            }
         }
         processUser(myUser, click, deltaTime);
         // Рассылаем изменения клиентам (координаты юзеров, события)
-        DataOutputStream out;
-        User user;
         for (int i = 0; i < size; i++) {
             out = clients.get(i).out;
             try {
@@ -99,23 +108,8 @@ public class ServerGameHolder implements GameHolder {
                 out.writeInt(user.getDirection());
             } catch (IOException e) {
                 e.printStackTrace();
-                user = clients.get(i);
-                String msg = activity.getString(R.string.user) + " " + user.getName() + " " + activity.getString(R.string.disconnected);
-                Log.e(TAG, msg);
-                gameServer.toast(msg);
-                clients.remove(user);
+                removeUser(clients.get(i));
                 size--;
-                // Уведомляем остальных клиентов об отсоединении юзера
-                for (int j = 0; j < size; j++) {
-                    out = clients.get(j).out;
-                    try {
-                        out.writeInt(GameServer.REMOVE_USER);
-                        out.writeLong(user.getId());
-                    } catch (IOException e2) {
-                        e2.printStackTrace();
-                        gameServer.toast("Remove user request error " + e.getMessage());
-                    }
-                }
             }
         }
         // Отсылаем статус что итерация выполнена и deltaTime
@@ -144,6 +138,45 @@ public class ServerGameHolder implements GameHolder {
             case User.RIGHT:
                 user.move(click, deltaTime);
                 gameMap.intersectWithUser(user);
+                User user2;
+                for (int i = 0, size = clients.size(); i < size; i++) {
+                    user2 = clients.get(i);
+                    if (user != user2) intersectUser(user, user2, click);
+                }
+                if (user != myUser) intersectUser(user, myUser, click);
+                break;
+        }
+    }
+
+    private void intersectUser(User user, User user2, int click) {
+        Rect user2Bounds = user2.getBoundsRect();
+        Rect userBounds = user.getBoundsRect();
+        if (Rect.intersects(userBounds, user2Bounds)) {
+            switch (click) {
+                case User.UP: user.setY(user2Bounds.bottom); break;
+                case User.DOWN: user.setY(user2Bounds.top - userBounds.height()); break;
+                case User.LEFT: user.setX(user2Bounds.right); break;
+                case User.RIGHT: user.setX(user2Bounds.left - userBounds.width()); break;
+            }
+        }
+    }
+
+    private void removeUser(User user) {
+        String msg = activity.getString(R.string.user) + " " + user.getName() + " " + activity.getString(R.string.disconnected);
+        Log.e(TAG, msg);
+        gameServer.toast(msg);
+        clients.remove(user);
+        int size = clients.size();
+        // Уведомляем остальных клиентов об отсоединении юзера
+        for (int i = 0; i < size; i++) {
+            DataOutputStream out = clients.get(i).out;
+            try {
+                out.writeInt(GameServer.REMOVE_USER);
+                out.writeLong(user.getId());
+            } catch (IOException e) {
+                e.printStackTrace();
+                gameServer.toast("Remove user request error " + e.getMessage());
+            }
         }
     }
 

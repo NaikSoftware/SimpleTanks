@@ -2,6 +2,8 @@ package ua.naiksoftware.simpletanks.connect;
 
 import android.app.Activity;
 import android.graphics.Canvas;
+import android.view.MotionEvent;
+import android.view.View;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -45,13 +47,37 @@ public class ClientGameHolder implements GameHolder {
 
     @Override
     public void onViewCreated() {
-
+        final View.OnTouchListener listener = new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                    case MotionEvent.ACTION_DOWN:
+                        switch (v.getId()) {
+                            case R.id.btnUp: click = User.UP; break;
+                            case R.id.btnDown: click = User.DOWN; break;
+                            case R.id.btnLeft: click = User.LEFT; break;
+                            case R.id.btnRight: click = User.RIGHT; break;
+                        }
+                        break;
+                    case MotionEvent.ACTION_CANCEL:
+                    case MotionEvent.ACTION_UP:
+                        click = NO_CLICK;
+                }
+                return false;
+            }
+        };
+        (activity.findViewById(R.id.btnUp)).setOnTouchListener(listener);
+        (activity.findViewById(R.id.btnDown)).setOnTouchListener(listener);
+        (activity.findViewById(R.id.btnLeft)).setOnTouchListener(listener);
+        (activity.findViewById(R.id.btnRight)).setOnTouchListener(listener);
+        (activity.findViewById(R.id.btnFire)).setOnTouchListener(listener);
     }
 
     @Override
     public void processActions(int deltaTime) {
         User user;
         try {
+            output.writeInt(click);
             while (true) {
                 switch (input.readInt()) {
                     case GameServer.SEND_DATA:

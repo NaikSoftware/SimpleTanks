@@ -26,7 +26,6 @@ public class User {
     private String name;
     private String ip;
     private long id;
-    private boolean moved;
     private int direction;
     private int x;
     private int y;
@@ -98,17 +97,10 @@ public class User {
     }
 
     public void draw(Canvas canvas) {
-        moved = false;
         canvas.drawBitmap(bitmap, x, y, paint);
     }
 
-    public void setMove(int click) {
-        moved = true;
-        setDirection(click);
-    }
-
     public void move(int click, int deltaTime) {
-        setMove(click);
         int diff = (int)(speed * deltaTime);
         switch (click) {
             case UP: y -= diff; break;
@@ -116,35 +108,36 @@ public class User {
             case LEFT: x -= diff; break;
             case RIGHT: x += diff; break;
         }
-    }
-
-    public void setDirection(int direction) {
-        if (direction != this.direction) {
-            this.direction = direction;
-            bitmap = bitmapArray[direction];
-            switch (direction) {
+        if (click != direction) {
+            switch (click) {
                 case User.LEFT:
-                    if (direction != User.RIGHT) {
+                    if (this.direction != User.RIGHT) {
                         x -= transparentWidth;
                     }
                     break;
                 case User.RIGHT:
-                    if (direction != User.LEFT) {
+                    if (this.direction != User.LEFT) {
                         x += transparentWidth;
                     }
                     break;
                 case User.DOWN:
-                    if (direction != User.UP) {
+                    if (this.direction != User.UP) {
                         y += transparentWidth;
                     }
                     break;
                 case User.UP:
-                    if (direction != User.DOWN) {
+                    if (this.direction != User.DOWN) {
                         y -= transparentWidth;
                     }
                     break;
             }
+            setDirection(click);
         }
+    }
+
+    public void setDirection(int direction) {
+        bitmap = bitmapArray[direction];
+        this.direction = direction;
     }
 
     public int getDirection() {
