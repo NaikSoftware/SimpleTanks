@@ -70,7 +70,7 @@ public class User {
         }
         bitmap = bitmapArray[direction];
         spriteSize = bitmap.getWidth();
-        transparentWidth = spriteSize / 8;
+        transparentWidth = spriteSize / 6;
     }
 
     public long getId() {
@@ -122,6 +122,28 @@ public class User {
         if (direction != this.direction) {
             this.direction = direction;
             bitmap = bitmapArray[direction];
+            switch (direction) {
+                case User.LEFT:
+                    if (direction != User.RIGHT) {
+                        x -= transparentWidth;
+                    }
+                    break;
+                case User.RIGHT:
+                    if (direction != User.LEFT) {
+                        x += transparentWidth;
+                    }
+                    break;
+                case User.DOWN:
+                    if (direction != User.UP) {
+                        y += transparentWidth;
+                    }
+                    break;
+                case User.UP:
+                    if (direction != User.DOWN) {
+                        y -= transparentWidth;
+                    }
+                    break;
+            }
         }
     }
 

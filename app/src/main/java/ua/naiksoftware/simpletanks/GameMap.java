@@ -38,11 +38,18 @@ public class GameMap {
         name = dis.readUTF();
         mapW = dis.readInt();
         mapH = dis.readInt();
-        tiles = new Tile[mapW][mapH];
-        for (int i = 0; i < mapW; i++) {
-            for (int j = 0; j < mapH; j++) {
-                switch (dis.readByte()) {
-                    case 1: tiles[i][j] = new Tile(ImageID.BRICK, res);
+        /* Размер нужен больше на "1" для невыхода за границы массива при просмотре следующих клеток
+         * Иначе пришлось бы добавить лишних проверок в основной цикл */
+        tiles = new Tile[mapW + 1][mapH + 1];
+        for (int i = 0; i < mapW + 1; i++) {
+            for (int j = 0; j < mapH + 1; j++) {
+                if (i == mapW || j == mapH) {
+                    tiles[i][j] = new Tile(ImageID.BRICK, res);
+                } else {
+                    switch (dis.readByte()) {
+                        case 1:
+                            tiles[i][j] = new Tile(ImageID.BRICK, res);
+                    }
                 }
             }
         }
@@ -86,10 +93,20 @@ public class GameMap {
     public void intersectWithUser(User user) {
         Rect userRect = user.getBoundsRect();
 
-        if (userRect.top < 0) user.setY(0);
-        else if (userRect.bottom > mapHpix) user.setY(mapHpix - userRect.height());
-        if (userRect.left < 0) user.setX(0);
-        else if (userRect.right > mapWpix) user.setX(mapWpix - userRect.width());
+        if (userRect.top < 0) {
+            user.setY(0);
+            return;
+        } else if (userRect.bottom > mapHpix) {
+            user.setY(mapHpix - userRect.height());
+            return;
+        }
+        if (userRect.left < 0) {
+            user.setX(0);
+            return;
+        } else if (userRect.right > mapWpix) {
+            user.setX(mapWpix - userRect.width());
+            return;
+        }
 
         if (tiles[userRect.right / TILE_SIZE][userRect.top / TILE_SIZE] != null){
             backUser(user, userRect); return;
@@ -108,13 +125,23 @@ public class GameMap {
     private void backUser(User user, Rect userRect) {
         switch (user.getDirection()) {
             case User.RIGHT:
-                user.setX(userRect.left - (userRect.right % TILE_SIZE)); break;
+                user.setX(userRect.left - (userRect.right % TILE_SIZE));
+                break;
             case User.LEFT:
-                user.setX(userRect.left + TILE_SIZE - (userRect.left % TILE_SIZE)); break;
+                int dx = userRect.left % TILE_SIZE;
+                if (dx != 0) {
+                    user.setX(userRect.left + TILE_SIZE - dx);
+                }
+                break;
             case User.UP:
-                user.setY(userRect.top + TILE_SIZE - (userRect.top % TILE_SIZE)); break;
+                int dy = userRect.top % TILE_SIZE;
+                if (dy != 0) {
+                    user.setY(userRect.top + TILE_SIZE - (userRect.top % TILE_SIZE));
+                }
+                break;
             case User.DOWN:
-                user.setY(userRect.top - (userRect.bottom % TILE_SIZE)); break;
+                user.setY(userRect.top - (userRect.bottom % TILE_SIZE));
+                break;
         }
     }
 
