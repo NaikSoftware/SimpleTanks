@@ -14,10 +14,11 @@ public interface GameHolder {
 
     int NO_CLICK = -1;
 
-    void onViewCreated();
-    void processActions(int deltaTime);
+    void startGame();
     Activity getActivity();
+    void onClick(int click);
     GameConnection getGameConnection();
-    void drawObjects(Canvas canvas);
+    void drawObjects(Canvas canvas, int deltaTime);
+	void stopGame();
 
 }

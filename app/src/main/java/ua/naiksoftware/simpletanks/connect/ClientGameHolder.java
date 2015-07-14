@@ -30,6 +30,7 @@ public class ClientGameHolder implements GameHolder {
     private final DataInputStream input;
     private final float scale;
     private int click = NO_CLICK;
+    private ConnectionThread connectionThread;
 
     public ClientGameHolder(GameClient gameClient, Activity activity, int serverTileSize) {
         this.gameClient = gameClient;
@@ -42,75 +43,82 @@ public class ClientGameHolder implements GameHolder {
             usersMap.put(user.getId(), user);
         }
         usersMap.put(myUser.getId(), myUser);
-        scale = gameClient.getGameMap().TILE_SIZE / (float) serverTileSize;
+        int tileSize = gameClient.getGameMap().TILE_SIZE;
+        scale = tileSize / (float) serverTileSize;
+        for (User user : users) {
+            user.setSpeed(tileSize / 200f);
+        }
+        myUser.setSpeed(tileSize / 200f);
+        connectionThread = new ConnectionThread();
     }
 
     @Override
-    public void onViewCreated() {
-        final View.OnTouchListener listener = new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction() & MotionEvent.ACTION_MASK) {
-                    case MotionEvent.ACTION_DOWN:
-                        switch (v.getId()) {
-                            case R.id.btnUp: click = User.UP; break;
-                            case R.id.btnDown: click = User.DOWN; break;
-                            case R.id.btnLeft: click = User.LEFT; break;
-                            case R.id.btnRight: click = User.RIGHT; break;
-                        }
-                        break;
-                    case MotionEvent.ACTION_CANCEL:
-                    case MotionEvent.ACTION_UP:
-                        click = NO_CLICK;
-                }
-                return false;
-            }
-        };
-        (activity.findViewById(R.id.btnUp)).setOnTouchListener(listener);
-        (activity.findViewById(R.id.btnDown)).setOnTouchListener(listener);
-        (activity.findViewById(R.id.btnLeft)).setOnTouchListener(listener);
-        (activity.findViewById(R.id.btnRight)).setOnTouchListener(listener);
-        (activity.findViewById(R.id.btnFire)).setOnTouchListener(listener);
+    public void startGame() {
+        connectionThread.start();
     }
 
     @Override
-    public void processActions(int deltaTime) {
+    public void onClick(int click) {
+        this.click = click;
+    }
+
+    @Override
+    public void drawObjects(Canvas canvas, int deltaTime) {
         User user;
-        try {
-            output.writeInt(click);
-            while (true) {
-                switch (input.readInt()) {
-                    case GameServer.SEND_DATA:
-                        for (int i = 0, size = users.size() + 1; i < size; i++) {
-                            user = usersMap.get(input.readLong());
-                            user.setX(input.readInt() * scale);
-                            user.setY(input.readInt() * scale);
-                            user.setDirection(input.readInt());
-                        }
-                        break;
-                    case GameServer.REMOVE_USER:
-                        user = usersMap.get(input.readLong());
-                        users.remove(user);
-                        String msg = activity.getString(R.string.user) + " " + user.getName() + " " + activity.getString(R.string.disconnected);
-                        gameClient.toast(msg);
-                        break;
-                    case GameServer.CODE_OK:
-                        int serverDeltaTime = input.readInt();
-                        return;
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            gameClient.stop();
+        for (int i = 0; i < users.size(); i++) {
+            user = users.get(i);
+            user.move(deltaTime);
+            user.draw(canvas);
         }
+        myUser.move(deltaTime);
+        myUser.draw(canvas);
     }
 
-    @Override
-    public void drawObjects(Canvas canvas) {
-        for (int i = 0, size = users.size(); i < size; i++) {
-            users.get(i).draw(canvas);
+    private class ConnectionThread extends Thread {
+
+        private boolean running;
+
+        @Override
+        public void run() {
+            try {
+                running = true;
+                User user;
+                boolean read;
+                while (running) {
+                    output.writeInt(click);
+                    read = true;
+                    while (read) {
+                        switch (input.readInt()) {
+                            case GameServer.SEND_DATA:
+                                for (int i = 0, size = users.size() + 1; i < size; i++) {
+                                    user = usersMap.get(input.readLong());
+                                    user.setX(input.readInt() * scale);
+                                    user.setY(input.readInt() * scale);
+                                    user.setMove(input.readInt());
+                                }
+                                break;
+                            case GameServer.REMOVE_USER:
+                                user = usersMap.get(input.readLong());
+                                users.remove(user);
+                                String msg = activity.getString(R.string.user) + " " + user.getName() + " " + activity.getString(R.string.disconnected);
+                                gameClient.toast(msg);
+                                break;
+                            case GameServer.CODE_OK:
+                                read = false;
+                                break;
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                gameClient.stop();
+            }
         }
-        myUser.draw(canvas);
+
+        public void stopRunning() {
+            running = false;
+            interrupt();
+        }
     }
 
     @Override
@@ -122,4 +130,9 @@ public class ClientGameHolder implements GameHolder {
     public GameConnection getGameConnection() {
         return gameClient;
     }
+
+	@Override
+	public void stopGame() {
+        connectionThread.stopRunning();
+	}
 }

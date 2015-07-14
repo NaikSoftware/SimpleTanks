@@ -32,7 +32,9 @@ public class ServerGameHolder implements GameHolder {
     private final User myUser;
     private final GameMap gameMap;
     private int click = NO_CLICK;
-
+	private ConnectionThread connectionThread;
+	private final Object lock = new Object();
+    
     public ServerGameHolder(GameServer gameServer, Activity activity) {
         this.gameServer = gameServer;
         this.activity = activity;
@@ -40,93 +42,101 @@ public class ServerGameHolder implements GameHolder {
         myUser = gameServer.getMyUser();
         this.gameMap = gameServer.getGameMap();
         initWorld();
+		connectionThread = new ConnectionThread();
     }
 
     @Override
-    public void onViewCreated() {
-        final View.OnTouchListener listener = new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                switch (event.getAction() & MotionEvent.ACTION_MASK) {
-                    case MotionEvent.ACTION_DOWN:
-                        switch (v.getId()) {
-                            case R.id.btnUp: click = User.UP; break;
-                            case R.id.btnDown: click = User.DOWN; break;
-                            case R.id.btnLeft: click = User.LEFT; break;
-                            case R.id.btnRight: click = User.RIGHT; break;
-                        }
-                        break;
-                    case MotionEvent.ACTION_CANCEL:
-                    case MotionEvent.ACTION_UP:
-                            click = NO_CLICK;
-                }
-                return false;
-            }
-        };
-        (activity.findViewById(R.id.btnUp)).setOnTouchListener(listener);
-        (activity.findViewById(R.id.btnDown)).setOnTouchListener(listener);
-        (activity.findViewById(R.id.btnLeft)).setOnTouchListener(listener);
-        (activity.findViewById(R.id.btnRight)).setOnTouchListener(listener);
-        (activity.findViewById(R.id.btnFire)).setOnTouchListener(listener);
+    public void startGame() {
+		connectionThread.start();
     }
 
     @Override
-    public void processActions(int deltaTime) {
-        int size = clients.size();
-        // Получаем изменения от клиентов (нажатия на кнопки) и сразу обновляем мир
-        DataOutputStream out;
-        GameServer.Client client;
+    public void onClick(int click) {
+        this.click = click;
+    }
+
+    @Override
+    public void drawObjects(Canvas canvas, int deltaTime) {
         User user;
-        for (int i = 0; i < size; i++) {
-            client = clients.get(i);
-            try {
-                int userClick = client.in.readInt();
-                processUser(client, userClick, deltaTime);
-            } catch (IOException e) {
-                e.printStackTrace();
-                removeUser(client);
-                size--;
-            }
+        for (int i = 0; i < clients.size(); i++) {
+            user = clients.get(i);
+            processUser(user, deltaTime);
+            user.draw(canvas);
         }
-        processUser(myUser, click, deltaTime);
-        // Рассылаем изменения клиентам (координаты юзеров, события)
-        for (int i = 0; i < size; i++) {
-            out = clients.get(i).out;
-            try {
-                out.writeInt(GameServer.SEND_DATA);
-                for (int j = 0; j < size; j++) {
-                    user = clients.get(j);
-                    out.writeLong(user.getId());
-                    out.writeInt(user.getX());
-                    out.writeInt(user.getY());
-                    out.writeInt(user.getDirection());
-                }
-                user = myUser;
-                out.writeLong(user.getId());
-                out.writeInt(user.getX());
-                out.writeInt(user.getY());
-                out.writeInt(user.getDirection());
-            } catch (IOException e) {
-                e.printStackTrace();
-                removeUser(clients.get(i));
-                size--;
-            }
-        }
-        // Отсылаем статус что итерация выполнена и deltaTime
-
-        for (int i = 0; i < size; i++) {
-            out = clients.get(i).out;
-            try {
-                out.writeInt(GameServer.CODE_OK);
-                out.writeInt(deltaTime);
-            } catch (IOException e) {
-                e.printStackTrace();
-                gameServer.toast("OK request to " + clients.get(i).getName() + " failed: " + e.getMessage());
-            }
-        }
+        processUser(myUser, deltaTime);
+        myUser.draw(canvas);
     }
 
-    private void processUser(User user, int click, int deltaTime) {
+	/* Поток для отсылки и приема данных */
+	private class ConnectionThread extends Thread {
+
+		private boolean running;
+
+		@Override
+		public void run() {
+			running = true;
+            int size = clients.size();
+            DataOutputStream out;
+            GameServer.Client client;
+            User user;
+			while (running) {
+                // Получаем изменения от клиентов (нажатия на кнопки) и сразу обновляем мир
+                for (int i = 0; i < size; i++) {
+                    client = clients.get(i);
+                    try {
+                        int userClick = client.in.readInt();
+                        client.setMove(userClick);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        removeUser(client);
+                        size--;
+                    }
+                }
+                myUser.setMove(click);
+                // Рассылаем изменения клиентам (координаты юзеров, события)
+                for (int i = 0; i < size; i++) {
+                    out = clients.get(i).out;
+                    try {
+                        out.writeInt(GameServer.SEND_DATA);
+                        for (int j = 0; j < size; j++) {
+                            user = clients.get(j);
+                            out.writeLong(user.getId());
+                            out.writeInt(user.getX());
+                            out.writeInt(user.getY());
+                            out.writeInt(user.getMove());
+                        }
+                        user = myUser;
+                        out.writeLong(user.getId());
+                        out.writeInt(user.getX());
+                        out.writeInt(user.getY());
+                        out.writeInt(user.getMove());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        removeUser(clients.get(i));
+                        size--;
+                    }
+                }
+                // Отсылаем статус что итерация выполнена и deltaTime
+
+                for (int i = 0; i < size; i++) {
+                    out = clients.get(i).out;
+                    try {
+                        out.writeInt(GameServer.CODE_OK);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        gameServer.toast("OK request to " + clients.get(i).getName() + " failed: " + e.getMessage());
+                    }
+                }
+			}
+		}
+
+		public void stopRunning() {
+			running = false;
+			interrupt();
+		}
+	}
+
+    private void processUser(User user, int deltaTime) {
         switch (click) {
             case User.FIRE:
                 break;
@@ -136,23 +146,25 @@ public class ServerGameHolder implements GameHolder {
             case User.DOWN:
             case User.LEFT:
             case User.RIGHT:
-                user.move(click, deltaTime);
-                gameMap.intersectWithUser(user);
-                User user2;
-                for (int i = 0, size = clients.size(); i < size; i++) {
-                    user2 = clients.get(i);
-                    if (user != user2) intersectUser(user, user2, click);
+                if (user.getMove() != NO_CLICK) {
+                    user.move(deltaTime);
+                    gameMap.intersectWithUser(user);
+                    User user2;
+                    for (int i = 0; i < clients.size(); i++) {
+                        user2 = clients.get(i);
+                        if (user != user2) intersectUser(user, user2);
+                    }
+                    if (user != myUser) intersectUser(user, myUser);
                 }
-                if (user != myUser) intersectUser(user, myUser, click);
                 break;
         }
     }
 
-    private void intersectUser(User user, User user2, int click) {
+    private void intersectUser(User user, User user2) {
         Rect user2Bounds = user2.getBoundsRect();
         Rect userBounds = user.getBoundsRect();
         if (Rect.intersects(userBounds, user2Bounds)) {
-            switch (click) {
+            switch (user.getMove()) {
                 case User.UP: user.setY(user2Bounds.bottom); break;
                 case User.DOWN: user.setY(user2Bounds.top - userBounds.height()); break;
                 case User.LEFT: user.setX(user2Bounds.right); break;
@@ -178,14 +190,6 @@ public class ServerGameHolder implements GameHolder {
                 gameServer.toast("Remove user request error " + e.getMessage());
             }
         }
-    }
-
-    @Override
-    public void drawObjects(Canvas canvas) {
-        for (int i = 0, size = clients.size(); i < size; i++) {
-            clients.get(i).draw(canvas);
-        }
-        myUser.draw(canvas);
     }
 
     @Override
@@ -232,4 +236,9 @@ public class ServerGameHolder implements GameHolder {
             break;
         }
     }
+
+	@Override
+	public void stopGame() {
+		connectionThread.stopRunning();
+	}
 }

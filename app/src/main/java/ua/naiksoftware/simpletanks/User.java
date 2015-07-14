@@ -10,6 +10,7 @@ import java.util.Random;
 
 import ua.naiksoftware.simpletanks.res.ImageID;
 import ua.naiksoftware.simpletanks.res.ResKeeper;
+import ua.naiksoftware.simpletanks.connect.*;
 
 /**
  * Created by Naik on 07.07.15.
@@ -22,7 +23,7 @@ public class User {
     public static final int UP = 3;
     public static final int FIRE = 5;
     public static final int MINE = 6;
-
+	
     private String name;
     private String ip;
     private long id;
@@ -37,6 +38,7 @@ public class User {
     private final Rect boundsRect = new Rect();
     private int transparentWidth;
     private int spriteSize;
+	private int move = GameHolder.NO_CLICK;
 
     public User(long id, int type) {
         this.id = id;
@@ -100,14 +102,20 @@ public class User {
         canvas.drawBitmap(bitmap, x, y, paint);
     }
 
-    public void move(int click, int deltaTime) {
+    public void move(int deltaTime) {
+        if (move == GameHolder.NO_CLICK) return;
         int diff = (int)(speed * deltaTime);
-        switch (click) {
+        switch (direction) {
             case UP: y -= diff; break;
             case DOWN: y += diff; break;
             case LEFT: x -= diff; break;
             case RIGHT: x += diff; break;
         }
+    }
+
+    public void setMove(int click) {
+        this.move = click;
+        if (click == GameHolder.NO_CLICK) return;
         if (click != direction) {
             switch (click) {
                 case User.LEFT:
@@ -133,6 +141,10 @@ public class User {
             }
             setDirection(click);
         }
+    }
+
+    public int getMove() {
+        return move;
     }
 
     public void setDirection(int direction) {

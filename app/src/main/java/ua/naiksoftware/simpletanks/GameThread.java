@@ -3,7 +3,9 @@ package ua.naiksoftware.simpletanks;
 import android.app.Activity;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
+import android.view.View;
 
 import ua.naiksoftware.simpletanks.connect.GameConnection;
 import ua.naiksoftware.simpletanks.connect.GameHolder;
@@ -22,12 +24,41 @@ public class GameThread extends Thread {
     private GameHolder gameHolder;
     private GameMap gameMap;
 
-    public GameThread(SurfaceHolder surfaceHolder, GameHolder gameHolder) {
+    static {
+        FPS_Paint.setTextSize(23);
+    }
+
+    public GameThread(SurfaceHolder surfaceHolder, final GameHolder gameHolder) {
         super("GameThread");
         this.surfaceHolder = surfaceHolder;
         this.gameHolder = gameHolder;
         activity = gameHolder.getActivity();
         gameMap = gameHolder.getGameConnection().getGameMap();
+        final View.OnTouchListener listener = new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                    case MotionEvent.ACTION_DOWN:
+                        switch (v.getId()) {
+                            case R.id.btnUp: gameHolder.onClick(User.UP); break;
+                            case R.id.btnDown: gameHolder.onClick(User.DOWN); break;
+                            case R.id.btnLeft: gameHolder.onClick(User.LEFT); break;
+                            case R.id.btnRight: gameHolder.onClick(User.RIGHT); break;
+                        }
+                        break;
+                    case MotionEvent.ACTION_CANCEL:
+                    case MotionEvent.ACTION_UP:
+                        gameHolder.onClick(GameHolder.NO_CLICK);
+                }
+                return false;
+            }
+        };
+        (activity.findViewById(R.id.btnUp)).setOnTouchListener(listener);
+        (activity.findViewById(R.id.btnDown)).setOnTouchListener(listener);
+        (activity.findViewById(R.id.btnLeft)).setOnTouchListener(listener);
+        (activity.findViewById(R.id.btnRight)).setOnTouchListener(listener);
+        (activity.findViewById(R.id.btnFire)).setOnTouchListener(listener);
+        gameHolder.startGame();
     }
 
     public void setRunning(boolean running) {
@@ -48,8 +79,7 @@ public class GameThread extends Thread {
                     continue;
                 }
                 synchronized (surfaceHolder) {
-                    gameHolder.processActions(deltaTime);
-                    draw(canvas);
+                    draw(canvas, deltaTime);
                 }
             } finally {
                 if (canvas != null) {
@@ -58,13 +88,14 @@ public class GameThread extends Thread {
             }
             deltaTime = (int) (System.currentTimeMillis() - start);
         }
+		gameHolder.stopGame();
     }
 
-    private void draw(Canvas canvas) {
+    private void draw(Canvas canvas, int deltaTime) {
         canvas.drawColor(COLOR_BG);
         gameMap.draw(canvas);
-        gameHolder.drawObjects(canvas);
-        canvas.drawText(getFPS(), 10, 10, FPS_Paint);
+        gameHolder.drawObjects(canvas, deltaTime);
+        canvas.drawText(getFPS(), 10, 25, FPS_Paint);
     }
 
     private static String getFPS() {
