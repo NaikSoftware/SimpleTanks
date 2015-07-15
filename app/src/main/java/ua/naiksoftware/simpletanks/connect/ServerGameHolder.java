@@ -3,8 +3,6 @@ package ua.naiksoftware.simpletanks.connect;
 import android.app.Activity;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.view.MotionEvent;
-import android.view.View;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -121,7 +119,8 @@ public class ServerGameHolder implements GameHolder {
                 for (int i = 0; i < size; i++) {
                     out = clients.get(i).out;
                     try {
-                        out.writeInt(GameServer.CODE_OK);
+                        int codeOk = GameServer.CODE_OK;
+                        out.writeInt(codeOk);
                     } catch (IOException e) {
                         e.printStackTrace();
                         gameServer.toast("OK request to " + clients.get(i).getName() + " failed: " + e.getMessage());
@@ -137,39 +136,15 @@ public class ServerGameHolder implements GameHolder {
 	}
 
     private void processUser(User user, int deltaTime) {
-        switch (click) {
-            case User.FIRE:
-                break;
-            case User.MINE:
-                break;
-            case User.UP:
-            case User.DOWN:
-            case User.LEFT:
-            case User.RIGHT:
-                if (user.getMove() != NO_CLICK) {
-                    user.move(deltaTime);
-                    gameMap.intersectWithUser(user);
-                    User user2;
-                    for (int i = 0; i < clients.size(); i++) {
-                        user2 = clients.get(i);
-                        if (user != user2) intersectUser(user, user2);
-                    }
-                    if (user != myUser) intersectUser(user, myUser);
-                }
-                break;
-        }
-    }
-
-    private void intersectUser(User user, User user2) {
-        Rect user2Bounds = user2.getBoundsRect();
-        Rect userBounds = user.getBoundsRect();
-        if (Rect.intersects(userBounds, user2Bounds)) {
-            switch (user.getMove()) {
-                case User.UP: user.setY(user2Bounds.bottom); break;
-                case User.DOWN: user.setY(user2Bounds.top - userBounds.height()); break;
-                case User.LEFT: user.setX(user2Bounds.right); break;
-                case User.RIGHT: user.setX(user2Bounds.left - userBounds.width()); break;
+        if (user.getMove() != NO_CLICK) {
+            user.move(deltaTime);
+            gameMap.intersectWithUser(user);
+            User user2;
+            for (int i = 0; i < clients.size(); i++) {
+                user2 = clients.get(i);
+                if (user != user2) user.intersectWith(user2);
             }
+            if (user != myUser) user.intersectWith(myUser);
         }
     }
 

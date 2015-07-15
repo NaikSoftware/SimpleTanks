@@ -165,6 +165,19 @@ public class User {
         return boundsRect;
     }
 
+    public void intersectWith(User user2) {
+        Rect user2Bounds = user2.getBoundsRect();
+        Rect userBounds = getBoundsRect();
+        if (Rect.intersects(userBounds, user2Bounds)) {
+            switch (getMove()) {
+                case User.UP: y = user2Bounds.bottom; break;
+                case User.DOWN: y = user2Bounds.top - userBounds.height(); break;
+                case User.LEFT: x = user2Bounds.right; break;
+                case User.RIGHT: x = user2Bounds.left - userBounds.width(); break;
+            }
+        }
+    }
+
     public int getX() {
         return x;
     }
@@ -191,10 +204,6 @@ public class User {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof User) {
-            return ((User) o).getId() == id;
-        } else {
-            return false;
-        }
+        return o instanceof User && ((User) o).getId() == id;
     }
 }

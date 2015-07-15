@@ -1,7 +1,5 @@
 package ua.naiksoftware.simpletanks.connect;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.ArrayList;
@@ -17,7 +15,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -60,11 +57,15 @@ public abstract class GameConnection {
 
     protected void createNetwork(boolean takeMdnsPackets) {
         this.takeMdnsPackets = takeMdnsPackets;
-        ConnectivityManager connectivityManager = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
         final WifiManager wifi = (WifiManager) activity.getSystemService(Context.WIFI_SERVICE);
-        if (connectivityManager == null || !InetUtils.isConnected(connectivityManager)) {
+        try {
+            addresses = InetUtils.getLocalAddresses();
+        } catch (SocketException e) {
+            Log.e(TAG, "Get local addresses error", e);
+        }
+        if (addresses == null || addresses.length == 0) {
             Log.i(TAG, "Not connected");
-            toast(R.string.not_connected);
+            toast(R.string.network_ip_not_detected);
             if (wifi != null && wifi.getWifiState() == WifiManager.WIFI_STATE_DISABLED) {
                 inUI(new Runnable() {
 
@@ -74,15 +75,6 @@ public abstract class GameConnection {
                     }
                 });
             }
-            return;
-        }
-        try {
-            addresses = InetUtils.getLocalAddresses();
-        } catch (SocketException e) {
-            Log.e(TAG, "Get local addresses error", e);
-        }
-        if (addresses == null || addresses.length == 0) {
-            toast(R.string.network_ip_not_detected);
             return;
         }
         if (takeMdnsPackets && wifi != null && wifi.isWifiEnabled()) {

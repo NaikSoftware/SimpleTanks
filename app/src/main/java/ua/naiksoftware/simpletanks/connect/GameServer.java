@@ -154,7 +154,11 @@ public class GameServer extends GameConnection {
                                         InetAddress addr = getAvailableAddresses()[which];
                                         server = new Server(addr);
                                         server.start();
-                                        jmdns = JmDNS.create(addr, HOSTNAME);
+                                        try {
+                                            jmdns = JmDNS.create(addr, HOSTNAME);
+                                        } catch (IOException e) {
+                                            toast("JmDNS create: " + e.toString());
+                                        }
                                         ServiceInfo serviceInfo = ServiceInfo.create(SERVICE_TYPE, HOSTNAME, PORT, "SimpleTanks server on " + android.os.Build.DEVICE);
                                         serviceInfo.setText(new Hashtable<String, String>() {
                                             {
@@ -165,7 +169,7 @@ public class GameServer extends GameConnection {
                                         Log.i(TAG, "Started GameServer...");
                                     } catch (IOException e) {
                                         e.printStackTrace();
-                                        toast(e.getMessage());
+                                        toast("Register server error: " + e.toString());
                                     }
                                 }
                             }
@@ -284,6 +288,7 @@ public class GameServer extends GameConnection {
                 }
             } catch (IOException e) {
                 Log.e(TAG, "Server exception in accept thread", e);
+                toast("2: " + e.toString());
                 if (!serverSocket.isClosed()) {
                     try {
                         serverSocket.close();
