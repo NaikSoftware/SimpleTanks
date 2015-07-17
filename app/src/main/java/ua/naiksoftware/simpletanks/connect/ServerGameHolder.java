@@ -2,7 +2,6 @@ package ua.naiksoftware.simpletanks.connect;
 
 import android.app.Activity;
 import android.graphics.Canvas;
-import android.graphics.Rect;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -23,6 +22,8 @@ public class ServerGameHolder implements GameHolder {
 
     private static final Random RND = new Random();
     private static final String TAG = ServerGameHolder.class.getSimpleName();
+    private static final int SYNC_COORDS_INTERVAL = 100;//ms
+    public static final float FLAG_SYNC_NOT_NEEDED = -1000f;
 
     private final GameServer gameServer;
     private final Activity activity;
@@ -31,7 +32,7 @@ public class ServerGameHolder implements GameHolder {
     private final GameMap gameMap;
     private int click = NO_CLICK;
 	private ConnectionThread connectionThread;
-	private final Object lock = new Object();
+    private long lastSyncCoords;
     
     public ServerGameHolder(GameServer gameServer, Activity activity) {
         this.gameServer = gameServer;
@@ -65,6 +66,19 @@ public class ServerGameHolder implements GameHolder {
         myUser.draw(canvas);
     }
 
+    private void processUser(User user, int deltaTime) {
+        if (user.getMove() != NO_CLICK) {
+            user.move(deltaTime);
+            gameMap.intersectWith(user);
+            User user2;
+            for (int i = 0; i < clients.size(); i++) {
+                user2 = clients.get(i);
+                if (user != user2) user.intersectWith(user2);
+            }
+            if (user != myUser) user.intersectWith(myUser);
+        }
+    }
+
 	/* Поток для отсылки и приема данных */
 	private class ConnectionThread extends Thread {
 
@@ -76,7 +90,7 @@ public class ServerGameHolder implements GameHolder {
             int size = clients.size();
             DataOutputStream out;
             GameServer.Client client;
-            User user;
+            boolean syncCoords;
 			while (running) {
                 // Получаем изменения от клиентов (нажатия на кнопки) и сразу обновляем мир
                 for (int i = 0; i < size; i++) {
@@ -91,36 +105,28 @@ public class ServerGameHolder implements GameHolder {
                     }
                 }
                 myUser.setMove(click);
-                // Рассылаем изменения клиентам (координаты юзеров, события)
+                // Рассылаем изменения клиентам (координаты юзеров)
+                syncCoords = System.currentTimeMillis() - lastSyncCoords > SYNC_COORDS_INTERVAL;
                 for (int i = 0; i < size; i++) {
                     out = clients.get(i).out;
                     try {
-                        out.writeInt(GameServer.SEND_DATA);
                         for (int j = 0; j < size; j++) {
-                            user = clients.get(j);
-                            out.writeLong(user.getId());
-                            out.writeInt(user.getX());
-                            out.writeInt(user.getY());
-                            out.writeInt(user.getMove());
+                            sendUser(out, clients.get(j), syncCoords);
                         }
-                        user = myUser;
-                        out.writeLong(user.getId());
-                        out.writeInt(user.getX());
-                        out.writeInt(user.getY());
-                        out.writeInt(user.getMove());
+                        sendUser(out, myUser, syncCoords);
                     } catch (IOException e) {
                         e.printStackTrace();
                         removeUser(clients.get(i));
                         size--;
                     }
                 }
+                if (syncCoords) lastSyncCoords = System.currentTimeMillis();
                 // Отсылаем статус что итерация выполнена и deltaTime
 
                 for (int i = 0; i < size; i++) {
                     out = clients.get(i).out;
                     try {
-                        int codeOk = GameServer.CODE_OK;
-                        out.writeInt(codeOk);
+                        out.writeInt(GameServer.CODE_OK);
                     } catch (IOException e) {
                         e.printStackTrace();
                         gameServer.toast("OK request to " + clients.get(i).getName() + " failed: " + e.getMessage());
@@ -129,24 +135,23 @@ public class ServerGameHolder implements GameHolder {
 			}
 		}
 
+        private void sendUser(DataOutputStream out, User user, boolean syncCoords) throws IOException {
+            out.writeInt(GameServer.SEND_USER);
+            out.writeLong(user.getId());
+            if (syncCoords) {
+                out.writeFloat(user.getX());
+                out.writeFloat(user.getY());
+            } else {
+                out.writeFloat(FLAG_SYNC_NOT_NEEDED); // Если юзер в движении, то лучше не синхронизировать, будет дергаться на клиентах
+            }
+            out.writeInt(user.getMove());
+        }
+
 		public void stopRunning() {
 			running = false;
 			interrupt();
 		}
 	}
-
-    private void processUser(User user, int deltaTime) {
-        if (user.getMove() != NO_CLICK) {
-            user.move(deltaTime);
-            gameMap.intersectWithUser(user);
-            User user2;
-            for (int i = 0; i < clients.size(); i++) {
-                user2 = clients.get(i);
-                if (user != user2) user.intersectWith(user2);
-            }
-            if (user != myUser) user.intersectWith(myUser);
-        }
-    }
 
     private void removeUser(User user) {
         String msg = activity.getString(R.string.user) + " " + user.getName() + " " + activity.getString(R.string.disconnected);

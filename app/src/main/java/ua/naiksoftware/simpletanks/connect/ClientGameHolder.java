@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import ua.naiksoftware.simpletanks.GameMap;
 import ua.naiksoftware.simpletanks.Log;
 import ua.naiksoftware.simpletanks.R;
 import ua.naiksoftware.simpletanks.User;
@@ -31,10 +32,12 @@ public class ClientGameHolder implements GameHolder {
     private final float scale;
     private int click = NO_CLICK;
     private ConnectionThread connectionThread;
+    private GameMap gameMap;
 
     public ClientGameHolder(GameClient gameClient, Activity activity, int serverTileSize) {
         this.gameClient = gameClient;
         this.activity = activity;
+        gameMap = gameClient.getGameMap();
         users = gameClient.getUsers();
         myUser = gameClient.getMyUser();
         output = gameClient.getServer().out;
@@ -67,11 +70,24 @@ public class ClientGameHolder implements GameHolder {
         User user;
         for (int i = 0; i < users.size(); i++) {
             user = users.get(i);
-            user.move(deltaTime);
+            processUser(user, deltaTime);
             user.draw(canvas);
         }
-        myUser.move(deltaTime);
+        processUser(myUser, deltaTime);
         myUser.draw(canvas);
+    }
+
+    private void processUser(User user, int deltaTime) {
+        if (user.getMove() != NO_CLICK) {
+            user.move(deltaTime);
+            gameMap.intersectWith(user);
+            User user2;
+            for (int i = 0; i < users.size(); i++) {
+                user2 = users.get(i);
+                if (user != user2) user.intersectWith(user2);
+            }
+            if (user != myUser) user.intersectWith(myUser);
+        }
     }
 
     private class ConnectionThread extends Thread {
@@ -83,19 +99,21 @@ public class ClientGameHolder implements GameHolder {
             try {
                 running = true;
                 User user;
+                float tmp;
                 boolean read;
                 while (running) {
                     output.writeInt(click);
                     read = true;
                     while (read) {
                         switch (input.readInt()) {
-                            case GameServer.SEND_DATA:
-                                for (int i = 0, size = users.size() + 1; i < size; i++) {
-                                    user = usersMap.get(input.readLong());
-                                    user.setX(input.readInt() * scale);
-                                    user.setY(input.readInt() * scale);
-                                    user.setMove(input.readInt());
+                            case GameServer.SEND_USER:
+                                user = usersMap.get(input.readLong());
+                                tmp = input.readFloat();
+                                if (Math.abs(tmp - ServerGameHolder.FLAG_SYNC_NOT_NEEDED) > 0.1) {
+                                    user.setX(tmp * scale); // Синхронизируем координаты с сервером
+                                    user.setY(input.readFloat() * scale);
                                 }
+                                user.setMove(input.readInt());
                                 break;
                             case GameServer.REMOVE_USER:
                                 user = usersMap.get(input.readLong());

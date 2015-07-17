@@ -6,14 +6,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.util.ArrayMap;
-import android.util.Log;
 
 import java.io.DataInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -89,58 +85,48 @@ public class GameMap {
         mapY = y;
     }
 
-    // TODO: в релизе слить след. 2 метода в 1 (сделать 1 if)
-    public void intersectWithUser(User user) {
-        Rect userRect = user.getBoundsRect();
+    public void intersectWith(User user) {
+        Rect rect = user.getBoundsRect();
 
-        if (userRect.top < 0) {
+        if (rect.top < 0) {
             user.setY(0);
             return;
-        } else if (userRect.bottom > mapHpix) {
-            user.setY(mapHpix - userRect.height());
+        } else if (rect.bottom > mapHpix) {
+            user.setY(mapHpix - rect.height());
             return;
         }
-        if (userRect.left < 0) {
+        if (rect.left < 0) {
             user.setX(0);
             return;
-        } else if (userRect.right > mapWpix) {
-            user.setX(mapWpix - userRect.width());
+        } else if (rect.right > mapWpix) {
+            user.setX(mapWpix - rect.width());
             return;
         }
 
-        if (tiles[userRect.right / TILE_SIZE][userRect.top / TILE_SIZE] != null){
-            backUser(user, userRect); return;
-        }
-        if (tiles[userRect.right / TILE_SIZE][userRect.bottom / TILE_SIZE] != null) {
-            backUser(user, userRect); return;
-        }
-        if (tiles[userRect.left / TILE_SIZE][userRect.top / TILE_SIZE] != null) {
-             backUser(user, userRect); return;
-        }
-        if (tiles[userRect.left / TILE_SIZE][userRect.bottom / TILE_SIZE] != null) {
-            backUser(user, userRect);
-        }
-    }
-
-    private void backUser(User user, Rect userRect) {
         switch (user.getDirection()) {
             case User.RIGHT:
-                user.setX(userRect.left - (userRect.right % TILE_SIZE));
+                if (tiles[(rect.right - 1) / TILE_SIZE][rect.top / TILE_SIZE] != null
+                        || tiles[(rect.right - 1) / TILE_SIZE][(rect.bottom - 1) / TILE_SIZE] != null) {
+                    user.setX(rect.left - (rect.right % TILE_SIZE));
+                }
                 break;
             case User.LEFT:
-                int dx = userRect.left % TILE_SIZE;
-                if (dx != 0) {
-                    user.setX(userRect.left + TILE_SIZE - dx);
+                if (tiles[rect.left / TILE_SIZE][rect.top / TILE_SIZE] != null
+                        || tiles[rect.left / TILE_SIZE][(rect.bottom - 1) / TILE_SIZE] != null) {
+                    user.setX(rect.left + TILE_SIZE - (rect.left % TILE_SIZE));
                 }
                 break;
             case User.UP:
-                int dy = userRect.top % TILE_SIZE;
-                if (dy != 0) {
-                    user.setY(userRect.top + TILE_SIZE - (userRect.top % TILE_SIZE));
+                if (tiles[rect.left / TILE_SIZE][rect.top / TILE_SIZE] != null
+                        || tiles[(rect.right - 1) / TILE_SIZE][rect.top / TILE_SIZE] != null) {
+                    user.setY(rect.top + TILE_SIZE - (rect.top % TILE_SIZE));
                 }
                 break;
             case User.DOWN:
-                user.setY(userRect.top - (userRect.bottom % TILE_SIZE));
+                if (tiles[rect.left / TILE_SIZE][(rect.bottom - 1) / TILE_SIZE] != null
+                        || tiles[(rect.right - 1) / TILE_SIZE][(rect.bottom - 1) / TILE_SIZE] != null) {
+                    user.setY(rect.top - (rect.bottom % TILE_SIZE));
+                }
                 break;
         }
     }

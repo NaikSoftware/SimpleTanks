@@ -29,7 +29,7 @@ public class GameServer extends GameConnection {
     public static final int ADD_USER = 5;
     public static final int REMOVE_USER = 6;
     public static final int PING_CLIENT = 7;
-    public static final int SEND_DATA = 8;
+    public static final int SEND_USER = 8;
 
     public static final int CODE_ERROR = 8;
     public static final int CODE_OK = 9;

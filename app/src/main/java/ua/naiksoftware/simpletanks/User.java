@@ -17,32 +17,33 @@ import ua.naiksoftware.simpletanks.connect.*;
  */
 public class User {
 
+    private static final String TAG = User.class.getSimpleName();
+
     public static final int LEFT = 0;
     public static final int RIGHT = 1;
     public static final int DOWN = 2;
     public static final int UP = 3;
     public static final int FIRE = 5;
     public static final int MINE = 6;
-	
+
     private String name;
     private String ip;
     private long id;
     private int direction;
-    private int x;
-    private int y;
+    private float x, y;
     private final Bitmap[] bitmapArray = new Bitmap[4];
     private Bitmap bitmap;
     private static final Paint paint = new Paint();
     private final int type;
     private float speed;
     private final Rect boundsRect = new Rect();
-    private int transparentWidth;
     private int spriteSize;
 	private int move = GameHolder.NO_CLICK;
 
     public User(long id, int type) {
         this.id = id;
         this.type = type;
+        direction = UP;
     }
 
     public User(String name, String ip, int type) {
@@ -71,7 +72,7 @@ public class User {
         }
         bitmap = bitmapArray[direction];
         spriteSize = bitmap.getWidth();
-        transparentWidth = spriteSize / 6;
+        boundsRect.set(0, 0, spriteSize, spriteSize);
     }
 
     public long getId() {
@@ -104,7 +105,7 @@ public class User {
 
     public void move(int deltaTime) {
         if (move == GameHolder.NO_CLICK) return;
-        int diff = (int)(speed * deltaTime);
+        float diff = speed * deltaTime;
         switch (direction) {
             case UP: y -= diff; break;
             case DOWN: y += diff; break;
@@ -117,28 +118,6 @@ public class User {
         this.move = click;
         if (click == GameHolder.NO_CLICK) return;
         if (click != direction) {
-            switch (click) {
-                case User.LEFT:
-                    if (this.direction != User.RIGHT) {
-                        x -= transparentWidth;
-                    }
-                    break;
-                case User.RIGHT:
-                    if (this.direction != User.LEFT) {
-                        x += transparentWidth;
-                    }
-                    break;
-                case User.DOWN:
-                    if (this.direction != User.UP) {
-                        y += transparentWidth;
-                    }
-                    break;
-                case User.UP:
-                    if (this.direction != User.DOWN) {
-                        y -= transparentWidth;
-                    }
-                    break;
-            }
             setDirection(click);
         }
     }
@@ -157,11 +136,7 @@ public class User {
     }
 
     public Rect getBoundsRect() {
-        if (direction == UP || direction == DOWN) {
-            boundsRect.set(x + transparentWidth, y, x + spriteSize - transparentWidth, y + spriteSize);
-        } else {
-            boundsRect.set(x, y + transparentWidth, x + spriteSize, y + spriteSize - transparentWidth);
-        }
+        boundsRect.offsetTo((int)x, (int)y);
         return boundsRect;
     }
 
@@ -169,7 +144,7 @@ public class User {
         Rect user2Bounds = user2.getBoundsRect();
         Rect userBounds = getBoundsRect();
         if (Rect.intersects(userBounds, user2Bounds)) {
-            switch (getMove()) {
+            switch (move) {
                 case User.UP: y = user2Bounds.bottom; break;
                 case User.DOWN: y = user2Bounds.top - userBounds.height(); break;
                 case User.LEFT: x = user2Bounds.right; break;
@@ -178,24 +153,20 @@ public class User {
         }
     }
 
-    public int getX() {
+    public float getX() {
         return x;
     }
 
     public void setX(float x) {
-        this.x = (int)x;
+        this.x = x;
     }
 
-    public int getY() {
+    public float getY() {
         return y;
     }
 
     public void setY(float y) {
-        this.y = (int)y;
-    }
-
-    public float getSpeed() {
-        return speed;
+        this.y = y;
     }
 
     public void setSpeed(float speed) {
