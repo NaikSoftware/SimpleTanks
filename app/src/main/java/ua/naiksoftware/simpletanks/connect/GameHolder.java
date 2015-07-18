@@ -2,6 +2,7 @@ package ua.naiksoftware.simpletanks.connect;
 
 import android.app.Activity;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 
 import java.util.ArrayList;
 
@@ -21,6 +22,9 @@ public abstract class GameHolder {
     private GameMap gameMap;
     private ArrayList<? extends User> users;
     private User myUser;
+    private int scrW, scrH;
+    private int mapWidth, mapHeight;
+    private final int tileSize;
 
     public GameHolder(GameConnection gameConnection, Activity activity) {
         this.gameConnection = gameConnection;
@@ -28,6 +32,9 @@ public abstract class GameHolder {
         users = gameConnection.getUsers();
         myUser = gameConnection.getMyUser();
         gameMap = gameConnection.getGameMap();
+        mapWidth = gameMap.mapWpix;
+        mapHeight = gameMap.mapHpix;
+        tileSize = gameMap.TILE_SIZE;
     }
     
     public abstract void startGame();
@@ -43,12 +50,22 @@ public abstract class GameHolder {
     protected int myClick() {
         return click;
     }
-    
-    public GameConnection getGameConnection() {
-        return gameConnection;
+
+    public void updateScreen(int w, int h) {
+        scrW = w;
+        scrH = h;
     }
-    
-    public void drawObjects(Canvas canvas, int deltaTime) {
+
+    public void drawGame(Canvas canvas, int deltaTime) {
+        int x = (int)myUser.getX() - scrW / 2 + tileSize / 2;
+        int y = (int)myUser.getY() - scrH / 2 + tileSize / 2;
+        if (x < 0 || mapWidth < scrW) x = 0;
+        else if (x > mapWidth - scrW) x = mapWidth - scrW;
+        if (y < 0 || mapHeight < scrH) y = 0;
+        else if (y > mapHeight - scrH) y = mapHeight - scrH;
+        gameMap.setPosition(x, y);
+        gameMap.draw(canvas);
+        canvas.translate(-x, -y);
         User user;
         for (int i = 0; i < users.size(); i++) {
             user = users.get(i);

@@ -203,6 +203,7 @@ public class GameClient extends GameConnection implements ServiceListener {
                     } catch (Exception ex) {
                         Log.e(TAG, ex.getMessage(), ex);
                     }
+                    setGameRunning(false);
                     if (gameView != null) {
                         inUI(new Runnable() {
                             @Override
@@ -387,7 +388,7 @@ public class GameClient extends GameConnection implements ServiceListener {
                     inUI(new Runnable() {
                         @Override
                         public void run() {
-                            setGameRunning();
+                            setGameRunning(true);
                             ClientGameHolder gameHolder = new ClientGameHolder(GameClient.this, activity, serverTileSize);
                             gameView = new GameView(gameHolder);
                             View v = LayoutInflater.from(activity).inflate(R.layout.play_screen, null);

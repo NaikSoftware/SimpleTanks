@@ -136,10 +136,6 @@ public abstract class GameConnection {
         }
     }
 
-    public void stopBgThreads() {
-        background.shutdown();
-    }
-
     Handler ui = new Handler() {
 
         @Override
@@ -168,8 +164,8 @@ public abstract class GameConnection {
         background.submit(r);
     }
     
-    protected void setGameRunning() {
-        gameRunning = true;
+    protected void setGameRunning(boolean running) {
+        gameRunning = running;
     }
     
     public boolean isGameRunning() {

@@ -7,7 +7,6 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.View;
 
-import ua.naiksoftware.simpletanks.connect.GameConnection;
 import ua.naiksoftware.simpletanks.connect.GameHolder;
 
 /**
@@ -22,7 +21,6 @@ public class GameThread extends Thread {
     private SurfaceHolder surfaceHolder;
     private Activity activity;
     private GameHolder gameHolder;
-    private GameMap gameMap;
 
     static {
         FPS_Paint.setTextSize(23);
@@ -33,7 +31,6 @@ public class GameThread extends Thread {
         this.surfaceHolder = surfaceHolder;
         this.gameHolder = gameHolder;
         activity = gameHolder.getActivity();
-        gameMap = gameHolder.getGameConnection().getGameMap();
         final View.OnTouchListener listener = new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -93,8 +90,7 @@ public class GameThread extends Thread {
 
     private void draw(Canvas canvas, int deltaTime) {
         canvas.drawColor(COLOR_BG);
-        gameMap.draw(canvas);
-        gameHolder.drawObjects(canvas, deltaTime);
+        gameHolder.drawGame(canvas, deltaTime);
         canvas.drawText(getFPS(), 10, 25, FPS_Paint);
     }
 

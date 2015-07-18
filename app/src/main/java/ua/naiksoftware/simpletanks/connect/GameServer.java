@@ -14,6 +14,7 @@ import javax.jmdns.*;
 
 import ua.naiksoftware.simpletanks.GameMap;
 import ua.naiksoftware.simpletanks.GameView;
+import ua.naiksoftware.simpletanks.MainActivity;
 import ua.naiksoftware.simpletanks.R;
 import ua.naiksoftware.simpletanks.User;
 
@@ -37,7 +38,7 @@ public class GameServer extends GameConnection {
     public static final String KEY_SERVER_NAME = "key_name";
 
     private JmDNS jmdns;
-    private Activity activity;
+    private MainActivity activity;
     private Server server;
     private ClientsListAdapter clientsListAdapter;
     private ArrayList<Client> clientsList; // Клиенты сервера
@@ -45,8 +46,9 @@ public class GameServer extends GameConnection {
     private User myUser; // Игрок, запускающий сервер
     private GameMap gameMap;
     private String pathToMap;
+    private GameView gameView;
 
-    public GameServer(Activity activity) {
+    public GameServer(MainActivity activity) {
         super(activity);
         this.activity = activity;
     }
@@ -200,6 +202,16 @@ public class GameServer extends GameConnection {
                         Log.e(TAG, ex.getMessage(), ex);
                     }
                     toast(R.string.server_stopped);
+                    setGameRunning(false);
+                    if (gameView != null) {
+                        inUI(new Runnable() {
+                            @Override
+                            public void run() {
+                                activity.showMainMenu();
+                            }
+                        });
+                        gameView = null;
+                    }
                 }
             }
         });
@@ -465,9 +477,9 @@ public class GameServer extends GameConnection {
                     @Override
                     public void run() {
                         dialog.dismiss();
-                        setGameRunning();
+                        setGameRunning(true);
                         ServerGameHolder gameHolder = new ServerGameHolder(GameServer.this, activity);
-                        GameView gameView = new GameView(gameHolder);
+                        gameView = new GameView(gameHolder);
                         View v = LayoutInflater.from(activity).inflate(R.layout.play_screen, null);
                         ((ViewGroup)v.findViewById(R.id.game_map_layout)).addView(gameView);
                         activity.setContentView(v);

@@ -26,7 +26,7 @@ public class GameMap {
     public final Tile[][] tiles;
     public final int mapW, mapH;
     private int mapX, mapY;
-    private final int mapWpix, mapHpix;
+    public final int mapWpix, mapHpix;
     private final Paint tilePaint = new Paint();
 
     public GameMap(InputStream input, Resources res) throws IOException {
@@ -56,36 +56,44 @@ public class GameMap {
         tilePaint.setStyle(Paint.Style.STROKE);
     }
 
+    /* Draw tiles in viewport */
     public void draw(Canvas canvas) {
         int fromX = mapX / TILE_SIZE;
         int fromY = mapY / TILE_SIZE;
-        int toX = (mapX + canvas.getWidth()) / TILE_SIZE + 1;
-        int toY = (mapY + canvas.getHeight()) / TILE_SIZE + 1;
+        //if (fromX < 0) fromX = 0;
+        //if (fromY < 0) fromY = 0;
+        int toX = fromX + canvas.getWidth() / TILE_SIZE + 1;
+        int toY = fromY + canvas.getHeight() / TILE_SIZE + 1;
         if (toX > mapW) toX = mapW;
-        if (toY > mapY) toY = mapH;
-        int fromDrawX = mapX - fromX * TILE_SIZE;
-        int fromDrawY = mapY - fromY * TILE_SIZE;
-        int x, y;
+        if (toY > mapH) toY = mapH;
+        int fromDrawX = -mapX % TILE_SIZE;
+        int fromDrawY = -mapY % TILE_SIZE;
         Tile tile;
+        int x, y;
         for (int i = fromX; i < toX; i++) {
-            x = fromDrawX + i * TILE_SIZE;
+            x = fromDrawX + (i - fromX) * TILE_SIZE;
             for (int j = fromY; j < toY; j++) {
-                y = fromDrawY + j * TILE_SIZE;
+                y = fromDrawY + (j - fromY) * TILE_SIZE;
                 tile = tiles[i][j];
                 if (tile != null) {
                     canvas.drawBitmap(tile.bitmap, x, y, tilePaint);
                 }
             }
         }
-        canvas.drawRect(mapX, mapY, mapWpix, mapHpix, tilePaint);
+        canvas.drawRect(0, 0, mapWpix, mapHpix, tilePaint);
     }
 
-    public void setX(int x) {
+    public void setPosition(int x, int y) {
         mapX = x;
+        mapY = y;
     }
 
-    public void setY(int y) {
-        mapY = y;
+    public int getX() {
+        return mapX;
+    }
+
+    public int getY() {
+        return mapY;
     }
 
     public void intersectWith(User user) {
