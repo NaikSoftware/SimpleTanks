@@ -1,9 +1,6 @@
 package ua.naiksoftware.simpletanks.connect;
 
 import android.app.Activity;
-import android.graphics.Canvas;
-import android.view.MotionEvent;
-import android.view.View;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -11,8 +8,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import ua.naiksoftware.simpletanks.GameMap;
-import ua.naiksoftware.simpletanks.Log;
 import ua.naiksoftware.simpletanks.R;
 import ua.naiksoftware.simpletanks.User;
 

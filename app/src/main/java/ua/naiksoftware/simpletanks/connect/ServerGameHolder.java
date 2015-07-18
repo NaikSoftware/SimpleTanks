@@ -1,7 +1,6 @@
 package ua.naiksoftware.simpletanks.connect;
 
 import android.app.Activity;
-import android.graphics.Canvas;
 
 import java.io.DataOutputStream;
 import java.io.IOException;

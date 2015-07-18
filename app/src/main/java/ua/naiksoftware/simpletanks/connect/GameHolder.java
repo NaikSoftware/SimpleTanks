@@ -2,7 +2,6 @@ package ua.naiksoftware.simpletanks.connect;
 
 import android.app.Activity;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 
 import java.util.ArrayList;
 

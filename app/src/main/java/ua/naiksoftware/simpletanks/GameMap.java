@@ -60,8 +60,6 @@ public class GameMap {
     public void draw(Canvas canvas) {
         int fromX = mapX / TILE_SIZE;
         int fromY = mapY / TILE_SIZE;
-        //if (fromX < 0) fromX = 0;
-        //if (fromY < 0) fromY = 0;
         int toX = fromX + canvas.getWidth() / TILE_SIZE + 1;
         int toY = fromY + canvas.getHeight() / TILE_SIZE + 1;
         if (toX > mapW) toX = mapW;
@@ -86,14 +84,6 @@ public class GameMap {
     public void setPosition(int x, int y) {
         mapX = x;
         mapY = y;
-    }
-
-    public int getX() {
-        return mapX;
-    }
-
-    public int getY() {
-        return mapY;
     }
 
     public void intersectWith(User user) {
