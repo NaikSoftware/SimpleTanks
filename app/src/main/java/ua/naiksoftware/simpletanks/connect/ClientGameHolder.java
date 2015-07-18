@@ -19,32 +19,29 @@ import ua.naiksoftware.simpletanks.User;
 /**
  * Created by Naik on 10.07.15.
  */
-public class ClientGameHolder implements GameHolder {
+public class ClientGameHolder extends GameHolder {
 
     private static final String TAG = ClientGameHolder.class.getSimpleName();
     private final GameClient gameClient;
     private final Activity activity;
     private final ArrayList<? extends User> users;
     private final HashMap<Long, User> usersMap = new HashMap<Long, User>();
-    private final User myUser;
     private final DataOutputStream output;
     private final DataInputStream input;
     private final float scale;
-    private int click = NO_CLICK;
     private ConnectionThread connectionThread;
-    private GameMap gameMap;
-
+    
     public ClientGameHolder(GameClient gameClient, Activity activity, int serverTileSize) {
+        super(gameClient, activity);
         this.gameClient = gameClient;
         this.activity = activity;
-        gameMap = gameClient.getGameMap();
         users = gameClient.getUsers();
-        myUser = gameClient.getMyUser();
         output = gameClient.getServer().out;
         input = gameClient.getServer().in;
         for (User user : users) {
             usersMap.put(user.getId(), user);
         }
+        User myUser = gameClient.getMyUser();
         usersMap.put(myUser.getId(), myUser);
         int tileSize = gameClient.getGameMap().TILE_SIZE;
         scale = tileSize / (float) serverTileSize;
@@ -60,36 +57,7 @@ public class ClientGameHolder implements GameHolder {
         connectionThread.start();
     }
 
-    @Override
-    public void onClick(int click) {
-        this.click = click;
-    }
-
-    @Override
-    public void drawObjects(Canvas canvas, int deltaTime) {
-        User user;
-        for (int i = 0; i < users.size(); i++) {
-            user = users.get(i);
-            processUser(user, deltaTime);
-            user.draw(canvas);
-        }
-        processUser(myUser, deltaTime);
-        myUser.draw(canvas);
-    }
-
-    private void processUser(User user, int deltaTime) {
-        if (user.getMove() != NO_CLICK) {
-            user.move(deltaTime);
-            gameMap.intersectWith(user);
-            User user2;
-            for (int i = 0; i < users.size(); i++) {
-                user2 = users.get(i);
-                if (user != user2) user.intersectWith(user2);
-            }
-            if (user != myUser) user.intersectWith(myUser);
-        }
-    }
-
+    /* Поток для отсылки и приема данных */
     private class ConnectionThread extends Thread {
 
         private boolean running;
@@ -102,7 +70,7 @@ public class ClientGameHolder implements GameHolder {
                 float tmp;
                 boolean read;
                 while (running) {
-                    output.writeInt(click);
+                    output.writeInt(myClick());
                     read = true;
                     while (read) {
                         switch (input.readInt()) {
@@ -137,16 +105,6 @@ public class ClientGameHolder implements GameHolder {
             running = false;
             interrupt();
         }
-    }
-
-    @Override
-    public Activity getActivity() {
-        return activity;
-    }
-
-    @Override
-    public GameConnection getGameConnection() {
-        return gameClient;
     }
 
 	@Override

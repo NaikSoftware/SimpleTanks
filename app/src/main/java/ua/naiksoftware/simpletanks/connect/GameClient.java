@@ -29,13 +29,14 @@ import ua.naiksoftware.simpletanks.GameMap;
 import ua.naiksoftware.simpletanks.GameView;
 import ua.naiksoftware.simpletanks.R;
 import ua.naiksoftware.simpletanks.User;
+import ua.naiksoftware.simpletanks.MainActivity;
 
 public class GameClient extends GameConnection implements ServiceListener {
 
     private static final String TAG = GameClient.class.getSimpleName();
 
     private JmDNS[] jmdns;
-    private Activity activity;
+    private MainActivity activity;
     private ArrayList<Server> serversList;
     private ServersListAdapter serversListAdapter;
     private final Object lock = new Object();
@@ -47,7 +48,7 @@ public class GameClient extends GameConnection implements ServiceListener {
     private DataInputStream input;
     private GameView gameView;
 
-    public GameClient(Activity activity) {
+    public GameClient(MainActivity activity) {
         super(activity);
         this.activity = activity;
     }
@@ -206,7 +207,7 @@ public class GameClient extends GameConnection implements ServiceListener {
                         inUI(new Runnable() {
                             @Override
                             public void run() {
-                                activity.setContentView(R.layout.main);
+                                activity.showMainMenu();
                             }
                         });
                         gameView = null;
@@ -386,6 +387,7 @@ public class GameClient extends GameConnection implements ServiceListener {
                     inUI(new Runnable() {
                         @Override
                         public void run() {
+                            setGameRunning();
                             ClientGameHolder gameHolder = new ClientGameHolder(GameClient.this, activity, serverTileSize);
                             gameView = new GameView(gameHolder);
                             View v = LayoutInflater.from(activity).inflate(R.layout.play_screen, null);

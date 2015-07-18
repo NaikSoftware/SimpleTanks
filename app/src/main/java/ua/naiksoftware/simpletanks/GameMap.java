@@ -80,8 +80,11 @@ public class GameMap {
         canvas.drawRect(mapX, mapY, mapWpix, mapHpix, tilePaint);
     }
 
-    public void setPosition(int x, int y) {
+    public void setX(int x) {
         mapX = x;
+    }
+
+    public void setY(int y) {
         mapY = y;
     }
 

@@ -1,0 +1,8 @@
+<resources>
+    <string name="title_activity_settings">Settings</string>
+
+    <!-- Strings related to Settings -->
+
+    <string name="pref_landscape_mode">Landscape orientation</string>
+
+</resources>

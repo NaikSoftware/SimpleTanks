@@ -9,8 +9,9 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:layout_marginBottom="30dp"
+        android:layout_marginTop="20dp"
         android:text="@string/app_name"
-        android:textSize="20sp" />
+        android:textSize="25sp" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -26,10 +27,35 @@
 
             <Button
                 android:id="@+id/btnPlay"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:maxWidth="500dp"
+                android:minWidth="200dp"
+                android:textSize="24sp"
                 android:text="@string/play" />
+            
+            <Button
+                android:id="@+id/btnSettings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="200dp"
+                android:textSize="24sp"
+                android:text="@string/settings" />
+            
+            <Button
+                android:id="@+id/btnInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="200dp"
+                android:textSize="24sp"
+                android:text="@string/info" />
+            
+            <Button
+                android:id="@+id/btnExit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minWidth="200dp"
+                android:textSize="24sp"
+                android:text="@string/exit" />
         </LinearLayout>
     </ScrollView>
 

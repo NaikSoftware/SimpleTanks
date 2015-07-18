@@ -18,7 +18,7 @@ import ua.naiksoftware.simpletanks.res.ImageID;
 /**
  * Created by Naik on 10.07.15.
  */
-public class ServerGameHolder implements GameHolder {
+public class ServerGameHolder extends GameHolder {
 
     private static final Random RND = new Random();
     private static final String TAG = ServerGameHolder.class.getSimpleName();
@@ -30,11 +30,11 @@ public class ServerGameHolder implements GameHolder {
     private final ArrayList<GameServer.Client> clients;
     private final User myUser;
     private final GameMap gameMap;
-    private int click = NO_CLICK;
 	private ConnectionThread connectionThread;
     private long lastSyncCoords;
     
     public ServerGameHolder(GameServer gameServer, Activity activity) {
+        super(gameServer, activity);
         this.gameServer = gameServer;
         this.activity = activity;
         clients = gameServer.getUsers();
@@ -47,36 +47,6 @@ public class ServerGameHolder implements GameHolder {
     @Override
     public void startGame() {
 		connectionThread.start();
-    }
-
-    @Override
-    public void onClick(int click) {
-        this.click = click;
-    }
-
-    @Override
-    public void drawObjects(Canvas canvas, int deltaTime) {
-        User user;
-        for (int i = 0; i < clients.size(); i++) {
-            user = clients.get(i);
-            processUser(user, deltaTime);
-            user.draw(canvas);
-        }
-        processUser(myUser, deltaTime);
-        myUser.draw(canvas);
-    }
-
-    private void processUser(User user, int deltaTime) {
-        if (user.getMove() != NO_CLICK) {
-            user.move(deltaTime);
-            gameMap.intersectWith(user);
-            User user2;
-            for (int i = 0; i < clients.size(); i++) {
-                user2 = clients.get(i);
-                if (user != user2) user.intersectWith(user2);
-            }
-            if (user != myUser) user.intersectWith(myUser);
-        }
     }
 
 	/* Поток для отсылки и приема данных */
@@ -104,7 +74,7 @@ public class ServerGameHolder implements GameHolder {
                         size--;
                     }
                 }
-                myUser.setMove(click);
+                myUser.setMove(myClick());
                 // Рассылаем изменения клиентам (координаты юзеров)
                 syncCoords = System.currentTimeMillis() - lastSyncCoords > SYNC_COORDS_INTERVAL;
                 for (int i = 0; i < size; i++) {
@@ -142,7 +112,7 @@ public class ServerGameHolder implements GameHolder {
                 out.writeFloat(user.getX());
                 out.writeFloat(user.getY());
             } else {
-                out.writeFloat(FLAG_SYNC_NOT_NEEDED); // Если юзер в движении, то лучше не синхронизировать, будет дергаться на клиентах
+                out.writeFloat(FLAG_SYNC_NOT_NEEDED); // Без остановки не синхронизировать, будет дергаться на клиентах
             }
             out.writeInt(user.getMove());
         }
@@ -155,7 +125,7 @@ public class ServerGameHolder implements GameHolder {
 
     private void removeUser(User user) {
         String msg = activity.getString(R.string.user) + " " + user.getName() + " " + activity.getString(R.string.disconnected);
-        Log.e(TAG, msg);
+        Log.d(TAG, msg);
         gameServer.toast(msg);
         clients.remove(user);
         int size = clients.size();
@@ -170,16 +140,6 @@ public class ServerGameHolder implements GameHolder {
                 gameServer.toast("Remove user request error " + e.getMessage());
             }
         }
-    }
-
-    @Override
-    public Activity getActivity() {
-        return activity;
-    }
-
-    @Override
-    public GameConnection getGameConnection() {
-        return gameServer;
     }
 
     private void initWorld() {

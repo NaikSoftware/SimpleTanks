@@ -37,6 +37,7 @@ public abstract class GameConnection {
     private InetAddress[] addresses;
     private ExecutorService background;
     private boolean takeMdnsPackets;
+    private boolean gameRunning;
 
     public GameConnection(Activity activity) {
         this.activity = activity;
@@ -165,6 +166,14 @@ public abstract class GameConnection {
 
     protected void inBG(Runnable r) {
         background.submit(r);
+    }
+    
+    protected void setGameRunning() {
+        gameRunning = true;
+    }
+    
+    public boolean isGameRunning() {
+        return gameRunning;
     }
 
 }

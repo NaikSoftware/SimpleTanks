@@ -6,6 +6,7 @@
     <string name="settings">Settings</string>
     <string name="info">Info</string>
     <string name="exit">Exit</string>
+    <string name="exit_notify">Do you want to exit?</string>
     
     <!-- Server -->
 	<string-array name="online_modes">

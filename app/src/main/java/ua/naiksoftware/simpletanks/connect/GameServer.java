@@ -465,6 +465,7 @@ public class GameServer extends GameConnection {
                     @Override
                     public void run() {
                         dialog.dismiss();
+                        setGameRunning();
                         ServerGameHolder gameHolder = new ServerGameHolder(GameServer.this, activity);
                         GameView gameView = new GameView(gameHolder);
                         View v = LayoutInflater.from(activity).inflate(R.layout.play_screen, null);
