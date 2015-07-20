@@ -46,9 +46,10 @@ public class GameServer extends GameConnection {
     public static final int REMOVE_USER = 6;
     public static final int PING_CLIENT = 7;
     public static final int SEND_USER = 8;
+    public static final int SEND_PLAY_EVENT = 9;
 
-    public static final int CODE_ERROR = 8;
-    public static final int CODE_OK = 9;
+    public static final int CODE_ERROR = 222;
+    public static final int CODE_OK = 200;
 
     public static final String KEY_SERVER_NAME = "key_name";
 
@@ -270,7 +271,7 @@ public class GameServer extends GameConnection {
                                     DataOutputStream out = cli.getOut();
                                     try {
                                         out.writeInt(REMOVE_USER);
-                                        out.writeLong(client.getId());
+                                        out.writeLong(client.getID());
                                     } catch (IOException e) {
                                         e.printStackTrace();// ignore, handle errors in accept thread
                                     }
@@ -332,7 +333,7 @@ public class GameServer extends GameConnection {
             DataOutputStream out = newClient.getOut();
             out.writeInt(ADD_USER);
             out.writeUTF(myUser.getName());
-            out.writeLong(myUser.getId());
+            out.writeLong(myUser.getID());
             out.writeUTF(myUser.getIp());
             /* Теперь обновляем список юзеров сервера у всех клиентов */
             clientsList.add(newClient);
@@ -343,13 +344,13 @@ public class GameServer extends GameConnection {
                 out = client.getOut();
                 out.writeInt(ADD_USER);
                 out.writeUTF(newClient.getName());
-                out.writeLong(newClient.getId());
+                out.writeLong(newClient.getID());
                 out.writeUTF(newClient.getIp());
                 /* А новому клиенту шлем остальных */
                 out = newClient.getOut();
                 out.writeInt(ADD_USER);
                 out.writeUTF(client.getName());
-                out.writeLong(client.getId());
+                out.writeLong(client.getID());
                 out.writeUTF(client.getIp());
             }
 

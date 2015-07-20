@@ -277,7 +277,7 @@ public class GameClient extends GameConnection implements ServiceListener {
                         socket.getOutputStream().write(GameServer.CONNECT_REQUEST);
                         out = new DataOutputStream(socket.getOutputStream());
                         out.writeUTF(myUser.getName());
-                        out.writeLong(myUser.getId());
+                        out.writeLong(myUser.getID());
                         in = new DataInputStream(socket.getInputStream());
                         final String pathToMap = in.readUTF();
                         try {

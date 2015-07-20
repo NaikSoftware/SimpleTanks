@@ -2,11 +2,16 @@ package ua.naiksoftware.simpletanks.connect;
 
 import android.app.Activity;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 
 import java.util.ArrayList;
 
+import ua.naiksoftware.simpletanks.Bullet;
 import ua.naiksoftware.simpletanks.User;
 import ua.naiksoftware.simpletanks.GameMap;
+import ua.naiksoftware.simpletanks.res.ImageID;
+import ua.naiksoftware.simpletanks.res.ResKeeper;
+import ua.naiksoftware.utils.Pool;
 
 /**
  * Created by Naik on 10.07.15.
@@ -16,7 +21,6 @@ public abstract class GameHolder {
     public static final int NO_CLICK = -1;
     
     private Activity activity;
-    private GameConnection gameConnection;
     private int click = NO_CLICK;
     private GameMap gameMap;
     private ArrayList<? extends User> users;
@@ -24,9 +28,11 @@ public abstract class GameHolder {
     private int scrW, scrH;
     private int mapWidth, mapHeight;
     private final int tileSize;
+    protected final float bulletsDefaultSpeed;
+    private final ArrayList<Bullet> bullets = new ArrayList<Bullet>();
+    protected final Pool<Bullet> bulletsPool;
 
-    public GameHolder(GameConnection gameConnection, Activity activity) {
-        this.gameConnection = gameConnection;
+    public GameHolder(GameConnection gameConnection, final Activity activity) {
         this.activity = activity;
         users = gameConnection.getUsers();
         myUser = gameConnection.getMyUser();
@@ -34,6 +40,17 @@ public abstract class GameHolder {
         mapWidth = gameMap.mapWpix;
         mapHeight = gameMap.mapHpix;
         tileSize = gameMap.TILE_SIZE;
+        bulletsDefaultSpeed = tileSize / 100f;
+        bulletsPool = new Pool<Bullet>(10, new Pool.ObjectFactory<Bullet>() {
+            {
+                Bullet.bitmapVert = ResKeeper.getImage(ImageID.BULLET_VERTICAL, activity.getResources());
+                Bullet.bitmapHoriz = ResKeeper.getImage(ImageID.BULLET_HORIZONTAL, activity.getResources());
+            }
+            @Override
+            public Bullet create() {
+                return new Bullet();
+            }
+        });
     }
     
     public abstract void startGame();
@@ -65,7 +82,36 @@ public abstract class GameHolder {
         gameMap.setPosition(x, y);
         gameMap.draw(canvas);
         canvas.translate(-x, -y);
+        Bullet bullet, bullet2;
+        Rect rect;
         User user;
+        for (int i = 0; i < bullets.size(); i++) {
+            bullet = bullets.get(i);
+            rect = bullet.draw(canvas, deltaTime);
+            if (gameMap.intersectsWith(rect)) {
+                bulletOnWall(bullet);
+                continue;
+            }
+            for (int j = 0; j < bullets.size(); j++) {
+                bullet2 = bullets.get(j);
+                if (bullet == bullet2) continue;
+                if (Rect.intersects(rect, bullet2.getBoundsRect())) {
+                    bulletsBabah(bullet, bullet2);
+                    break; // Только 2 пули могут столкнуться одновременно
+                }
+            }
+            for (int j = 0; j < users.size(); j++) {
+                user = users.get(j);
+                if (user == bullet.getOwner()) continue;
+                if (Rect.intersects(rect, user.getBoundsRect())) {
+                    userBombom(user, bullet);
+                    break; // Одна пуля может поразить только одного юнита
+                }
+            }
+            if (myUser != bullet.getOwner() && Rect.intersects(rect, myUser.getBoundsRect())) {
+                userBombom(myUser, bullet);
+            }
+        }
         for (int i = 0; i < users.size(); i++) {
             user = users.get(i);
             processUser(user, deltaTime);
@@ -87,6 +133,14 @@ public abstract class GameHolder {
             if (user != myUser) user.intersectWith(myUser);
         }
     }
+
+    protected ArrayList<Bullet> getBullets() {
+        return bullets;
+    }
+
+    protected abstract void bulletsBabah(Bullet bullet, Bullet bullet2);
+    protected abstract void userBombom(User user, Bullet bullet);
+    protected abstract void bulletOnWall(Bullet bullet);
     
 	public abstract void stopGame();
 

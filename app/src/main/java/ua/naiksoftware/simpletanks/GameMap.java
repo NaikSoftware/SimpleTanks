@@ -132,6 +132,23 @@ public class GameMap {
         }
     }
 
+    public boolean intersectsWith(Rect rect) {
+        if (rect.top < 0) {
+            return true;
+        } else if (rect.bottom > mapHpix) {
+            return true;
+        }
+        if (rect.left < 0) {
+            return true;
+        } else if (rect.right > mapWpix) {
+            return true;
+        }
+        return tiles[rect.left / TILE_SIZE][rect.top / TILE_SIZE] != null ||
+                tiles[rect.left / TILE_SIZE][rect.bottom / TILE_SIZE] != null ||
+                tiles[rect.right / TILE_SIZE][rect.top / TILE_SIZE] != null ||
+                tiles[rect.right / TILE_SIZE][rect.bottom / TILE_SIZE] != null;
+    }
+
     public static Map<String, String> readMapsList(Resources res) throws IOException {
         Map<String,String> maps = new HashMap<String, String>();
         AssetManager assets = res.getAssets();

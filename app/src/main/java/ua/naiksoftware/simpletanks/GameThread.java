@@ -41,6 +41,7 @@ public class GameThread extends Thread {
                             case R.id.btnDown: gameHolder.onClick(User.DOWN); break;
                             case R.id.btnLeft: gameHolder.onClick(User.LEFT); break;
                             case R.id.btnRight: gameHolder.onClick(User.RIGHT); break;
+                            case R.id.btnFire: gameHolder.onClick(User.FIRE); break;
                         }
                         break;
                     case MotionEvent.ACTION_CANCEL:

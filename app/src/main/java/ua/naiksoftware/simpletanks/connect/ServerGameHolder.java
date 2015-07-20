@@ -7,12 +7,15 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
+import ua.naiksoftware.simpletanks.Bullet;
 import ua.naiksoftware.simpletanks.GameMap;
 import ua.naiksoftware.simpletanks.Log;
+import ua.naiksoftware.simpletanks.PlayEvent;
 import ua.naiksoftware.simpletanks.R;
 import ua.naiksoftware.simpletanks.Tile;
 import ua.naiksoftware.simpletanks.User;
 import ua.naiksoftware.simpletanks.res.ImageID;
+import ua.naiksoftware.utils.Pool;
 
 /**
  * Created by Naik on 10.07.15.
@@ -31,6 +34,9 @@ public class ServerGameHolder extends GameHolder {
     private final GameMap gameMap;
 	private ConnectionThread connectionThread;
     private long lastSyncCoords;
+    private final ArrayList<Bullet> bullets = getBullets();
+    private final ArrayList<PlayEvent> playEvents = new ArrayList<PlayEvent>();
+    private boolean fire;
     
     public ServerGameHolder(GameServer gameServer, Activity activity) {
         super(gameServer, activity);
@@ -48,7 +54,7 @@ public class ServerGameHolder extends GameHolder {
 		connectionThread.start();
     }
 
-	/* Поток для отсылки и приема данных */
+    /* Поток для отсылки и приема данных */
 	private class ConnectionThread extends Thread {
 
 		private boolean running;
@@ -65,15 +71,19 @@ public class ServerGameHolder extends GameHolder {
                 for (int i = 0; i < size; i++) {
                     client = clients.get(i);
                     try {
-                        int userClick = client.in.readInt();
-                        client.setMove(userClick);
+                        updateUser(client, client.in.readInt());
                     } catch (IOException e) {
                         e.printStackTrace();
                         removeUser(client);
                         size--;
                     }
                 }
-                myUser.setMove(myClick());
+                if (fire) {
+                    updateUser(myUser, User.FIRE);
+                    fire = false;
+                } else {
+                    updateUser(myUser, myClick());
+                }
                 // Рассылаем изменения клиентам (координаты юзеров)
                 syncCoords = System.currentTimeMillis() - lastSyncCoords > SYNC_COORDS_INTERVAL;
                 for (int i = 0; i < size; i++) {
@@ -83,12 +93,17 @@ public class ServerGameHolder extends GameHolder {
                             sendUser(out, clients.get(j), syncCoords);
                         }
                         sendUser(out, myUser, syncCoords);
+                        // Отсылаем действия в игре (выстрелы, попадания и т.п.)
+                        for (int j = 0; j < playEvents.size(); j++) {
+                            sendEvent(out, playEvents.get(j));
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                         removeUser(clients.get(i));
                         size--;
                     }
                 }
+                clearEvents();
                 if (syncCoords) lastSyncCoords = System.currentTimeMillis();
                 // Отсылаем статус что итерация выполнена и deltaTime
 
@@ -104,23 +119,114 @@ public class ServerGameHolder extends GameHolder {
 			}
 		}
 
-        private void sendUser(DataOutputStream out, User user, boolean syncCoords) throws IOException {
-            out.writeInt(GameServer.SEND_USER);
-            out.writeLong(user.getId());
-            if (syncCoords) {
-                out.writeFloat(user.getX());
-                out.writeFloat(user.getY());
-            } else {
-                out.writeFloat(FLAG_SYNC_NOT_NEEDED); // Без остановки не синхронизировать, будет дергаться на клиентах
-            }
-            out.writeInt(user.getMove());
-        }
-
 		public void stopRunning() {
 			running = false;
 			interrupt();
 		}
 	}
+
+    private void updateUser(User user, int click) {
+        if (click == User.FIRE) {
+            fire(user);
+        } else {
+            user.setMove(click);
+        }
+    }
+
+    private void sendUser(DataOutputStream out, User user, boolean syncCoords) throws IOException {
+        out.writeInt(GameServer.SEND_USER);
+        out.writeLong(user.getID());
+        if (syncCoords) {
+            out.writeFloat(user.getX());
+            out.writeFloat(user.getY());
+        } else {
+            out.writeFloat(FLAG_SYNC_NOT_NEEDED); // Без остановки не синхронизировать, будет дергаться на клиентах
+        }
+        out.writeInt(user.getMove());
+    }
+
+    private void sendEvent(DataOutputStream out, PlayEvent event) throws IOException {
+        out.writeInt(GameServer.SEND_PLAY_EVENT);
+        out.writeInt(event.getType());
+        Bullet bullet;
+        switch (event.getType()) {
+            case PlayEvent.USER_FIRE:
+                bullet = (Bullet)event.getParams()[0];
+                out.writeLong(bullet.getID());
+                out.writeLong(bullet.getOwner().getID());
+                out.writeFloat(bullet.getSpeed());
+                break;
+            case PlayEvent.BULLET_ON_WALL:
+                bullet = (Bullet)event.getParams()[0];
+                out.writeLong(bullet.getID());
+                break;
+            case PlayEvent.BULLETS_BABAH:
+                bullet = (Bullet)event.getParams()[0];
+                out.writeLong(bullet.getID());
+                bullet = (Bullet)event.getParams()[1];
+                out.writeLong(bullet.getID());
+                break;
+            case PlayEvent.USER_BOMBOM:
+                User user = (User)event.getParams()[0];
+                out.writeLong(user.getID());
+                bullet = (Bullet)event.getParams()[1];
+                out.writeLong(bullet.getID());
+                break;
+        }
+    }
+
+    @Override
+    public void onClick(int click) {
+        super.onClick(click);
+        if (click == User.FIRE) {
+            fire = true;
+        }
+    }
+
+    private void fire(User user) {
+        if (System.currentTimeMillis() - user.getLastFire() > User.FIRE_INTERVAL) {
+            Bullet bullet = bulletsPool.obtain();
+            bullet.setup(user, bulletsDefaultSpeed);
+            PlayEvent event = eventsPool.obtain();
+            event.setup(PlayEvent.USER_FIRE, bullet);
+            playEvents.add(event);
+            bullets.add(bullet);
+            user.updateLastFire();
+        }
+    }
+
+    @Override
+    protected void bulletsBabah(Bullet bullet, Bullet bullet2) {
+        PlayEvent event = eventsPool.obtain();
+        event.setup(PlayEvent.BULLETS_BABAH, bullet, bullet2);
+        bullets.remove(bullet);
+        bullets.remove(bullet2);
+        playEvents.add(event);
+    }
+
+    @Override
+    protected void userBombom(User user, Bullet bullet) {
+        PlayEvent event = eventsPool.obtain();
+        event.setup(PlayEvent.USER_BOMBOM, user, bullet);
+        bullets.remove(bullet);
+        playEvents.add(event);
+    }
+
+    @Override
+    protected void bulletOnWall(Bullet bullet) {
+        PlayEvent event = eventsPool.obtain();
+        event.setup(PlayEvent.BULLET_ON_WALL, bullet);
+        bullets.remove(bullet);
+        playEvents.add(event);
+    }
+
+    private void clearEvents() {
+        int size = playEvents.size();
+        for (int i = 0; i < size; i++) {
+            playEvents.get(i).release();
+        }
+        playEvents.clear();
+    }
 
     private void removeUser(User user) {
         String msg = activity.getString(R.string.user) + " " + user.getName() + " " + activity.getString(R.string.disconnected);
@@ -133,7 +239,7 @@ public class ServerGameHolder extends GameHolder {
             DataOutputStream out = clients.get(i).out;
             try {
                 out.writeInt(GameServer.REMOVE_USER);
-                out.writeLong(user.getId());
+                out.writeLong(user.getID());
             } catch (IOException e) {
                 e.printStackTrace();
                 gameServer.toast("Remove user request error " + e.getMessage());
@@ -180,4 +286,12 @@ public class ServerGameHolder extends GameHolder {
 	public void stopGame() {
 		connectionThread.stopRunning();
 	}
+
+    private final Pool<PlayEvent> eventsPool = new Pool<PlayEvent>(30, new Pool.ObjectFactory<PlayEvent>() {
+        @Override
+        public PlayEvent create() {
+            return new PlayEvent();
+        }
+    });
+
 }

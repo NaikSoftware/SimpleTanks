@@ -26,6 +26,8 @@ public class User {
     public static final int FIRE = 5;
     public static final int MINE = 6;
 
+    public static final int FIRE_INTERVAL = 400;//ms
+
     private String name;
     private String ip;
     private long id;
@@ -39,6 +41,7 @@ public class User {
     private final Rect boundsRect = new Rect();
     private int spriteSize;
 	private int move = GameHolder.NO_CLICK;
+    private long lastFire = System.currentTimeMillis();
 
     public User(long id, int type) {
         this.id = id;
@@ -75,7 +78,7 @@ public class User {
         boundsRect.set(0, 0, spriteSize, spriteSize);
     }
 
-    public long getId() {
+    public long getID() {
         return id;
     }
 
@@ -173,8 +176,16 @@ public class User {
         this.speed = speed;
     }
 
+    public long getLastFire() {
+        return lastFire;
+    }
+
+    public void updateLastFire() {
+        lastFire = System.currentTimeMillis();
+    }
+
     @Override
     public boolean equals(Object o) {
-        return o instanceof User && ((User) o).getId() == id;
+        return o instanceof User && ((User) o).getID() == id;
     }
 }

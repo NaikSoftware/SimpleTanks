@@ -10,15 +10,21 @@ public class BitmapUtil {
 
     private static final Matrix matrix = new Matrix();
 
-    public static Bitmap rotate(Bitmap bitmap, int deg) {
+    public static Bitmap rotate(Bitmap bitmap, int deg, boolean crop) {
         matrix.reset();
         matrix.preRotate(deg);
         Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-        int diffX = (resizedBitmap.getWidth() - bitmap.getWidth()) / 2;
-        int diffY = (resizedBitmap.getHeight() - bitmap.getHeight()) / 2;
-        Bitmap resultBitmap = Bitmap.createBitmap(resizedBitmap, diffX, diffY, bitmap.getWidth(), bitmap.getHeight());
-        resizedBitmap.recycle();
-        return resultBitmap;
+        if (crop) {
+            int diffX = (resizedBitmap.getWidth() - bitmap.getWidth()) / 2;
+            int diffY = (resizedBitmap.getHeight() - bitmap.getHeight()) / 2;
+            if (diffX < 0) diffX = 0; // Если после поворота размер не увеличился, а уменьшился,
+            if (diffY < 0) diffY = 0; // то игнорируем его.
+            Bitmap resultBitmap = Bitmap.createBitmap(resizedBitmap, diffX, diffY, bitmap.getWidth(), bitmap.getHeight());
+            resizedBitmap.recycle();
+            return resultBitmap;
+        } else {
+            return resizedBitmap;
+        }
     }
 
     public static Bitmap reflect(Bitmap bitmap, ReflectType type) {

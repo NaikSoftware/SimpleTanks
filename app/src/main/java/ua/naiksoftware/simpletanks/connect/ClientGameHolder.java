@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import ua.naiksoftware.simpletanks.Bullet;
+import ua.naiksoftware.simpletanks.PlayEvent;
 import ua.naiksoftware.simpletanks.R;
 import ua.naiksoftware.simpletanks.User;
 
@@ -25,6 +27,9 @@ public class ClientGameHolder extends GameHolder {
     private final DataInputStream input;
     private final float scale;
     private ConnectionThread connectionThread;
+    private ArrayList<Bullet> bullets = getBullets();
+    private HashMap<Long, Bullet> bulletsMap = new HashMap<Long, Bullet>();
+    private boolean fire;
     
     public ClientGameHolder(GameClient gameClient, Activity activity, int serverTileSize) {
         super(gameClient, activity);
@@ -34,10 +39,10 @@ public class ClientGameHolder extends GameHolder {
         output = gameClient.getServer().out;
         input = gameClient.getServer().in;
         for (User user : users) {
-            usersMap.put(user.getId(), user);
+            usersMap.put(user.getID(), user);
         }
         User myUser = gameClient.getMyUser();
-        usersMap.put(myUser.getId(), myUser);
+        usersMap.put(myUser.getID(), myUser);
         int tileSize = gameClient.getGameMap().TILE_SIZE;
         scale = tileSize / (float) serverTileSize;
         for (User user : users) {
@@ -50,6 +55,29 @@ public class ClientGameHolder extends GameHolder {
     @Override
     public void startGame() {
         connectionThread.start();
+    }
+
+    @Override
+    public void onClick(int click) {
+        super.onClick(click);
+        if (click == User.FIRE) {
+            fire = true;
+        }
+    }
+
+    @Override
+    protected void bulletsBabah(Bullet bullet, Bullet bullet2) {
+
+    }
+
+    @Override
+    protected void userBombom(User user, Bullet bullet) {
+
+    }
+
+    @Override
+    protected void bulletOnWall(Bullet bullet) {
+
     }
 
     /* Поток для отсылки и приема данных */
@@ -65,7 +93,14 @@ public class ClientGameHolder extends GameHolder {
                 float tmp;
                 boolean read;
                 while (running) {
-                    output.writeInt(myClick());
+                    if (fire) {
+                        // Если была нажата кнопка выстрела ранее, то отсылаем выстрел, чтобы не
+                        // допустить пропусков выстрелов.
+                        output.writeInt(User.FIRE);
+                        fire = false;
+                    } else {
+                        output.writeInt(myClick());
+                    }
                     read = true;
                     while (read) {
                         switch (input.readInt()) {
@@ -77,6 +112,9 @@ public class ClientGameHolder extends GameHolder {
                                     user.setY(input.readFloat() * scale);
                                 }
                                 user.setMove(input.readInt());
+                                break;
+                            case GameServer.SEND_PLAY_EVENT:
+                                processGameEvent(input);
                                 break;
                             case GameServer.REMOVE_USER:
                                 user = usersMap.get(input.readLong());
@@ -99,6 +137,52 @@ public class ClientGameHolder extends GameHolder {
         public void stopRunning() {
             running = false;
             interrupt();
+        }
+    }
+
+    private void processGameEvent(DataInputStream input) throws IOException {
+        Bullet bullet;
+        User user;
+        long bulletId, userId;
+        switch (input.readInt()) {
+            case PlayEvent.USER_FIRE:
+                bulletId = input.readLong();
+                userId = input.readLong();
+                float bulletSpeed = input.readFloat();
+                user = usersMap.get(userId);
+                bullet = bulletsPool.obtain();
+                bullet.setup(user, bulletSpeed * scale);
+                bullet.changeID(bulletId);
+                bullets.add(bullet);
+                bulletsMap.put(bulletId, bullet);
+                break;
+            case PlayEvent.BULLET_ON_WALL:
+                bulletId = input.readLong();
+                bullet = bulletsMap.get(bulletId);
+                bullets.remove(bullet);
+                bulletsMap.remove(bulletId);
+                break;
+            case PlayEvent.BULLETS_BABAH:
+                // remove 1
+                bulletId = input.readLong();
+                bullet = bulletsMap.get(bulletId);
+                bullets.remove(bullet);
+                bulletsMap.remove(bulletId);
+                // remove 2
+                bulletId = input.readLong();
+                bullet = bulletsMap.get(bulletId);
+                bullets.remove(bullet);
+                bulletsMap.remove(bulletId);
+                break;
+            case PlayEvent.USER_BOMBOM:
+                // remove user
+                userId = input.readLong();
+                // remove bullet
+                bulletId = input.readLong();
+                bullet = bulletsMap.get(bulletId);
+                bullets.remove(bullet);
+                bulletsMap.remove(bulletId);
+                break;
         }
     }
 
