@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import ua.naiksoftware.simpletanks.Bullet;
+import ua.naiksoftware.simpletanks.Log;
 import ua.naiksoftware.simpletanks.PlayEvent;
 import ua.naiksoftware.simpletanks.R;
 import ua.naiksoftware.simpletanks.User;
@@ -30,18 +31,20 @@ public class ClientGameHolder extends GameHolder {
     private ArrayList<Bullet> bullets = getBullets();
     private HashMap<Long, Bullet> bulletsMap = new HashMap<Long, Bullet>();
     private boolean fire;
+    private User myUser;
+    private boolean finishGame;
     
     public ClientGameHolder(GameClient gameClient, Activity activity, int serverTileSize) {
         super(gameClient, activity);
         this.gameClient = gameClient;
         this.activity = activity;
         users = gameClient.getUsers();
+        myUser = gameClient.getMyUser();
         output = gameClient.getServer().out;
         input = gameClient.getServer().in;
         for (User user : users) {
             usersMap.put(user.getID(), user);
         }
-        User myUser = gameClient.getMyUser();
         usersMap.put(myUser.getID(), myUser);
         int tileSize = gameClient.getGameMap().TILE_SIZE;
         scale = tileSize / (float) serverTileSize;
@@ -93,6 +96,10 @@ public class ClientGameHolder extends GameHolder {
                 float tmp;
                 boolean read;
                 while (running) {
+                    if (finishGame) {
+                        gameOver();
+                        break;
+                    }
                     if (fire) {
                         // Если была нажата кнопка выстрела ранее, то отсылаем выстрел, чтобы не
                         // допустить пропусков выстрелов.
@@ -118,9 +125,7 @@ public class ClientGameHolder extends GameHolder {
                                 break;
                             case GameServer.REMOVE_USER:
                                 user = usersMap.get(input.readLong());
-                                users.remove(user);
-                                String msg = activity.getString(R.string.user) + " " + user.getName() + " " + activity.getString(R.string.disconnected);
-                                gameClient.toast(msg);
+                                removeUser(user, activity.getString(R.string.user) + " " + user.getName() + " " + activity.getString(R.string.disconnected));
                                 break;
                             case GameServer.CODE_OK:
                                 read = false;
@@ -130,6 +135,7 @@ public class ClientGameHolder extends GameHolder {
                 }
             } catch (IOException e) {
                 e.printStackTrace();
+                Log.e(TAG, "Exception detected, stop client", e);
                 gameClient.stop();
             }
         }
@@ -177,16 +183,35 @@ public class ClientGameHolder extends GameHolder {
             case PlayEvent.USER_BOMBOM:
                 // remove user
                 userId = input.readLong();
-                // remove bullet
+                user = usersMap.get(userId);
                 bulletId = input.readLong();
                 bullet = bulletsMap.get(bulletId);
+                user.shot(bullet);
+                if (user == myUser) updateScreenInfo();
+                if (user.getLifes() < 1) {
+                    removeUser(user, activity.getString(R.string.user) + " " + user.getName() + " " + activity.getString(R.string.looser));
+                }
+                // remove bullet
                 bullets.remove(bullet);
                 bulletsMap.remove(bulletId);
                 break;
         }
     }
+    
+    private void removeUser(User user, String msg) {
+        gameClient.toast(msg);
+        if (user == myUser) {
+            killMyUser();
+            myUser = null;
+        } else {
+            users.remove(user);
+        }
+        if (getWinner() != null) {
+            finishGame = true;
+        }
+    }
 
-	@Override
+    @Override
 	public void stopGame() {
         connectionThread.stopRunning();
 	}

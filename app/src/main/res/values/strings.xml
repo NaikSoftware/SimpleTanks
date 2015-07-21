@@ -44,6 +44,8 @@
 	<string name="error_reading_map_list">Error reading map list</string>
 	<string name="user">User</string>
 	<string name="disconnected">disconnected</string>
+    <string name="looser">looser</string>
+    <string name="winner">winner</string>
 
 	<!-- Game -->
 

@@ -12,6 +12,9 @@ import ua.naiksoftware.simpletanks.GameMap;
 import ua.naiksoftware.simpletanks.res.ImageID;
 import ua.naiksoftware.simpletanks.res.ResKeeper;
 import ua.naiksoftware.utils.Pool;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import ua.naiksoftware.simpletanks.R;
 
 /**
  * Created by Naik on 10.07.15.
@@ -21,6 +24,7 @@ public abstract class GameHolder {
     public static final int NO_CLICK = -1;
     
     private Activity activity;
+    private GameConnection gameConnection;
     private int click = NO_CLICK;
     private GameMap gameMap;
     private ArrayList<? extends User> users;
@@ -31,8 +35,12 @@ public abstract class GameHolder {
     protected final float bulletsDefaultSpeed;
     private final ArrayList<Bullet> bullets = new ArrayList<Bullet>();
     protected final Pool<Bullet> bulletsPool;
+    private ProgressBar lifeProgressBar;
+    private TextView lifesTextView, minesTextView;
+    private boolean myUserKilled;
 
     public GameHolder(GameConnection gameConnection, final Activity activity) {
+        this.gameConnection = gameConnection;
         this.activity = activity;
         users = gameConnection.getUsers();
         myUser = gameConnection.getMyUser();
@@ -67,9 +75,14 @@ public abstract class GameHolder {
         return click;
     }
 
-    public void updateScreen(int w, int h) {
+    public void setupScreen(int w, int h) {
         scrW = w;
         scrH = h;
+        lifesTextView = (TextView)activity.findViewById(R.id.lifes);
+        minesTextView = (TextView)activity.findViewById(R.id.mines);
+        lifeProgressBar = (ProgressBar) activity.findViewById(R.id.lifesProgressBar);
+        lifeProgressBar.setMax(100); // %
+        updateScreenInfo();
     }
 
     public void drawGame(Canvas canvas, int deltaTime) {
@@ -108,7 +121,7 @@ public abstract class GameHolder {
                     break; // Одна пуля может поразить только одного юнита
                 }
             }
-            if (myUser != bullet.getOwner() && Rect.intersects(rect, myUser.getBoundsRect())) {
+            if (!myUserKilled && myUser != bullet.getOwner() && Rect.intersects(rect, myUser.getBoundsRect())) {
                 userBombom(myUser, bullet);
             }
         }
@@ -117,8 +130,10 @@ public abstract class GameHolder {
             processUser(user, deltaTime);
             user.draw(canvas);
         }
-        processUser(myUser, deltaTime);
-        myUser.draw(canvas);
+        if (!myUserKilled) {
+            processUser(myUser, deltaTime);
+            myUser.draw(canvas);
+        }
     }
 
     private void processUser(User user, int deltaTime) {
@@ -130,8 +145,38 @@ public abstract class GameHolder {
                 user2 = users.get(i);
                 if (user != user2) user.intersectWith(user2);
             }
-            if (user != myUser) user.intersectWith(myUser);
+            if (!myUserKilled && user != myUser) user.intersectWith(myUser);
         }
+    }
+    
+    protected void killMyUser() {
+        myUserKilled = true;
+    }
+    
+    protected void updateScreenInfo() {
+        gameConnection.inUI(new Runnable(){
+                @Override
+                public void run() {
+                    lifesTextView.setText(String.valueOf(myUser.getLifes()));
+                    lifeProgressBar.setProgress(myUser.getLifeProgress());
+                    minesTextView.setText(String.valueOf(myUser.getMinesCount()));
+                }
+            });
+    }
+    
+    protected void gameOver() {
+        User winner = getWinner();
+        users.remove(winner);
+        gameConnection.toast(activity.getString(R.string.user) + " " + winner.getName() + " " + activity.getString(R.string.winner));
+        gameConnection.stop();
+    }
+
+    protected User getWinner() {
+        User winner = null;
+        if (myUserKilled && users.size() == 1 || !myUserKilled && users.size() == 0) {
+            winner = !myUserKilled ? myUser : users.get(0);
+        }
+        return winner;
     }
 
     protected ArrayList<Bullet> getBullets() {

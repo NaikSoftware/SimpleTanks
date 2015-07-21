@@ -31,6 +31,7 @@
                 android:textSize="20sp" />
 
             <ProgressBar
+                android:id="@+id/lifesProgressBar"
                 style="@android:style/Widget.ProgressBar.Horizontal"
                 android:layout_width="0px"
                 android:layout_height="wrap_content"

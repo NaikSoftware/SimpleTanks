@@ -11,6 +11,8 @@ import java.util.Random;
 import ua.naiksoftware.simpletanks.res.ImageID;
 import ua.naiksoftware.simpletanks.res.ResKeeper;
 import ua.naiksoftware.simpletanks.connect.*;
+import android.graphics.Color;
+import android.graphics.Typeface;
 
 /**
  * Created by Naik on 07.07.15.
@@ -27,6 +29,12 @@ public class User {
     public static final int MINE = 6;
 
     public static final int FIRE_INTERVAL = 400;//ms
+    
+    private static final int DEFAULT_LIFES = 3;
+    private static final int DEFAULT_POWER = 20;
+    private static final int DEFAULT_MINES = 0;
+    
+    private static final int TEXT_SIZE = 13;
 
     private String name;
     private String ip;
@@ -42,7 +50,19 @@ public class User {
     private int spriteSize;
 	private int move = GameHolder.NO_CLICK;
     private long lastFire = System.currentTimeMillis();
+    private int lifes = DEFAULT_LIFES;
+    private int lifeProgress = 100; // %
+    private int power = DEFAULT_POWER;
+    private int minesCount = DEFAULT_MINES;
+    private boolean destroyed;
 
+    static {
+        paint.setColor(Color.BLACK);
+        paint.setAntiAlias(true);
+        paint.setTextSize(TEXT_SIZE);
+        paint.setTypeface(Typeface.DEFAULT_BOLD);
+    }
+    
     public User(long id, int type) {
         this.id = id;
         this.type = type;
@@ -104,6 +124,7 @@ public class User {
 
     public void draw(Canvas canvas) {
         canvas.drawBitmap(bitmap, x, y, paint);
+        canvas.drawText(name, x, y - TEXT_SIZE, paint);
     }
 
     public void move(int deltaTime) {
@@ -182,6 +203,43 @@ public class User {
 
     public void updateLastFire() {
         lastFire = System.currentTimeMillis();
+    }
+    
+    public int getLifes() {
+        return lifes;
+    }
+    
+    public int getLifeProgress() {
+        return lifeProgress;
+    }
+    
+    public void shot(Bullet bullet) {
+        lifeProgress -= bullet.getOwner().getPower();
+        if (lifeProgress <= 0) {
+            lifes--;
+            if (lifes > 0) lifeProgress = 100;
+            else lifeProgress = 0;
+        }
+    }
+    
+    public int getPower() {
+        return power;
+    }
+    
+    public int getMinesCount() {
+        return minesCount;
+    }
+    
+    public void setMinesCount(int n) {
+        minesCount = n;
+    }
+
+    public void destroy() {
+        destroyed = true;
+    }
+
+    public boolean isDestroyed() {
+        return destroyed;
     }
 
     @Override

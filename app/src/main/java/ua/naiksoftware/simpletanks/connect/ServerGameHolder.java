@@ -30,7 +30,7 @@ public class ServerGameHolder extends GameHolder {
     private final GameServer gameServer;
     private final Activity activity;
     private final ArrayList<GameServer.Client> clients;
-    private final User myUser;
+    private User myUser;
     private final GameMap gameMap;
 	private ConnectionThread connectionThread;
     private long lastSyncCoords;
@@ -62,59 +62,67 @@ public class ServerGameHolder extends GameHolder {
 		@Override
 		public void run() {
 			running = true;
-            int size = clients.size();
             DataOutputStream out;
             GameServer.Client client;
             boolean syncCoords;
 			while (running) {
                 // Получаем изменения от клиентов (нажатия на кнопки) и сразу обновляем мир
-                for (int i = 0; i < size; i++) {
+                for (int i = 0; i < clients.size(); i++) {
                     client = clients.get(i);
                     try {
                         updateUser(client, client.in.readInt());
                     } catch (IOException e) {
                         e.printStackTrace();
-                        removeUser(client);
-                        size--;
+                        removeUser(client, activity.getString(R.string.user) + " " + client.getName() + " " + activity.getString(R.string.disconnected), true);
                     }
                 }
-                if (fire) {
-                    updateUser(myUser, User.FIRE);
-                    fire = false;
-                } else {
-                    updateUser(myUser, myClick());
+                if (myUser != null) {
+                    if (fire) {
+                        updateUser(myUser, User.FIRE);
+                        fire = false;
+                    } else {
+                        updateUser(myUser, myClick());
+                    }
                 }
                 // Рассылаем изменения клиентам (координаты юзеров)
                 syncCoords = System.currentTimeMillis() - lastSyncCoords > SYNC_COORDS_INTERVAL;
-                for (int i = 0; i < size; i++) {
-                    out = clients.get(i).out;
+                for (int i = 0; i < clients.size(); i++) {
+                    client = clients.get(i);
+                    out = client.out;
                     try {
-                        for (int j = 0; j < size; j++) {
+                        for (int j = 0; j < clients.size(); j++) {
                             sendUser(out, clients.get(j), syncCoords);
                         }
-                        sendUser(out, myUser, syncCoords);
+                        if (myUser != null) sendUser(out, myUser, syncCoords);
                         // Отсылаем действия в игре (выстрелы, попадания и т.п.)
                         for (int j = 0; j < playEvents.size(); j++) {
                             sendEvent(out, playEvents.get(j));
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
-                        removeUser(clients.get(i));
-                        size--;
+                        if (!client.isDestroyed()) { // Убитого юнита и победителя удалим далее, после обработки состояния игры
+                            removeUser(client, activity.getString(R.string.user) + " " + client.getName() + " " + activity.getString(R.string.disconnected), true);
+                        }
                     }
                 }
                 clearEvents();
                 if (syncCoords) lastSyncCoords = System.currentTimeMillis();
                 // Отсылаем статус что итерация выполнена и deltaTime
-
-                for (int i = 0; i < size; i++) {
-                    out = clients.get(i).out;
+                for (int i = 0; i < clients.size(); i++) {
+                    client = clients.get(i);
+                    out = client.out;
                     try {
                         out.writeInt(GameServer.CODE_OK);
                     } catch (IOException e) {
                         e.printStackTrace();
-                        gameServer.toast("OK request to " + clients.get(i).getName() + " failed: " + e.getMessage());
+                        gameServer.toast("OK request to " + client.getName() + " failed: " + e.getMessage());
                     }
+                    if (client.isDestroyed()) {
+                        removeUser(client, activity.getString(R.string.user) + " " + client.getName() + " " + activity.getString(R.string.looser), false);
+                    }
+                }
+                if (myUser != null && myUser.isDestroyed()) {
+                    removeUser(myUser, activity.getString(R.string.user) + " " + myUser.getName() + " " + activity.getString(R.string.looser), false);
                 }
 			}
 		}
@@ -206,10 +214,15 @@ public class ServerGameHolder extends GameHolder {
 
     @Override
     protected void userBombom(User user, Bullet bullet) {
+        user.shot(bullet);
         PlayEvent event = eventsPool.obtain();
         event.setup(PlayEvent.USER_BOMBOM, user, bullet);
         bullets.remove(bullet);
         playEvents.add(event);
+        if (user == myUser) updateScreenInfo();
+        if (user.getLifes() < 1) {
+            user.destroy();
+        }
     }
 
     @Override
@@ -228,11 +241,18 @@ public class ServerGameHolder extends GameHolder {
         playEvents.clear();
     }
 
-    private void removeUser(User user) {
-        String msg = activity.getString(R.string.user) + " " + user.getName() + " " + activity.getString(R.string.disconnected);
-        Log.d(TAG, msg);
+    private void removeUser(User user, String msg, boolean notifyOthers) {
         gameServer.toast(msg);
-        clients.remove(user);
+        if (user == myUser) {
+            killMyUser();
+            myUser = null;
+        } else {
+            clients.remove(user);
+        }
+        if (getWinner() != null) {
+            gameOver();
+        }
+        if (!notifyOthers) return;
         int size = clients.size();
         // Уведомляем остальных клиентов об отсоединении юзера
         for (int i = 0; i < size; i++) {

@@ -21,7 +21,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
-        gameHolder.updateScreen(holder.getSurfaceFrame().width(), holder.getSurfaceFrame().height());
+        gameHolder.setupScreen(holder.getSurfaceFrame().width(), holder.getSurfaceFrame().height());
         gameThread = new GameThread(getHolder(), gameHolder);
         gameThread.start();
     }
