@@ -175,6 +175,7 @@ public class GameServer extends GameConnection {
                                         try {
                                             jmdns = JmDNS.create(addr, HOSTNAME);
                                         } catch (IOException e) {
+                                            Log.e(TAG, "JmDNS create error", e);
                                             toast("JmDNS create: " + e.toString());
                                         }
                                         ServiceInfo serviceInfo = ServiceInfo.create(SERVICE_TYPE, HOSTNAME, PORT, "SimpleTanks server on " + android.os.Build.DEVICE);
@@ -301,11 +302,9 @@ public class GameServer extends GameConnection {
                     clientSock.setSoTimeout(10000);
                     clientSock.setSoLinger(true, 0);
                     int code = clientSock.getInputStream().read();
-                    toast("Client code received " + code);
                     if (code == END_WAITING // Принимаем сообщение конца ожидания только от себя, на всякий случай
                             && clientSock.getInetAddress().getHostAddress().equals(myIp)) {
                         Log.d(TAG, "End waiting clients code detected");
-                        toast("End waiting detected");
                         break;
                     } else if (code == CONNECT_REQUEST) { // Кто-то хочет присоединиться к игре
                        acceptNewClient(clientSock);
@@ -316,7 +315,7 @@ public class GameServer extends GameConnection {
                 }
             } catch (IOException e) {
                 Log.e(TAG, "Server exception in accept thread", e);
-                toast("2: " + e.toString());
+                toast("Waiting error");
                 if (!serverSocket.isClosed()) {
                     try {
                         serverSocket.close();

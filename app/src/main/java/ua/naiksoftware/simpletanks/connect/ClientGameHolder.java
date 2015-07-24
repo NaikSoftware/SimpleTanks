@@ -21,7 +21,6 @@ public class ClientGameHolder extends GameHolder {
 
     private static final String TAG = ClientGameHolder.class.getSimpleName();
     private final GameClient gameClient;
-    private final Activity activity;
     private final ArrayList<? extends User> users;
     private final HashMap<Long, User> usersMap = new HashMap<Long, User>();
     private final DataOutputStream output;
@@ -37,7 +36,6 @@ public class ClientGameHolder extends GameHolder {
     public ClientGameHolder(GameClient gameClient, Activity activity, int serverTileSize) {
         super(gameClient, activity);
         this.gameClient = gameClient;
-        this.activity = activity;
         users = gameClient.getUsers();
         myUser = gameClient.getMyUser();
         output = gameClient.getServer().out;
@@ -125,7 +123,8 @@ public class ClientGameHolder extends GameHolder {
                                 break;
                             case GameServer.REMOVE_USER:
                                 user = usersMap.get(input.readLong());
-                                removeUser(user, activity.getString(R.string.user) + " " + user.getName() + " " + activity.getString(R.string.disconnected));
+                                gameClient.toast(tr(R.string.user) + " " + user.getName() + " " + tr(R.string.disconnected));
+                                removeUser(user);
                                 break;
                             case GameServer.CODE_OK:
                                 read = false;
@@ -186,28 +185,31 @@ public class ClientGameHolder extends GameHolder {
                 user = usersMap.get(userId);
                 bulletId = input.readLong();
                 bullet = bulletsMap.get(bulletId);
-                user.shot(bullet);
-                if (user == myUser) updateScreenInfo();
-                if (user.getLifes() < 1) {
-                    removeUser(user, activity.getString(R.string.user) + " " + user.getName() + " " + activity.getString(R.string.looser));
+                if (bullet != null && user != null) { // Проверка, вдруг пришло что-то не то
+                    user.shot(bullet);
+                    if (user == myUser) updateScreenInfo();
+                    if (user.getLifes() < 1) {
+                        removeUser(user);
+                    }
+                    // remove bullet
+                    bullets.remove(bullet);
+                    bulletsMap.remove(bulletId);
                 }
-                // remove bullet
-                bullets.remove(bullet);
-                bulletsMap.remove(bulletId);
                 break;
         }
     }
     
-    private void removeUser(User user, String msg) {
-        gameClient.toast(msg);
+    private void removeUser(User user) {
         if (user == myUser) {
             killMyUser();
             myUser = null;
         } else {
             users.remove(user);
         }
-        if (getWinner() != null) {
-            finishGame = true;
+        if (user == myUser || getWinner() != null) { // Вы или победили или проиграли
+            finishGame = true; // завершаем игру.
+        } else { // Игра не завершена, покажем просто уведомление.
+            gameClient.toast(tr(R.string.user) + " " + user.getName() + " " + tr(R.string.looser));
         }
     }
 

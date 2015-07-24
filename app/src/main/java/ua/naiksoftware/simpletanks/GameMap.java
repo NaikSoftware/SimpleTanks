@@ -60,8 +60,8 @@ public class GameMap {
     public void draw(Canvas canvas) {
         int fromX = mapX / TILE_SIZE;
         int fromY = mapY / TILE_SIZE;
-        int toX = fromX + canvas.getWidth() / TILE_SIZE + 1;
-        int toY = fromY + canvas.getHeight() / TILE_SIZE + 1;
+        int toX = fromX + canvas.getWidth() / TILE_SIZE + 2;
+        int toY = fromY + canvas.getHeight() / TILE_SIZE + 2;
         if (toX > mapW) toX = mapW;
         if (toY > mapH) toY = mapH;
         int fromDrawX = -mapX % TILE_SIZE;

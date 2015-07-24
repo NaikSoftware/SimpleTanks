@@ -129,7 +129,7 @@ public abstract class GameConnection {
             Log.i(TAG, "Releasing Mutlicast Lock...");
             multicastLock.release();
             multicastLock = null;
-            toast("Multicast lock stopped");
+            //toast("Multicast lock stopped");
         }
         if (wifiConnector != null) { // Если включается WiFi, прерываем
             wifiConnector.stop();

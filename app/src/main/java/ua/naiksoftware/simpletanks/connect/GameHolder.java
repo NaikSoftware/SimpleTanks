@@ -1,7 +1,11 @@
 package ua.naiksoftware.simpletanks.connect;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
 
 import java.util.ArrayList;
@@ -12,6 +16,9 @@ import ua.naiksoftware.simpletanks.GameMap;
 import ua.naiksoftware.simpletanks.res.ImageID;
 import ua.naiksoftware.simpletanks.res.ResKeeper;
 import ua.naiksoftware.utils.Pool;
+
+import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import ua.naiksoftware.simpletanks.R;
@@ -22,9 +29,18 @@ import ua.naiksoftware.simpletanks.R;
 public abstract class GameHolder {
 
     public static final int NO_CLICK = -1;
-    
-    private Activity activity;
-    private GameConnection gameConnection;
+
+    private static final int COLOR_BG = Color.DKGRAY;
+    private static final int  COLOR_MAP_BG = 0xFF5F9EA0;
+
+    private static final Paint PAINT_MAP_BG = new Paint();
+
+    static {
+        PAINT_MAP_BG.setColor(COLOR_MAP_BG);
+    }
+
+    private final Activity activity;
+    private final GameConnection gameConnection;
     private int click = NO_CLICK;
     private GameMap gameMap;
     private ArrayList<? extends User> users;
@@ -60,6 +76,10 @@ public abstract class GameHolder {
             }
         });
     }
+
+    protected String tr(int stringID) {
+        return activity.getString(stringID);
+    }
     
     public abstract void startGame();
     
@@ -86,12 +106,21 @@ public abstract class GameHolder {
     }
 
     public void drawGame(Canvas canvas, int deltaTime) {
+        canvas.drawColor(COLOR_BG); // Clear canvas
+
         int x = (int)myUser.getX() - scrW / 2 + tileSize / 2;
         int y = (int)myUser.getY() - scrH / 2 + tileSize / 2;
+
         if (x < 0 || mapWidth < scrW) x = 0;
         else if (x > mapWidth - scrW) x = mapWidth - scrW;
+
         if (y < 0 || mapHeight < scrH) y = 0;
         else if (y > mapHeight - scrH) y = mapHeight - scrH;
+
+        if (mapWidth < scrW) canvas.translate(scrW / 2 - mapWidth / 2, 0);
+        if (mapHeight < scrH) canvas.translate(0, scrH / 2 - mapHeight / 2);
+
+        canvas.drawRect(0, 0, mapWidth, mapHeight, PAINT_MAP_BG);
         gameMap.setPosition(x, y);
         gameMap.draw(canvas);
         canvas.translate(-x, -y);
@@ -166,9 +195,33 @@ public abstract class GameHolder {
     
     protected void gameOver() {
         User winner = getWinner();
-        users.remove(winner);
-        gameConnection.toast(activity.getString(R.string.user) + " " + winner.getName() + " " + activity.getString(R.string.winner));
-        gameConnection.stop();
+        final View v = LayoutInflater.from(activity).inflate(R.layout.game_over, null);
+        TextView msgView = (TextView)v.findViewById(R.id.game_over_message);
+        TextView subMsgView = (TextView)v.findViewById(R.id.sub_game_over_message);
+        if (winner == myUser) {
+            msgView.setText(R.string.you_winner);
+        } else {
+            msgView.setText(R.string.you_looser);
+            if (users.size() == 1) {
+                subMsgView.setText(tr(R.string.user) + " " + winner.getName() + " " + tr(R.string.winner));
+            }
+            users.remove(winner);
+        }
+        gameConnection.inUI(new Runnable() {
+            @Override
+            public void run() {
+                new AlertDialog.Builder(activity)
+                        .setView(v)
+                        .setCancelable(false)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                gameConnection.stop();
+                            }
+                        })
+                        .show();
+            }
+        });
     }
 
     protected User getWinner() {

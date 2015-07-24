@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <string name="info_content">
-        <b>SimpleTanks</b> - simple real-time game with multiplayer via local network.
-    </string>
-    <string name="author">NaikSoftware &#169; 2015.07</string>
-
-</resources>

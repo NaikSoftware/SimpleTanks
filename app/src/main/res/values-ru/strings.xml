@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="play">Играть</string>
+    <string name="settings">Настройки</string>
+    <string name="info">Инфо</string>
+    <string name="exit">Выход</string>
+    <string name="exit_notify">Вы хотите выйти?</string>
+
+    <!-- Server -->
+    <string-array name="online_modes">
+        <item>Создать сервер</item>
+        <item>Соединиться с сервером</item>
+    </string-array>
+    <string name="server_settings">Параметры сервера</string>
+    <string name="server_name">Имя сервера</string>
+    <string name="serv_name_empty_notice">Имя сервера пустое!</string>
+    <string name="serv_wait_clients">Ожидаем клиентов &#8230;</string>
+    <string name="select_server_ip">Выберите IP для сервера</string>
+    <string name="network_ip_not_detected">Сетевой IP не обнаружен</string>
+    <string name="server_stopped">Сервер остановлен</string>
+    <string name="owner_server">владелец сервера</string>
+    <string name="game_map">Игровая карта</string>
+    <string name="have_not_clients">Клиентов нету</string>
+
+    <!-- Client -->
+    <string name="client_settings">Параметры</string>
+    <string name="client_name">Никнейм</string>
+    <string name="client_name_empty_notice">Никнейм пустой!!!</string>
+    <string name="select_server_from_list">Выберите сервер из списка</string>
+    <string name="map">Карта</string>
+    <string name="my_device">мое устройство</string>
+    <string name="server_disconnected">Отсоединено от сервера</string>
+
+    <!-- Common -->
+    <string name="start_game">Начать игру</string>
+    <string name="not_connected">Не соединено с сетью</string>
+    <string name="turn_on_wifi">Включить WiFi?</string>
+    <string name="connect_error">Соединение оборвано</string>
+    <string name="connecting_to">Присоединяюсь к</string>
+    <string name="error_loading_map">Ошибка загрузки карты</string>
+    <string name="error_reading_map_list">Ошибка загрузки списка карт</string>
+    <string name="user">Игрок</string>
+    <string name="disconnected">отсоиденен</string>
+    <string name="looser">проиграл</string>
+    <string name="winner">победил</string>
+    <string name="game_over">Конец игры</string>
+    <string name="you_looser">Вы проиграли</string>
+    <string name="you_winner">Вы выиграли</string>
+    <string name="users_on_server">Игроки на сервере</string>
+
+    <string name="pref_landscape_mode">Ландшафтная ориентация</string>
+
+    <string name="info_content">
+        <b>SimpleTanks</b> - простая real-time игра с мультиплеером по сети.
+    </string>
+
+</resources>

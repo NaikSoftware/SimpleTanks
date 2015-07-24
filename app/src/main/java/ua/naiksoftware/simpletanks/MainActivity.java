@@ -26,7 +26,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        Log.d(TAG, "___STARTED___");
+        //Log.d(TAG, "___STARTED___");
         applySettings();
         showMainMenu();
     }
@@ -119,7 +119,7 @@ public class MainActivity extends Activity {
             gameConn.stop();
         }
         ResKeeper.clearImageCache();
-        Log.d(TAG, "___DESTROYED___");
+        //Log.d(TAG, "___DESTROYED___");
         super.onDestroy();
     }
 }

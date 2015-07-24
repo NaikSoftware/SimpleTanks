@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="client_name">Нікнейм</string>
+    <string name="client_name_empty_notice">Нікнейм порожній!!!</string>
+    <string name="client_settings">Параметри</string>
+    <string name="connect_error">З\'єднання обірвано</string>
+    <string name="connecting_to">Під\'єднуюсь до</string>
+    <string name="disconnected">від\'єднаний</string>
+    <string name="error_loading_map">Помилка завантаження мапи</string>
+    <string name="error_reading_map_list">Помилка завантаження списку мап</string>
+    <string name="exit">Вихід</string>
+    <string name="exit_notify">Ви хочете вийти?</string>
+    <string name="game_map">Карта гри</string>
+    <string name="game_over">Кінець гри</string>
+    <string name="have_not_clients">Клієнтів немає</string>
+    <string name="info">Інфо</string>
+    <string name="looser">програв</string>
+    <string name="map">Мапа</string>
+    <string name="my_device">мій пристрій</string>
+    <string name="network_ip_not_detected">Мережевий IP не знайдено</string>
+    <string name="not_connected">Не з\'єднано з мережею</string>
+    <string name="owner_server">власник сервера</string>
+    <string name="play">Грати</string>
+    <string name="select_server_from_list">Оберіть сервер зі списку</string>
+    <string name="select_server_ip">Оберіть IP сервера</string>
+    <string name="serv_name_empty_notice">Ім\'я сервера порожнє!</string>
+    <string name="serv_wait_clients">Очікуємо клієнтів &#8230;</string>
+    <string name="server_disconnected">Від\'єднано від сервера</string>
+    <string name="server_name">Ім\'я сервера</string>
+    <string name="server_settings">Параметри сервера</string>
+    <string name="server_stopped">Сервер зупинений</string>
+    <string name="settings">Налаштування</string>
+    <string name="start_game">Почати гру</string>
+    <string name="turn_on_wifi">Увімкнути WiFi?</string>
+    <string name="user">Гравець</string>
+    <string name="users_on_server">Гравці на сервері</string>
+    <string name="winner">виграв</string>
+    <string name="you_looser">Ви програли</string>
+    <string name="you_winner">Ви виграли</string>
+
+    <string-array name="online_modes">
+        <item>Створити сервер</item>
+        <item>Під\'єднатись до сервера</item>
+    </string-array>
+
+    <string name="pref_landscape_mode">Ландшафтний вигляд</string>
+
+    <string name="info_content">
+        <b>SimpleTanks</b> - проста real-time гра з мультиплеєром по мережі.
+    </string>
+
+</resources>

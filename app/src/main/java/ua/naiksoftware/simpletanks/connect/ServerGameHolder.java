@@ -72,8 +72,8 @@ public class ServerGameHolder extends GameHolder {
                     try {
                         updateUser(client, client.in.readInt());
                     } catch (IOException e) {
-                        e.printStackTrace();
-                        removeUser(client, activity.getString(R.string.user) + " " + client.getName() + " " + activity.getString(R.string.disconnected), true);
+                        gameServer.toast(tr(R.string.user) + " " + client.getName() + " " + tr(R.string.disconnected));
+                        removeUser(client, true);
                     }
                 }
                 if (myUser != null) {
@@ -101,7 +101,8 @@ public class ServerGameHolder extends GameHolder {
                     } catch (IOException e) {
                         e.printStackTrace();
                         if (!client.isDestroyed()) { // Убитого юнита и победителя удалим далее, после обработки состояния игры
-                            removeUser(client, activity.getString(R.string.user) + " " + client.getName() + " " + activity.getString(R.string.disconnected), true);
+                            gameServer.toast(tr(R.string.user) + " " + client.getName() + " " + tr(R.string.disconnected));
+                            removeUser(client, true);
                         }
                     }
                 }
@@ -118,11 +119,11 @@ public class ServerGameHolder extends GameHolder {
                         gameServer.toast("OK request to " + client.getName() + " failed: " + e.getMessage());
                     }
                     if (client.isDestroyed()) {
-                        removeUser(client, activity.getString(R.string.user) + " " + client.getName() + " " + activity.getString(R.string.looser), false);
+                        removeUser(client, false);
                     }
                 }
                 if (myUser != null && myUser.isDestroyed()) {
-                    removeUser(myUser, activity.getString(R.string.user) + " " + myUser.getName() + " " + activity.getString(R.string.looser), false);
+                    removeUser(myUser, false);
                 }
 			}
 		}
@@ -241,16 +242,21 @@ public class ServerGameHolder extends GameHolder {
         playEvents.clear();
     }
 
-    private void removeUser(User user, String msg, boolean notifyOthers) {
-        gameServer.toast(msg);
+    private void removeUser(User user, boolean notifyOthers) {
         if (user == myUser) {
             killMyUser();
             myUser = null;
         } else {
             clients.remove(user);
         }
-        if (getWinner() != null) {
+        if (getWinner() != null) { // Определен победитель, завершаем игру.
             gameOver();
+        } else if (user == myUser) {
+            // Если еще нет победителя, но вы уже проиграли, то просто покажем уведомление
+            // не завершая игры.
+            gameServer.toast(R.string.you_looser);
+        } else { // Если проиграл кто-то другой, то тоже покажем уведомление.
+            gameServer.toast(tr(R.string.user) + " " + user.getName() + " " + tr(R.string.looser));
         }
         if (!notifyOthers) return;
         int size = clients.size();

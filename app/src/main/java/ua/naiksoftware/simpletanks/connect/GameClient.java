@@ -128,7 +128,6 @@ public class GameClient extends GameConnection implements ServiceListener {
                             jmdns[i].addServiceListener(SERVICE_TYPE, GameClient.this);
                         }
                         Log.i(TAG, "Started GameClient discovery...");
-                        toast("Started GameClient discovery");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -141,7 +140,7 @@ public class GameClient extends GameConnection implements ServiceListener {
     public void serviceAdded(ServiceEvent event) {
         Log.i(TAG, "Service added: " + event.getType() + "\n Info: " + event.getInfo());
         // Для вызова serviceResolved(...)
-        event.getDNS().requestServiceInfo(event.getType(), event.getName(), 0);
+        event.getDNS().requestServiceInfo(event.getType(), event.getName(), 100);
     }
 
     @Override
@@ -210,7 +209,7 @@ public class GameClient extends GameConnection implements ServiceListener {
                         });
                         gameView = null;
                     }
-                    toast("Client stopped");
+                    //toast("Client stopped");
                 }
             }
         });

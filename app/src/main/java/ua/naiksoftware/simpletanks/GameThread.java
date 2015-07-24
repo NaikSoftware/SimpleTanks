@@ -2,6 +2,7 @@ package ua.naiksoftware.simpletanks;
 
 import android.app.Activity;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -14,7 +15,6 @@ import ua.naiksoftware.simpletanks.connect.GameHolder;
  */
 public class GameThread extends Thread {
 
-    private static final int COLOR_BG = 0xFF5F9EA0;
     private static long FPS, FPS_Count, FPS_Start;
     private static final Paint FPS_Paint = new Paint();
     private boolean running;
@@ -90,7 +90,6 @@ public class GameThread extends Thread {
     }
 
     private void draw(Canvas canvas, int deltaTime) {
-        canvas.drawColor(COLOR_BG);
         gameHolder.drawGame(canvas, deltaTime);
         canvas.drawText(getFPS(), 10, 25, FPS_Paint);
     }
