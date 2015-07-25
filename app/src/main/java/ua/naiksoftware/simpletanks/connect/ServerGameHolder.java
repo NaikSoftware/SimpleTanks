@@ -15,6 +15,7 @@ import ua.naiksoftware.simpletanks.R;
 import ua.naiksoftware.simpletanks.Tile;
 import ua.naiksoftware.simpletanks.User;
 import ua.naiksoftware.simpletanks.res.ImageID;
+import ua.naiksoftware.simpletanks.res.Music;
 import ua.naiksoftware.utils.Pool;
 
 /**
@@ -97,7 +98,6 @@ public class ServerGameHolder extends GameHolder {
                         }
                         if (myUser != null) sendUser(out, myUser, syncCoords);
                         // Отсылаем действия в игре (выстрелы, попадания и т.п.)
-
                         for (int j = 0; j < processedEvents; j++) {
                             sendEvent(out, playEvents.get(j));
                         }
@@ -111,7 +111,8 @@ public class ServerGameHolder extends GameHolder {
                 }
                 // Remove only processed events
                 for (int i = 0; i < processedEvents; i++) {
-                    playEvents.remove(i);
+                    playEvents.get(0).release();
+                    playEvents.remove(0);
                 }
                 if (syncCoords) lastSyncCoords = System.currentTimeMillis();
                 // Отсылаем статус что итерация выполнена и deltaTime
@@ -207,6 +208,7 @@ public class ServerGameHolder extends GameHolder {
             playEvents.add(event);
             bullets.add(bullet);
             user.updateLastFire();
+            Music.playSound(this, R.raw.shot_tank, 1, false);
         }
     }
 
@@ -228,7 +230,10 @@ public class ServerGameHolder extends GameHolder {
         playEvents.add(event);
         if (user == myUser) updateScreenInfo();
         if (user.getLifes() < 1) {
+            Music.playSound(this, R.raw.explosion, 1, false);
             user.destroy();
+        } else {
+            Music.playSound(this, R.raw.hit_tank, 1, false);
         }
     }
 
@@ -238,14 +243,6 @@ public class ServerGameHolder extends GameHolder {
         event.setup(PlayEvent.BULLET_ON_WALL, bullet);
         bullets.remove(bullet);
         playEvents.add(event);
-    }
-
-    private void clearEvents() {
-        int size = playEvents.size();
-        for (int i = 0; i < size; i++) {
-            playEvents.get(i).release();
-        }
-        playEvents.clear();
     }
 
     private void removeUser(User user, boolean notifyOthers) {

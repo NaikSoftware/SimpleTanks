@@ -90,7 +90,9 @@ public class GameThread extends Thread {
     }
 
     private void draw(Canvas canvas, int deltaTime) {
+        canvas.save();
         gameHolder.drawGame(canvas, deltaTime);
+        canvas.restore();
         canvas.drawText(getFPS(), 10, 25, FPS_Paint);
     }
 

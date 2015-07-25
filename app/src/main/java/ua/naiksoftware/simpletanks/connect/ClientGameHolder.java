@@ -13,6 +13,7 @@ import ua.naiksoftware.simpletanks.Log;
 import ua.naiksoftware.simpletanks.PlayEvent;
 import ua.naiksoftware.simpletanks.R;
 import ua.naiksoftware.simpletanks.User;
+import ua.naiksoftware.simpletanks.res.Music;
 
 /**
  * Created by Naik on 10.07.15.
@@ -68,12 +69,10 @@ public class ClientGameHolder extends GameHolder {
 
     @Override
     protected void bulletsBabah(Bullet bullet, Bullet bullet2) {
-
     }
 
     @Override
     protected void userBombom(User user, Bullet bullet) {
-
     }
 
     @Override
@@ -160,6 +159,7 @@ public class ClientGameHolder extends GameHolder {
                 bullet.changeID(bulletId);
                 bullets.add(bullet);
                 bulletsMap.put(bulletId, bullet);
+                Music.playSound(this, R.raw.shot_tank, 1, false);
                 break;
             case PlayEvent.BULLET_ON_WALL:
                 bulletId = input.readLong();
@@ -189,7 +189,10 @@ public class ClientGameHolder extends GameHolder {
                     user.shot(bullet);
                     if (user == myUser) updateScreenInfo();
                     if (user.getLifes() < 1) {
+                        Music.playSound(this, R.raw.explosion, 1, false);
                         removeUser(user);
+                    } else {
+                        Music.playSound(this, R.raw.hit_tank, 1, false);
                     }
                     // remove bullet
                     bullets.remove(bullet);

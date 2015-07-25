@@ -11,7 +11,6 @@ import android.view.*;
 
 import ua.naiksoftware.simpletanks.connect.GameClient;
 import ua.naiksoftware.simpletanks.connect.GameConnection;
-import ua.naiksoftware.simpletanks.connect.GameMode;
 import ua.naiksoftware.simpletanks.connect.GameServer;
 import ua.naiksoftware.simpletanks.res.Music;
 import ua.naiksoftware.simpletanks.res.ResKeeper;
@@ -20,7 +19,6 @@ public class MainActivity extends Activity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
-    private GameMode gameMode;
     private GameConnection gameConn;
 
     @Override
@@ -39,13 +37,14 @@ public class MainActivity extends Activity {
         findViewById(R.id.btnExit).setOnClickListener(btnListener);
         findViewById(R.id.btnSettings).setOnClickListener(btnListener);
         findViewById(R.id.btnInfo).setOnClickListener(btnListener);
-        Music.play(this, R.raw.atmo_music, false);
+        Music.playMusic(this, R.raw.atmo_music, false);
     }
 
     View.OnClickListener btnListener = new View.OnClickListener() {
 
         @Override
         public void onClick(View v) {
+            Music.playSound(MainActivity.this, R.raw.sfx_button, 0.5f, false);
             switch (v.getId()) {
                 case R.id.btnPlay:
                     new AlertDialog.Builder(MainActivity.this)
@@ -53,12 +52,10 @@ public class MainActivity extends Activity {
 
                                 @Override
                                 public void onClick(DialogInterface di, int pos) {
-                                    Music.stop(MainActivity.this, R.raw.atmo_music);
+                                    Music.stopMusic(MainActivity.this, R.raw.atmo_music);
                                     if (pos == 0) { // Start server
-                                        gameMode = GameMode.SERVER;
                                         gameConn = new GameServer(MainActivity.this);
                                     } else if (pos == 1) { // Connect to server
-                                        gameMode = GameMode.CLIENT;
                                         gameConn = new GameClient(MainActivity.this);
                                     }
                                     gameConn.start();
@@ -100,6 +97,7 @@ public class MainActivity extends Activity {
 
     @Override
     public void onBackPressed() {
+        Music.playSound(this, R.raw.sfx_button, 0.5f, false);
         if (gameConn != null && gameConn.isGameRunning()) {
             new AlertDialog.Builder(this)
                 .setTitle(R.string.exit_notify)

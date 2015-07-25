@@ -14,6 +14,7 @@ import ua.naiksoftware.simpletanks.Bullet;
 import ua.naiksoftware.simpletanks.User;
 import ua.naiksoftware.simpletanks.GameMap;
 import ua.naiksoftware.simpletanks.res.ImageID;
+import ua.naiksoftware.simpletanks.res.Music;
 import ua.naiksoftware.simpletanks.res.ResKeeper;
 import ua.naiksoftware.utils.Pool;
 
@@ -194,14 +195,16 @@ public abstract class GameHolder {
     }
     
     protected void gameOver() {
-        User winner = getWinner();
+        final User winner = getWinner();
         final View v = LayoutInflater.from(activity).inflate(R.layout.game_over, null);
         TextView msgView = (TextView)v.findViewById(R.id.game_over_message);
         TextView subMsgView = (TextView)v.findViewById(R.id.sub_game_over_message);
         if (winner == myUser) {
             msgView.setText(R.string.you_winner);
+            Music.playMusic(this, R.raw.music_game_won, false);
         } else {
             msgView.setText(R.string.you_looser);
+            Music.playMusic(this, R.raw.music_game_lost, false);
             if (users.size() == 1) {
                 subMsgView.setText(tr(R.string.user) + " " + winner.getName() + " " + tr(R.string.winner));
             }
@@ -216,6 +219,8 @@ public abstract class GameHolder {
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                if (winner == myUser) Music.stopMusic(GameHolder.this, R.raw.music_game_won);
+                                else Music.stopMusic(GameHolder.this, R.raw.music_game_lost);
                                 gameConnection.stop();
                             }
                         })
