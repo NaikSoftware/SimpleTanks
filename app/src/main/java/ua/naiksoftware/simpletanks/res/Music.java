@@ -80,27 +80,6 @@ public class Music {
         });
     }
 
-    public static void playMusic(final Object key, final int rawID, final float volume, final boolean loop) {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                MediaPlayer music = getMusic(key, rawID);
-                music.setVolume(volume, volume);
-                if (loop) {
-                    if (!music.isPlaying()) {
-                        music.setLooping(true);
-                        music.start();
-                    }
-                } else {
-                    if (music.isPlaying()) {
-                        music.seekTo(0);
-                    }
-                    music.start();
-                }
-            }
-        });
-    }
-
     public static void stopMusic(Object key, int rawID) {
         MediaPlayer sound = getMusic(key, rawID);
         sound.stop();
