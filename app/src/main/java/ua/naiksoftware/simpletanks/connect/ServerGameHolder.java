@@ -65,6 +65,7 @@ public class ServerGameHolder extends GameHolder {
             DataOutputStream out;
             GameServer.Client client;
             boolean syncCoords;
+            int processedEvents;
 			while (running) {
                 // Получаем изменения от клиентов (нажатия на кнопки) и сразу обновляем мир
                 for (int i = 0; i < clients.size(); i++) {
@@ -85,6 +86,7 @@ public class ServerGameHolder extends GameHolder {
                     }
                 }
                 // Рассылаем изменения клиентам (координаты юзеров)
+                processedEvents = playEvents.size();
                 syncCoords = System.currentTimeMillis() - lastSyncCoords > SYNC_COORDS_INTERVAL;
                 for (int i = 0; i < clients.size(); i++) {
                     client = clients.get(i);
@@ -95,7 +97,8 @@ public class ServerGameHolder extends GameHolder {
                         }
                         if (myUser != null) sendUser(out, myUser, syncCoords);
                         // Отсылаем действия в игре (выстрелы, попадания и т.п.)
-                        for (int j = 0; j < playEvents.size(); j++) {
+
+                        for (int j = 0; j < processedEvents; j++) {
                             sendEvent(out, playEvents.get(j));
                         }
                     } catch (IOException e) {
@@ -106,7 +109,10 @@ public class ServerGameHolder extends GameHolder {
                         }
                     }
                 }
-                clearEvents();
+                // Remove only processed events
+                for (int i = 0; i < processedEvents; i++) {
+                    playEvents.remove(i);
+                }
                 if (syncCoords) lastSyncCoords = System.currentTimeMillis();
                 // Отсылаем статус что итерация выполнена и deltaTime
                 for (int i = 0; i < clients.size(); i++) {
