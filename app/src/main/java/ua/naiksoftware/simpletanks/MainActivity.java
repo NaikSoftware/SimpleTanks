@@ -13,6 +13,7 @@ import ua.naiksoftware.simpletanks.connect.GameClient;
 import ua.naiksoftware.simpletanks.connect.GameConnection;
 import ua.naiksoftware.simpletanks.connect.GameMode;
 import ua.naiksoftware.simpletanks.connect.GameServer;
+import ua.naiksoftware.simpletanks.res.Music;
 import ua.naiksoftware.simpletanks.res.ResKeeper;
 
 public class MainActivity extends Activity {
@@ -28,6 +29,7 @@ public class MainActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         //Log.d(TAG, "___STARTED___");
         applySettings();
+        Music.init(this);
         showMainMenu();
     }
     
@@ -37,6 +39,7 @@ public class MainActivity extends Activity {
         findViewById(R.id.btnExit).setOnClickListener(btnListener);
         findViewById(R.id.btnSettings).setOnClickListener(btnListener);
         findViewById(R.id.btnInfo).setOnClickListener(btnListener);
+        Music.play(this, R.raw.atmo_music, false);
     }
 
     View.OnClickListener btnListener = new View.OnClickListener() {
@@ -50,6 +53,7 @@ public class MainActivity extends Activity {
 
                                 @Override
                                 public void onClick(DialogInterface di, int pos) {
+                                    Music.stop(MainActivity.this, R.raw.atmo_music);
                                     if (pos == 0) { // Start server
                                         gameMode = GameMode.SERVER;
                                         gameConn = new GameServer(MainActivity.this);
@@ -119,6 +123,7 @@ public class MainActivity extends Activity {
             gameConn.stop();
         }
         ResKeeper.clearImageCache();
+        Music.stopAll();
         //Log.d(TAG, "___DESTROYED___");
         super.onDestroy();
     }
