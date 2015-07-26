@@ -209,8 +209,8 @@ public class ServerGameHolder extends GameHolder {
             bullets.add(bullet);
             user.updateLastFire();
             if (user == myUser) {
-                Music.playSound(this, R.raw.shot_tank, 1, false);
-            } else Music.playSound(this, R.raw.shot_tank, 0.5f, false);
+                Music.playSound(user, R.raw.shot_tank, 1, false);
+            } else Music.playSound(user, R.raw.shot_tank, 0.5f, false);
         }
     }
 
@@ -233,11 +233,11 @@ public class ServerGameHolder extends GameHolder {
         if (user == myUser) updateScreenInfo();
         if (user.getLifes() < 1) {
             if (user == myUser || bullet.getOwner() == myUser) {
-                Music.playSound(this, R.raw.explosion, 1, false);
-            } else Music.playSound(this, R.raw.explosion, 0.5f, false);
+                Music.playSound(user, R.raw.explosion, 1, false);
+            } else Music.playSound(user, R.raw.explosion, 0.5f, false);
             user.destroy();
         } else {
-            Music.playSound(this, R.raw.hit_tank, 1, false);
+            Music.playSound(user, R.raw.hit_tank, 1, false);
         }
     }
 

@@ -159,8 +159,8 @@ public class ClientGameHolder extends GameHolder {
                 bullet.changeID(bulletId);
                 bullets.add(bullet);
                 bulletsMap.put(bulletId, bullet);
-                if (user == myUser) Music.playSound(this, R.raw.shot_tank, 1, false);
-                else Music.playSound(this, R.raw.shot_tank, 0.5f, false);
+                if (user == myUser) Music.playSound(user, R.raw.shot_tank, 1, false);
+                else Music.playSound(user, R.raw.shot_tank, 0.5f, false);
                 break;
             case PlayEvent.BULLET_ON_WALL:
                 bulletId = input.readLong();
@@ -191,13 +191,13 @@ public class ClientGameHolder extends GameHolder {
                     if (user == myUser) updateScreenInfo();
                     if (user.getLifes() < 1) {
                         if (user == myUser || bullet.getOwner() == myUser) {
-                            Music.playSound(this, R.raw.explosion, 1, false);
-                        } else Music.playSound(this, R.raw.explosion, 0.5f, false);
+                            Music.playSound(user, R.raw.explosion, 1, false);
+                        } else Music.playSound(user, R.raw.explosion, 0.5f, false);
                         removeUser(user);
                     } else {
                         if (user == myUser || bullet.getOwner() == myUser) {
-                            Music.playSound(this, R.raw.hit_tank, 1, false);
-                        } else Music.playSound(this, R.raw.hit_tank, 0.5f, false);
+                            Music.playSound(user, R.raw.hit_tank, 1, false);
+                        } else Music.playSound(user, R.raw.hit_tank, 0.5f, false);
                     }
                     // remove bullet
                     bullets.remove(bullet);
