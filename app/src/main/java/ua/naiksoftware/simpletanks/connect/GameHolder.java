@@ -76,6 +76,7 @@ public abstract class GameHolder {
                 return new Bullet();
             }
         });
+        myUser.setMoveVolume(1.0f); // Движение своего юнита делаем на всю громкость
     }
 
     protected String tr(int stringID) {

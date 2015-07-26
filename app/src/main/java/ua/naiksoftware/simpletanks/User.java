@@ -9,6 +9,7 @@ import android.graphics.Rect;
 import java.util.Random;
 
 import ua.naiksoftware.simpletanks.res.ImageID;
+import ua.naiksoftware.simpletanks.res.Music;
 import ua.naiksoftware.simpletanks.res.ResKeeper;
 import ua.naiksoftware.simpletanks.connect.*;
 import android.graphics.Color;
@@ -35,6 +36,7 @@ public class User {
     private static final int DEFAULT_MINES = 0;
     
     private static final int TEXT_SIZE = 13;
+    private static final float DEFAULT_MOVE_VOLUME = 0.5f;
 
     private String name;
     private String ip;
@@ -55,6 +57,7 @@ public class User {
     private int power = DEFAULT_POWER;
     private int minesCount = DEFAULT_MINES;
     private boolean destroyed;
+    private float moveVolume = DEFAULT_MOVE_VOLUME;
 
     static {
         paint.setColor(Color.BLACK);
@@ -139,6 +142,11 @@ public class User {
     }
 
     public void setMove(int click) {
+        if (move == GameHolder.NO_CLICK && click != GameHolder.NO_CLICK) {
+            Music.playSound(this, R.raw.move_tank, moveVolume, true);
+        } else if (move != GameHolder.NO_CLICK && click == GameHolder.NO_CLICK) {
+            Music.stopSound(this, R.raw.move_tank);
+        }
         this.move = click;
         if (click == GameHolder.NO_CLICK) return;
         if (click != direction) {
@@ -240,6 +248,10 @@ public class User {
 
     public boolean isDestroyed() {
         return destroyed;
+    }
+
+    public void setMoveVolume(float moveVolume) {
+        this.moveVolume = moveVolume;
     }
 
     @Override

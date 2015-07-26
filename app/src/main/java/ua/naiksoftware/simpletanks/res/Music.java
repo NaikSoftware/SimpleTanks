@@ -28,6 +28,7 @@ public class Music {
     /* Sound */
     private static SoundPool soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
     private static final HashMap<Object, SparseIntArray> soundsMap = new HashMap<Object, SparseIntArray>();
+    private static final SparseIntArray playingSounds = new SparseIntArray();
 
     public static void init(Context context) {
         Music.context = context;
@@ -98,14 +99,18 @@ public class Music {
             sounds.put(rawID, soundID);
         }
         if (!loop) {
-            soundPool.play(soundID, volume, volume, 0, 0, 1);
+            playingSounds.put(soundID, soundPool.play(soundID, volume, volume, 0, 0, 1));
+        } else {
+            playingSounds.put(soundID, soundPool.play(soundID, volume, volume, 0, Integer.MAX_VALUE, 1));
         }
     }
 
     public static void stopSound(Object key, int rawID) {
         SparseIntArray sounds = soundsMap.get(key);
-        Integer soundID = sounds.get(rawID);
-        soundPool.stop(soundID);
+        int soundID = sounds.get(rawID);
+        int playID = playingSounds.get(soundID);
+        soundPool.stop(playID);
+        playingSounds.delete(soundID);
     }
 
     public static void stopAll() {
@@ -124,13 +129,13 @@ public class Music {
         for (SparseIntArray sounds : soundsMap.values()) {
             for (int i = 0, size = sounds.size(); i < size; i++) {
                 int soundID = sounds.get(i);
-                if (soundID != 0) {
-                    soundPool.stop(soundID);
-                    soundPool.unload(soundID);
-                }
+                int playID = playingSounds.get(soundID);
+                if (playID != 0) soundPool.stop(playID);
+                if (soundID != 0) soundPool.unload(soundID);
             }
             sounds.clear();
         }
+        playingSounds.clear();
         soundsMap.clear();
         soundPool.release();
     }
