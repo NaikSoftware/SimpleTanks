@@ -23,19 +23,7 @@ public class Music {
     private static final HashMap<Object, SparseArray<MediaPlayer>> musicsMap = new HashMap<Object, SparseArray<MediaPlayer>>();
     private static Handler handler;
     private static final int EXIT = 1;
-    private static final Thread playThread = new Thread(new Runnable() {
-        @Override
-        public void run() {
-            Looper.prepare();
-            handler = new Handler() {
-                @Override
-                public void handleMessage(Message msg) {
-                    Looper.myLooper().quit();
-                }
-            };
-            Looper.loop();
-        }
-    });
+    private static Thread playThread;
 
     /* Sound */
     private static SoundPool soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
@@ -43,6 +31,19 @@ public class Music {
 
     public static void init(Context context) {
         Music.context = context;
+        playThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Looper.prepare();
+                handler = new Handler() {
+                    @Override
+                    public void handleMessage(Message msg) {
+                        Looper.myLooper().quit();
+                    }
+                };
+                Looper.loop();
+            }
+        });
         playThread.start();
     }
 
