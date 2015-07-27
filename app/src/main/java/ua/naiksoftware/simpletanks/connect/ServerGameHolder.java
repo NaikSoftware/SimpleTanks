@@ -1,6 +1,7 @@
 package ua.naiksoftware.simpletanks.connect;
 
 import android.app.Activity;
+import android.util.Log;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -9,7 +10,6 @@ import java.util.Random;
 
 import ua.naiksoftware.simpletanks.Bullet;
 import ua.naiksoftware.simpletanks.GameMap;
-import ua.naiksoftware.simpletanks.Log;
 import ua.naiksoftware.simpletanks.PlayEvent;
 import ua.naiksoftware.simpletanks.R;
 import ua.naiksoftware.simpletanks.Tile;
@@ -235,6 +235,7 @@ public class ServerGameHolder extends GameHolder {
             if (user == myUser || bullet.getOwner() == myUser) {
                 Music.playSound(user, R.raw.explosion, 1, false);
             } else Music.playSound(user, R.raw.explosion, 0.5f, false);
+            Log.e(TAG, "Destroy user " + user);
             user.destroy();
         } else {
             Music.playSound(user, R.raw.hit_tank, 1, false);
@@ -253,8 +254,10 @@ public class ServerGameHolder extends GameHolder {
         if (user == myUser) {
             killMyUser();
             myUser = null;
+            Log.e(TAG, "Killed my user");
         } else {
             clients.remove(user);
+            Log.e(TAG, "Removed user " + user);
         }
         if (getWinner() != null) { // Определен победитель, завершаем игру.
             gameOver();
@@ -305,12 +308,12 @@ public class ServerGameHolder extends GameHolder {
             int x = RND.nextInt(mapW);
             int y = RND.nextInt(mapH);
             if (tiles[x][y] != null && tiles[x][y].id == ImageID.BRICK) {
-                Log.d(TAG, "Find place for user failed: x=" + x + " y=" + y + " tile=" + tiles[x][y]);
+                Log.e(TAG, "Find place for user failed: x=" + x + " y=" + y + " tile=" + tiles[x][y]);
                 continue;
             }
             user.setX(x * tileSize);
             user.setY(y * tileSize);
-            Log.d(TAG, "User " + user.getName() + " placed on " + x + ", " + y);
+            Log.e(TAG, "User " + user.getName() + " placed on " + x + ", " + y);
             break;
         }
     }

@@ -23,12 +23,14 @@ public class Music {
     private static final HashMap<Object, SparseArray<MediaPlayer>> musicsMap = new HashMap<Object, SparseArray<MediaPlayer>>();
 
     /* Sound */
-    private static SoundPool soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
+    private static SoundPool soundPool;
     private static SparseIntArray loadedSounds = new SparseIntArray(); // rawID -> soundID
     private static final HashMap<Object, SparseIntArray> soundsMap = new HashMap<Object, SparseIntArray>(); // key -> (soundID -> playID)
 
     public static void init(Context context) {
+        Log.e(TAG, "Init");
         Music.context = context;
+        soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
     }
 
     private static MediaPlayer getMusic(Object key, int rawID) {
@@ -66,57 +68,58 @@ public class Music {
     }
 
     public static synchronized void playSound(final Object key, final int rawID, final float volume, final boolean loop) {
-        Log.d(TAG, "playSound(" + key + ", " + rawID + ", " + volume + ", " + loop + ")");
+        Log.e(TAG, "playSound(" + key + ", " + rawID + ", " + volume + ", " + loop + ")");
         SparseIntArray playingSounds = soundsMap.get(key);
         if (playingSounds == null) {
             playingSounds = new SparseIntArray();
             soundsMap.put(key, playingSounds);
-            Log.d(TAG, "create new playingSounds list");
+            Log.e(TAG, "create new playingSounds list");
         }
-        int soundID = loadedSounds.get(rawID);
-        if (soundID == 0) {
-            Log.d(TAG, "start load new sound");
+        int soundID = loadedSounds.get(rawID, -1);
+        if (soundID == -1) {
+            Log.e(TAG, "start load new sound");
             final long startLoad = System.currentTimeMillis();
             soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
                 @Override
                 public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
                     loadedSounds.put(rawID, sampleId);
                     long loadTime = System.currentTimeMillis() - startLoad;
-                    Log.d(TAG, "loaded rawID=" + rawID + ", soundID=" + sampleId + ", time=" + loadTime);
+                    Log.e(TAG, "loaded rawID=" + rawID + ", soundID=" + sampleId + ", time=" + loadTime);
                     if (loadTime < 500) {
                         // Проиграть звук только если прошло не более 500 мс после начала загрузки
-                        Log.d(TAG, "start recursive play loaded sound");
+                        Log.e(TAG, "start recursive play loaded sound");
                         playSound(key, rawID, volume, loop);
                     }
                 }
             });
-            soundPool.load(context, rawID, 0);
+            soundPool.load(context, rawID, 1);
             return;
         }
-        int loops = loop ? Integer.MAX_VALUE : 0;
-        int playID = playingSounds.get(soundID);
-        if (playID == 0) { // Если этот звук еще не играет - играем.
+        int loops = loop ? -1 : 0;
+        int playID = playingSounds.get(soundID, -1);
+        if (playID == -1) { // Если этот звук еще не играет - играем.
             playingSounds.put(soundID, soundPool.play(soundID, volume, volume, 0, loops, 1));
-            Log.d(TAG, "start soundID=" + soundID + " as playID=" + playingSounds.get(soundID));
+            Log.e(TAG, "start soundID=" + soundID + " as playID=" + playingSounds.get(soundID));
         } else { // Иначе остановим его и проиграем.
-            Log.d(TAG, "sound " + soundID + " playing now as playID=" + playID + ", stopping");
+            Log.e(TAG, "sound " + soundID + " playing now as playID=" + playID + ", stopping");
             soundPool.stop(playID);
             playingSounds.put(soundID, soundPool.play(soundID, volume, volume, 0, loops, 1));
-            Log.d(TAG, "restart soundID=" + soundID + " as playID=" + playingSounds.get(soundID));
+            Log.e(TAG, "restart soundID=" + soundID + " as playID=" + playingSounds.get(soundID));
         }
     }
 
     public static synchronized void stopSound(Object key, int rawID) {
-        Log.d(TAG, "stopSound(" + key + ", " + rawID + ")");
+        Log.e(TAG, "stopSound(" + key + ", " + rawID + ")");
         int soundID = loadedSounds.get(rawID);
         SparseIntArray playingSounds = soundsMap.get(key);
         int playID = playingSounds.get(soundID);
         soundPool.stop(playID);
         playingSounds.delete(soundID);
-        Log.d(TAG, "stopped rawID=" + rawID + ", soundID=" + soundID + ", playID=" + playID);
+        Log.e(TAG, "stopped rawID=" + rawID + ", soundID=" + soundID + ", playID=" + playID);
     }
 
-    public static synchronized void stopAll() {
+    public static synchronized void dispose() {
+        Log.e(TAG, "Dispose");
         // Stop music.
         for (SparseArray<MediaPlayer> musics : musicsMap.values()) {
             for (int i = 0, size = musics.size(); i < size; i++) {

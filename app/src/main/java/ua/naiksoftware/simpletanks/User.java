@@ -258,4 +258,9 @@ public class User {
     public boolean equals(Object o) {
         return o instanceof User && ((User) o).getID() == id;
     }
+
+    @Override
+    public String toString() {
+        return name + " -> " + ip;
+    }
 }

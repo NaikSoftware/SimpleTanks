@@ -211,8 +211,10 @@ public class ClientGameHolder extends GameHolder {
         if (user == myUser) {
             killMyUser();
             myUser = null;
+            Log.e(TAG, "Killed my user");
         } else {
             users.remove(user);
+            Log.e(TAG, "Remove user " + user);
         }
         if (user == myUser || getWinner() != null) { // Вы или победили или проиграли
             finishGame = true; // завершаем игру.
