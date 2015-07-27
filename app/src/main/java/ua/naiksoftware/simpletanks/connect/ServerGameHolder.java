@@ -1,6 +1,7 @@
 package ua.naiksoftware.simpletanks.connect;
 
 import android.app.Activity;
+import android.graphics.Rect;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -286,35 +287,42 @@ public class ServerGameHolder extends GameHolder {
 
     private void initWorld() {
         User user;
+        ArrayList<User> placedUsers = new ArrayList<User>();
         for (int i = 0, size = clients.size(); i < size; i++) {
             user = clients.get(i);
-            placeUser(user);
+            placeUser(user, placedUsers);
             user.setSpeed(gameMap.TILE_SIZE / 200f);
+            placedUsers.add(user);
         }
-        placeUser(myUser);
+        placeUser(myUser, placedUsers);
         myUser.setSpeed(gameMap.TILE_SIZE / 200f);
     }
 
-    private void placeUser(User user) {
-        Tile[][] tiles = gameMap.tiles;
+    private void placeUser(User user, ArrayList<User> placedUsers) {
         int mapW = gameMap.mapW;
         int mapH = gameMap.mapH;
         int tileSize = gameMap.TILE_SIZE;
+        Rect place = user.getBoundsRect();
         int n = 0;
-        while (true) {
+        genNewPlace: while (true) {
             n++;
-            if (n > 100) {
+            if (n > 300) { // 300 попыток найти место для юнита
                 throw new RuntimeException("Illegal game map, have not place for users");
             }
-            int x = RND.nextInt(mapW);
-            int y = RND.nextInt(mapH);
-            if (tiles[x][y] != null && tiles[x][y].id == ImageID.BRICK) {
-                Log.e(TAG, "Find place for user failed: x=" + x + " y=" + y + " tile=" + tiles[x][y]);
+            place.offsetTo(RND.nextInt(mapW) * tileSize, RND.nextInt(mapH) * tileSize);
+            if (gameMap.intersectsWith(place)) {
+                Log.d(TAG, "Find place for user failed (intersects map): " + place);
                 continue;
             }
-            user.setX(x * tileSize);
-            user.setY(y * tileSize);
-            Log.e(TAG, "User " + user.getName() + " placed on " + x + ", " + y);
+            for (int i = 0, size = placedUsers.size(); i < size; i++) {
+                if (Rect.intersects(place, placedUsers.get(i).getBoundsRect())) {
+                    Log.d(TAG, "Find place for user failed (intersects with other): " + place);
+                    continue genNewPlace;
+                }
+            }
+            user.setX(place.left);
+            user.setY(place.top);
+            Log.d(TAG, "User " + user.getName() + " placed on " + place);
             break;
         }
     }
