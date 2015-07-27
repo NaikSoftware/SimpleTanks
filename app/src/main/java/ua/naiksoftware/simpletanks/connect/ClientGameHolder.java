@@ -50,7 +50,8 @@ public class ClientGameHolder extends GameHolder {
         for (User user : users) {
             user.setSpeed(tileSize / 200f);
         }
-        myUser.setSpeed(tileSize / 200f);
+        myUser.setSpeed(tileSize / User.DEFAULT_SPEED_FACTOR);
+        myUser.changeUnitColor(User.MY_UNIT_COLOR);
         connectionThread = new ConnectionThread();
     }
 
@@ -154,7 +155,6 @@ public class ClientGameHolder extends GameHolder {
                 userId = input.readLong();
                 float bulletSpeed = input.readFloat();
                 user = usersMap.get(userId);
-                Log.e(TAG, "Receive fire " + user);
                 bullet = bulletsPool.obtain();
                 bullet.setup(user, bulletSpeed * scale);
                 bullet.changeID(bulletId);
@@ -190,7 +190,6 @@ public class ClientGameHolder extends GameHolder {
                 user = usersMap.get(userId);
                 bulletId = input.readLong();
                 bullet = bulletsMap.get(bulletId);
-                Log.e(TAG, "Receive user bombom " + user + " by bullet " + bullet);
                 if (bullet != null && user != null) { // Проверка, вдруг пришло что-то не то
                     user.shot(bullet);
                     if (user == myUser) updateScreenInfo();
@@ -217,10 +216,8 @@ public class ClientGameHolder extends GameHolder {
         if (user == myUser) {
             killMyUser();
             myUser = null;
-            Log.e(TAG, "Killed my user");
         } else {
             users.remove(user);
-            Log.e(TAG, "Remove user " + user);
         }
         if (myUser == null || getWinner() != null) { // Вы или победили или проиграли
             finishGame = true; // завершаем игру.

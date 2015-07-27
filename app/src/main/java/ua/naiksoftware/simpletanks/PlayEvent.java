@@ -58,7 +58,7 @@ public class PlayEvent implements Pool.Entry {
 
     @Override
     public String toString() {
-        String result = "Type " + type + " released=" + released;
+        String result = "Type " + type + " released=" + released + " ";
         for (int i = 0; i < params.length; i++) {
             result += params[i] + "; ";
         }

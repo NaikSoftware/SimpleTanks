@@ -25,7 +25,6 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        Log.e(TAG, "___STARTED___");
         applySettings();
         Music.init(this);
         showMainMenu();
@@ -122,7 +121,6 @@ public class MainActivity extends Activity {
         }
         ResKeeper.clearImageCache();
         Music.dispose();
-        Log.e(TAG, "___DESTROYED___");
         super.onDestroy();
     }
 }

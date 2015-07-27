@@ -129,7 +129,7 @@ public abstract class GameHolder {
         Bullet bullet, bullet2;
         Rect rect;
         User user;
-        for (int i = 0; i < bullets.size(); i++) {
+        bulletsIteration: for (int i = 0; i < bullets.size(); i++) {
             bullet = bullets.get(i);
             rect = bullet.draw(canvas, deltaTime);
             if (gameMap.intersectsWith(rect)) {
@@ -141,7 +141,7 @@ public abstract class GameHolder {
                 if (bullet == bullet2) continue;
                 if (Rect.intersects(rect, bullet2.getBoundsRect())) {
                     bulletsBabah(bullet, bullet2);
-                    break; // Только 2 пули могут столкнуться одновременно
+                    continue bulletsIteration; // Только 2 пули могут столкнуться одновременно
                 }
             }
             for (int j = 0; j < users.size(); j++) {
@@ -149,7 +149,7 @@ public abstract class GameHolder {
                 if (user == bullet.getOwner()) continue;
                 if (Rect.intersects(rect, user.getBoundsRect())) {
                     userBombom(user, bullet);
-                    break; // Одна пуля может поразить только одного юнита
+                    continue bulletsIteration; // Одна пуля может поразить только одного юнита
                 }
             }
             if (!myUserKilled && myUser != bullet.getOwner() && Rect.intersects(rect, myUser.getBoundsRect())) {

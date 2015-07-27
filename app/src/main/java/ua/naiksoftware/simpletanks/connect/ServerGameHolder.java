@@ -13,9 +13,7 @@ import ua.naiksoftware.simpletanks.GameMap;
 import ua.naiksoftware.simpletanks.Log;
 import ua.naiksoftware.simpletanks.PlayEvent;
 import ua.naiksoftware.simpletanks.R;
-import ua.naiksoftware.simpletanks.Tile;
 import ua.naiksoftware.simpletanks.User;
-import ua.naiksoftware.simpletanks.res.ImageID;
 import ua.naiksoftware.simpletanks.res.Music;
 import ua.naiksoftware.utils.Pool;
 
@@ -101,7 +99,6 @@ public class ServerGameHolder extends GameHolder {
                         // Отсылаем действия в игре (выстрелы, попадания и т.п.)
                         for (int j = 0; j < processedEvents; j++) {
                             sendEvent(out, playEvents.get(j));
-                            Log.e(TAG, "to " + client + " send event " + playEvents.get(j));
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -237,7 +234,6 @@ public class ServerGameHolder extends GameHolder {
             if (user == myUser || bullet.getOwner() == myUser) {
                 Music.playSound(user, R.raw.explosion, 1, false);
             } else Music.playSound(user, R.raw.explosion, 0.5f, false);
-            Log.e(TAG, "Destroy user " + user);
             user.destroy();
         } else {
             Music.playSound(user, R.raw.hit_tank, 1, false);
@@ -256,10 +252,8 @@ public class ServerGameHolder extends GameHolder {
         if (user == myUser) {
             killMyUser();
             myUser = null;
-            Log.e(TAG, "Killed my user");
         } else {
             clients.remove(user);
-            Log.e(TAG, "Removed user " + user);
         }
         if (getWinner() != null) { // Определен победитель, завершаем игру.
             gameOver();
@@ -291,11 +285,12 @@ public class ServerGameHolder extends GameHolder {
         for (int i = 0, size = clients.size(); i < size; i++) {
             user = clients.get(i);
             placeUser(user, placedUsers);
-            user.setSpeed(gameMap.TILE_SIZE / 200f);
+            user.setSpeed(gameMap.TILE_SIZE / User.DEFAULT_SPEED_FACTOR);
             placedUsers.add(user);
         }
         placeUser(myUser, placedUsers);
-        myUser.setSpeed(gameMap.TILE_SIZE / 200f);
+        myUser.setSpeed(gameMap.TILE_SIZE / User.DEFAULT_SPEED_FACTOR);
+        myUser.changeUnitColor(User.MY_UNIT_COLOR);
     }
 
     private void placeUser(User user, ArrayList<User> placedUsers) {
@@ -311,18 +306,18 @@ public class ServerGameHolder extends GameHolder {
             }
             place.offsetTo(RND.nextInt(mapW) * tileSize, RND.nextInt(mapH) * tileSize);
             if (gameMap.intersectsWith(place)) {
-                Log.d(TAG, "Find place for user failed (intersects map): " + place);
+                //Log.d(TAG, "Find place for user failed (intersects map): " + place);
                 continue;
             }
             for (int i = 0, size = placedUsers.size(); i < size; i++) {
                 if (Rect.intersects(place, placedUsers.get(i).getBoundsRect())) {
-                    Log.d(TAG, "Find place for user failed (intersects with other): " + place);
+                    //Log.d(TAG, "Find place for user failed (intersects with other): " + place);
                     continue genNewPlace;
                 }
             }
             user.setX(place.left);
             user.setY(place.top);
-            Log.d(TAG, "User " + user.getName() + " placed on " + place);
+            //Log.d(TAG, "User " + user.getName() + " placed on " + place);
             break;
         }
     }

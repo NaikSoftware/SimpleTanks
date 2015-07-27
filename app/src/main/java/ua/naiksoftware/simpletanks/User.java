@@ -37,6 +37,9 @@ public class User {
     
     private static final int TEXT_SIZE = 13;
     private static final float DEFAULT_MOVE_VOLUME = 0.5f;
+    private static final int DEFAULT_COLOR = Color.RED;
+    public static final int MY_UNIT_COLOR = Color.BLUE;
+    public static final float DEFAULT_SPEED_FACTOR = 250f;
 
     private String name;
     private String ip;
@@ -45,7 +48,7 @@ public class User {
     private float x, y;
     private final Bitmap[] bitmapArray = new Bitmap[4];
     private Bitmap bitmap;
-    private static final Paint paint = new Paint();
+    private final Paint paint = new Paint();
     private final int type;
     private float speed;
     private final Rect boundsRect = new Rect();
@@ -59,8 +62,8 @@ public class User {
     private boolean destroyed;
     private float moveVolume = DEFAULT_MOVE_VOLUME;
 
-    static {
-        paint.setColor(Color.BLACK);
+     { // Initialize block
+        paint.setColor(DEFAULT_COLOR);
         paint.setAntiAlias(true);
         paint.setTextSize(TEXT_SIZE);
         paint.setTypeface(Typeface.DEFAULT_BOLD);
@@ -128,6 +131,7 @@ public class User {
     public void draw(Canvas canvas) {
         canvas.drawBitmap(bitmap, x, y, paint);
         canvas.drawText(name, x, y - TEXT_SIZE, paint);
+        canvas.drawRect(x, y - TEXT_SIZE / 2, x + spriteSize * (((lifes - 1) * 100f + lifeProgress) / (DEFAULT_LIFES * 100f)), y - TEXT_SIZE / 2 + 3, paint);
     }
 
     public void move(int deltaTime) {
@@ -252,6 +256,10 @@ public class User {
 
     public void setMoveVolume(float moveVolume) {
         this.moveVolume = moveVolume;
+    }
+
+    public void changeUnitColor(int color) {
+        paint.setColor(color);
     }
 
     @Override

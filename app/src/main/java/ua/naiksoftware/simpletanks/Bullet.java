@@ -110,7 +110,6 @@ public class Bullet  implements Pool.Entry {
     @Override
     public void release() {
         id = 0;
-        bitmap = null;
         released = true;
     }
 

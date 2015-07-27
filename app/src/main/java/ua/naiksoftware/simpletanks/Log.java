@@ -13,7 +13,7 @@ import java.util.Date;
 public class Log {
 
     private static final String token = " : ";
-    private static final long MAX_LEN = 512000;//50 Kb
+    private static final long MAX_LEN = 51200;//50 Kb
 
     public static void d(String tag, String message) {
         try {
