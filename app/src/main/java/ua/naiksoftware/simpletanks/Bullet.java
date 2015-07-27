@@ -13,7 +13,7 @@ import ua.naiksoftware.utils.Pool;
 /**
  * Created by Naik on 19.07.15.
  */
-public class Bullet  implements Pool.Entry{
+public class Bullet  implements Pool.Entry {
 
     private boolean released;
     private float speed;
@@ -117,5 +117,10 @@ public class Bullet  implements Pool.Entry{
     @Override
     public boolean equals(Object o) {
         return o instanceof Bullet && ((Bullet)o).id == id;
+    }
+
+    @Override
+    public String toString() {
+        return "Id=" + id + " owner " + owner;
     }
 }

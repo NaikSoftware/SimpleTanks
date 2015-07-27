@@ -4,11 +4,12 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.SoundPool;
-import android.util.Log;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
 
 import java.util.HashMap;
+
+import ua.naiksoftware.simpletanks.Log;
 
 /**
  * Created by Naik on 25.07.15.
@@ -68,7 +69,7 @@ public class Music {
     }
 
     public static synchronized void playSound(final Object key, final int rawID, final float volume, final boolean loop) {
-        Log.e(TAG, "playSound(" + key + ", " + rawID + ", " + volume + ", " + loop + ")");
+        //Log.e(TAG, "playSound(" + key + ", " + rawID + ", " + volume + ", " + loop + ")");
         SparseIntArray playingSounds = soundsMap.get(key);
         if (playingSounds == null) {
             playingSounds = new SparseIntArray();
@@ -99,23 +100,23 @@ public class Music {
         int playID = playingSounds.get(soundID, -1);
         if (playID == -1) { // Если этот звук еще не играет - играем.
             playingSounds.put(soundID, soundPool.play(soundID, volume, volume, 0, loops, 1));
-            Log.e(TAG, "start soundID=" + soundID + " as playID=" + playingSounds.get(soundID));
+            //Log.e(TAG, "start soundID=" + soundID + " as playID=" + playingSounds.get(soundID));
         } else { // Иначе остановим его и проиграем.
-            Log.e(TAG, "sound " + soundID + " playing now as playID=" + playID + ", stopping");
+            //Log.e(TAG, "sound " + soundID + " playing now as playID=" + playID + ", stopping");
             soundPool.stop(playID);
             playingSounds.put(soundID, soundPool.play(soundID, volume, volume, 0, loops, 1));
-            Log.e(TAG, "restart soundID=" + soundID + " as playID=" + playingSounds.get(soundID));
+            //Log.e(TAG, "restart soundID=" + soundID + " as playID=" + playingSounds.get(soundID));
         }
     }
 
     public static synchronized void stopSound(Object key, int rawID) {
-        Log.e(TAG, "stopSound(" + key + ", " + rawID + ")");
+        //Log.e(TAG, "stopSound(" + key + ", " + rawID + ")");
         int soundID = loadedSounds.get(rawID);
         SparseIntArray playingSounds = soundsMap.get(key);
         int playID = playingSounds.get(soundID);
         soundPool.stop(playID);
         playingSounds.delete(soundID);
-        Log.e(TAG, "stopped rawID=" + rawID + ", soundID=" + soundID + ", playID=" + playID);
+        //Log.e(TAG, "stopped rawID=" + rawID + ", soundID=" + soundID + ", playID=" + playID);
     }
 
     public static synchronized void dispose() {

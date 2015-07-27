@@ -154,6 +154,7 @@ public class ClientGameHolder extends GameHolder {
                 userId = input.readLong();
                 float bulletSpeed = input.readFloat();
                 user = usersMap.get(userId);
+                Log.e(TAG, "Receive fire " + user);
                 bullet = bulletsPool.obtain();
                 bullet.setup(user, bulletSpeed * scale);
                 bullet.changeID(bulletId);
@@ -167,6 +168,7 @@ public class ClientGameHolder extends GameHolder {
                 bullet = bulletsMap.get(bulletId);
                 bullets.remove(bullet);
                 bulletsMap.remove(bulletId);
+                bullet.release();
                 break;
             case PlayEvent.BULLETS_BABAH:
                 // remove 1
@@ -174,11 +176,13 @@ public class ClientGameHolder extends GameHolder {
                 bullet = bulletsMap.get(bulletId);
                 bullets.remove(bullet);
                 bulletsMap.remove(bulletId);
+                bullet.release();
                 // remove 2
                 bulletId = input.readLong();
                 bullet = bulletsMap.get(bulletId);
                 bullets.remove(bullet);
                 bulletsMap.remove(bulletId);
+                bullet.release();
                 break;
             case PlayEvent.USER_BOMBOM:
                 // remove user
@@ -186,6 +190,7 @@ public class ClientGameHolder extends GameHolder {
                 user = usersMap.get(userId);
                 bulletId = input.readLong();
                 bullet = bulletsMap.get(bulletId);
+                Log.e(TAG, "Receive user bombom " + user + " by bullet " + bullet);
                 if (bullet != null && user != null) { // Проверка, вдруг пришло что-то не то
                     user.shot(bullet);
                     if (user == myUser) updateScreenInfo();
@@ -202,6 +207,7 @@ public class ClientGameHolder extends GameHolder {
                     // remove bullet
                     bullets.remove(bullet);
                     bulletsMap.remove(bulletId);
+                    bullet.release();
                 }
                 break;
         }
@@ -216,7 +222,7 @@ public class ClientGameHolder extends GameHolder {
             users.remove(user);
             Log.e(TAG, "Remove user " + user);
         }
-        if (user == myUser || getWinner() != null) { // Вы или победили или проиграли
+        if (myUser == null || getWinner() != null) { // Вы или победили или проиграли
             finishGame = true; // завершаем игру.
         } else { // Игра не завершена, покажем просто уведомление.
             gameClient.toast(tr(R.string.user) + " " + user.getName() + " " + tr(R.string.looser));

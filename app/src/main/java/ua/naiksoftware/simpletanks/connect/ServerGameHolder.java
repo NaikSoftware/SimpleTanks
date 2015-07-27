@@ -1,7 +1,6 @@
 package ua.naiksoftware.simpletanks.connect;
 
 import android.app.Activity;
-import android.util.Log;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -10,6 +9,7 @@ import java.util.Random;
 
 import ua.naiksoftware.simpletanks.Bullet;
 import ua.naiksoftware.simpletanks.GameMap;
+import ua.naiksoftware.simpletanks.Log;
 import ua.naiksoftware.simpletanks.PlayEvent;
 import ua.naiksoftware.simpletanks.R;
 import ua.naiksoftware.simpletanks.Tile;
@@ -100,6 +100,7 @@ public class ServerGameHolder extends GameHolder {
                         // Отсылаем действия в игре (выстрелы, попадания и т.п.)
                         for (int j = 0; j < processedEvents; j++) {
                             sendEvent(out, playEvents.get(j));
+                            Log.e(TAG, "to " + client + " send event " + playEvents.get(j));
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
