@@ -175,8 +175,8 @@ public class GameServer extends GameConnection {
                                         try {
                                             jmdns = JmDNS.create(addr, HOSTNAME);
                                         } catch (IOException e) {
-                                            Log.e(TAG, "JmDNS create error", e);
-                                            toast("JmDNS create: " + e.toString());
+                                            Log.d(TAG, "JmDNS create error", e);
+                                            toast(R.string.notify_net_without_mdns);
                                         }
                                         ServiceInfo serviceInfo = ServiceInfo.create(SERVICE_TYPE, HOSTNAME, PORT, "SimpleTanks server on " + android.os.Build.DEVICE);
                                         serviceInfo.setText(new Hashtable<String, String>() {

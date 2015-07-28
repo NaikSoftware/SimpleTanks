@@ -10,6 +10,7 @@
     <!-- Server -->
     <string-array name="online_modes">
         <item>Создать сервер</item>
+        <item>Поиск серверов</item>
         <item>Соединиться с сервером</item>
     </string-array>
     <string name="server_settings">Параметры сервера</string>
@@ -22,6 +23,7 @@
     <string name="owner_server">владелец сервера</string>
     <string name="game_map">Игровая карта</string>
     <string name="have_not_clients">Клиентов нету</string>
+    <string name="notify_net_without_mdns">Подключайте клиенты напрямую, сеть не поддерживает поиск!</string>
 
     <!-- Client -->
     <string name="client_settings">Параметры</string>
@@ -31,6 +33,7 @@
     <string name="map">Карта</string>
     <string name="my_device">мое устройство</string>
     <string name="server_disconnected">Отсоединено от сервера</string>
+    <string name="input_server_ip">Введите IP сервера или URL</string>
 
     <!-- Common -->
     <string name="start_game">Начать игру</string>

@@ -44,10 +44,12 @@ public class GameClient extends GameConnection implements ServiceListener {
     private DataOutputStream output;
     private DataInputStream input;
     private GameView gameView;
+    private boolean connectDirectly;
 
-    public GameClient(MainActivity activity) {
+    public GameClient(MainActivity activity, boolean connectDirectly) {
         super(activity);
         this.activity = activity;
+        this.connectDirectly = connectDirectly;
     }
 
     @Override
@@ -69,7 +71,7 @@ public class GameClient extends GameConnection implements ServiceListener {
                                 @Override
                                 public void run() {
                                     synchronized (lock) {
-                                        createNetwork(true);
+                                        createNetwork(!connectDirectly);
                                     }
                                 }
                             });
@@ -81,7 +83,25 @@ public class GameClient extends GameConnection implements ServiceListener {
 
     @Override
     protected void onConnected() {
-        final View view = LayoutInflater.from(activity).inflate(R.layout.client_discover_servers_dialog, null);
+        if (connectDirectly) {
+            View view = LayoutInflater.from(activity).inflate(R.layout.client_direct_connect, null);
+            final EditText inputAddr = (EditText)view.findViewById(R.id.directServerAddress);
+            new AlertDialog.Builder(activity)
+                .setView(view)
+                .setNegativeButton(android.R.string.cancel, null)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        server = new Server("Direct", "undefined", inputAddr.getText().toString());
+                        server.connect();
+                    }
+                })
+                .setCancelable(false)
+                .show();
+            return;
+        }
+        View view = LayoutInflater.from(activity).inflate(R.layout.client_discover_servers_dialog, null);
         final AlertDialog dialog = new AlertDialog.Builder(activity)
                 .setView(view)
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {

@@ -54,8 +54,10 @@ public class MainActivity extends Activity {
                                     Music.stopMusic(MainActivity.this, R.raw.atmo_music);
                                     if (pos == 0) { // Start server
                                         gameConn = new GameServer(MainActivity.this);
-                                    } else if (pos == 1) { // Connect to server
-                                        gameConn = new GameClient(MainActivity.this);
+                                    } else if (pos == 1) { // Find servers via mDNS
+                                        gameConn = new GameClient(MainActivity.this, false);
+                                    } else if (pos == 2) { // Connect to server directly
+                                        gameConn = new GameClient(MainActivity.this, true);
                                     }
                                     gameConn.start();
                                 }

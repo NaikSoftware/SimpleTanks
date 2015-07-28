@@ -11,7 +11,8 @@
     <!-- Server -->
 	<string-array name="online_modes">
 		<item>Start server</item>
-		<item>Connect to server</item>
+		<item>Find servers</item>
+        <item>Connect to server</item>
 	</string-array>
 
 	<string name="server_settings">Server settings</string>
@@ -24,6 +25,7 @@
 	<string name="owner_server">owner server</string>
 	<string name="game_map">Game map</string>
 	<string name="have_not_clients">Have not clients</string>
+    <string name="notify_net_without_mdns">Network not discoverable, connect clients directly!</string>
 
 	<!-- Client -->
 	<string name="client_settings">Settings</string>
@@ -34,6 +36,7 @@
 	<string name="map">Map</string>
 	<string name="my_device">my device</string>
 	<string name="server_disconnected">Disconnected from server</string>
+    <string name="input_server_ip">Input server IP or URL</string>
 
 	<!-- Common -->
 	<string name="start_game">Start game</string>

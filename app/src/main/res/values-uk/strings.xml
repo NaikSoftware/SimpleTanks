@@ -37,9 +37,12 @@
     <string name="winner">виграв</string>
     <string name="you_looser">Ви програли</string>
     <string name="you_winner">Ви виграли</string>
+    <string name="input_server_ip">Введіть IP сервера або URL</string>
+    <string name="notify_net_without_mdns">Підключайте клієнти напряму, мережа не підтримує пошук!</string>
 
     <string-array name="online_modes">
         <item>Створити сервер</item>
+        <item>Пошук серверів</item>
         <item>Під\'єднатись до сервера</item>
     </string-array>
 
