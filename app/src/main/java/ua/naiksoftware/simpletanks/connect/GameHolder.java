@@ -77,6 +77,7 @@ public abstract class GameHolder {
             }
         });
         myUser.setMoveVolume(1.0f); // Движение своего юнита делаем на всю громкость
+        Music.preloadSound(R.raw.move_tank); // Звук 100% будет использован, загрузим его сразу же
     }
 
     protected String tr(int stringID) {

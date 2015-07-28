@@ -87,6 +87,20 @@ public class Music {
     }
 
     /**
+     * Preload sound in memory for faster start playing.
+     * @param rawID - R.raw.[...]
+     */
+    public static synchronized void preloadSound(final int rawID) {
+        soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
+            @Override
+            public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
+                loadedSounds.put(rawID, sampleId);
+            }
+        });
+        soundPool.load(context, rawID, 1);
+    }
+
+    /**
      * Run playback sort music (sound). Sound will be loaded into memory.
      * @param key - key for assign player to specified object
      * @param rawID - R.raw.[...]
