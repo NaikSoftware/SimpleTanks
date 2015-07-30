@@ -1,6 +1,8 @@
 package ua.naiksoftware.simpletanks.res;
 
 /**
+ * ID изображений, которые используются в игре
+ *
  * Created by Naik on 08.07.15.
  */
 public enum ImageID {

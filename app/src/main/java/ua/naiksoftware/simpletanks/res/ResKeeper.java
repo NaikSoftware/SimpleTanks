@@ -11,12 +11,20 @@ import ua.naiksoftware.simpletanks.R;
 import ua.naiksoftware.utils.BitmapUtil;
 
 /**
+ * Класс для централизованого получения изображений, их кэширования.
+ *
  * Created by Naik on 08.07.15.
  */
 public class ResKeeper {
 
     private static final HashMap<ImageID, Bitmap> cacheImages = new HashMap<ImageID, Bitmap>();
 
+    /**
+     * Получить изображение из кэша или если его там нету, то загрузить, добавить в кэш и вернуть
+     * @param imageID
+     * @param resources
+     * @return запрашиваемый ресурс
+     */
     public static Bitmap getImage(ImageID imageID, Resources resources) {
         Bitmap bitmap = cacheImages.get(imageID);
         if (bitmap != null) {
@@ -37,6 +45,9 @@ public class ResKeeper {
         return bitmap;
     }
 
+    /**
+     * You must call this method after using images
+     */
     public static void clearImageCache() {
         for (Map.Entry<ImageID, Bitmap> entry : cacheImages.entrySet()) {
             entry.getValue().recycle();

@@ -10,12 +10,12 @@ import android.util.SparseIntArray;
 import java.util.HashMap;
 
 /**
- * Created by Naik on 25.07.15.
+ * Utility for easy music and sounds thread safe playback.
+ * Usage: in main activity in onCreate method call Music.init(getContext()),
+ * in onDestroy call Music.dispose(). After this you can play music and sounds anywhere:
+ * Music.playMusic(keyObject, R.raw.test)
  *
- *      Utility for easy music and sounds thread safe playback.
- *      Usage: in main activity in onCreate method call Music.init(getContext()),
- *      in onDestroy call Music.dispose(). After this you can play music and sounds anywhere:
- *      Music.playMusic(keyObject, R.raw.test)
+ * Created by Naik on 25.07.15.
  */
 public class Music {
 
@@ -101,7 +101,7 @@ public class Music {
     }
 
     /**
-     * Run playback sort music (sound). Sound will be loaded into memory.
+     * Run playback short music (sound). Sound will be loaded into memory.
      * @param key - key for assign player to specified object
      * @param rawID - R.raw.[...]
      * @param volume - volume for left and right channels
