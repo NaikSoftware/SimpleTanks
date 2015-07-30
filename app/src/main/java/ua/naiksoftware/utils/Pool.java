@@ -3,6 +3,9 @@ package ua.naiksoftware.utils;
 import java.util.ArrayList;
 
 /**
+ * Пул обьектов. Может использоваться для повышения производительности там, где создается много
+ * схожих обьектов в цикле.
+ *
  * Created by Naik on 09.07.15.
  */
 public class Pool<T extends Pool.Entry> {
@@ -11,12 +14,22 @@ public class Pool<T extends Pool.Entry> {
     private ObjectFactory<T> factory;
     private int size;
 
+    /**
+     *
+     * @param size максимальный размер пула, когда превышен лимит, обьекты будут просто
+     *             созданы с помощью фабрики {@code Pool#ObjectFactory}
+     * @param factory фабрика для создания новых элементов пула
+     */
     public Pool(int size, ObjectFactory<T> factory) {
         this.size = size;
         this.factory = factory;
         objects = new ArrayList<T>(size);
     }
 
+    /**
+     * Получить новый обьект.
+     * @return освобожденный обьект из пула, или если пул забит, то будет созден новый обьект
+     */
     public T obtain() {
         T entry;
         int listSize = objects.size();
@@ -35,10 +48,9 @@ public class Pool<T extends Pool.Entry> {
         }
     }
 
-    public void recycle() {
-        objects.clear();
-    }
-
+    /**
+     * Элемент пула обьектов должен реализовать этот интерфейс
+     */
     public interface Entry {
         boolean released();
         void release();

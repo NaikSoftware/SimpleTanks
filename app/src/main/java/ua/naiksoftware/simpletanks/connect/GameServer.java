@@ -93,7 +93,7 @@ public class GameServer extends GameConnection {
                         if (servName.isEmpty()) {
                             toast(R.string.serv_name_empty_notice);
                         } else { // Все нормально
-                            myUser = new User(servName, activity.getString(R.string.owner_server), 1);
+                            myUser = new User(servName, User.GEN_NEW_ID, activity.getString(R.string.owner_server));
                             inBG(new Runnable() {
 
                                 @Override
@@ -413,12 +413,12 @@ public class GameServer extends GameConnection {
         final DataOutputStream out;
 
         Client(Socket socket) throws IOException {
-            super(0, 1);
+            super(null, -1, null); // Установим параметры позже
             this.socket = socket;
             in = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
             setName(in.readUTF());
-            setId(in.readLong());
+            changeID(in.readLong());
             setIp(socket.getInetAddress().getHostAddress());
             out.writeUTF(pathToMap); // Отсылаем карту сервера
         }

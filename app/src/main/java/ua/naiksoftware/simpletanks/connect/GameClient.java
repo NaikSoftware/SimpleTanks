@@ -65,7 +65,7 @@ public class GameClient extends GameConnection implements ServiceListener {
                         if (clientName.isEmpty()) {
                             toast(R.string.client_name_empty_notice);
                         } else { // Все нормально
-                            myUser = new User(clientName, activity.getString(R.string.my_device), 1);
+                            myUser = new User(clientName, User.GEN_NEW_ID, activity.getString(R.string.my_device));
                             inBG(new Runnable() {
 
                                 @Override
@@ -322,10 +322,10 @@ public class GameClient extends GameConnection implements ServiceListener {
                             } else if (response == GameServer.ADD_USER || response == GameServer.REMOVE_USER) {
                                 switch (response) {
                                     case GameServer.ADD_USER :
-                                        users.add(new User(in.readUTF(), in.readLong(), in.readUTF(), 1));
+                                        users.add(new User(in.readUTF(), in.readLong(), in.readUTF()));
                                         break;
                                     case GameServer.REMOVE_USER:
-                                        users.remove(new User(in.readLong(), 1));
+                                        removeUserByID(in.readLong());
                                 }
                                 inUI(new Runnable() {
                                     @Override
@@ -430,6 +430,15 @@ public class GameClient extends GameConnection implements ServiceListener {
         }
         builder.append(myUser.getName()).append(" - ").append(myUser.getIp()).append("\n");
         return builder.toString();
+    }
+
+    private void removeUserByID(long id) {
+        for (User user : users) {
+            if (user.getID() == id) {
+                users.remove(user);
+                return;
+            }
+        }
     }
 
     @Override

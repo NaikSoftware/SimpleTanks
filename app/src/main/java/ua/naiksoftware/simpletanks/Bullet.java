@@ -1,6 +1,5 @@
 package ua.naiksoftware.simpletanks;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -20,7 +19,10 @@ public class Bullet  implements Pool.Entry {
     private float x, y;
     private final Rect boundsRect = new Rect(), movedRect = new Rect();
     private User owner;
+
+    /** Предзагруженная текстура пули летящей вертикально и горизонтально */
     public static Bitmap bitmapVert, bitmapHoriz;
+
     private Bitmap bitmap;
     private static final Paint paint = new Paint();
     private int direction;
@@ -28,9 +30,22 @@ public class Bullet  implements Pool.Entry {
     private long id;
     private static final Random RND = new Random();
 
+    /**
+     * Создение нового обьекта, так как пули создаются в пуле (: то вручную конструктор не
+     * вызывается
+     * @see Bullet#setup(User, float)
+     */
     public Bullet() {
     }
 
+    /**
+     * Передвинуть и нарисовать пулю
+     * @param canvas
+     * @param deltaTime
+     * @return прямоугольник, который получается из начального положения + движение за итерацию
+     * + нового положения. Нужен для правильной детекции коллизий и избежания "пролетания" пули
+     * сквозь стены и т.п.
+     */
     public Rect draw(Canvas canvas, int deltaTime) {
         float diff = speed * deltaTime;
         switch (direction) {
@@ -55,6 +70,11 @@ public class Bullet  implements Pool.Entry {
         return movedRect;
     }
 
+    /**
+     * Установить новые параметры пули
+     * @param owner
+     * @param speed
+     */
     public void setup(User owner, float speed) {
         this.speed = speed;
         this.owner = owner;

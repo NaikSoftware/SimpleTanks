@@ -4,7 +4,7 @@
     <entry_points version="2.0" />
   </component>
   <component name="JavadocGenerationManager">
-    <option name="OUTPUT_DIRECTORY" value="$PROJECT_DIR$/../../stdocs" />
+    <option name="OUTPUT_DIRECTORY" value="$PROJECT_DIR$/javadocs" />
     <option name="OPTION_SCOPE" value="protected" />
     <option name="OPTION_HIERARCHY" value="true" />
     <option name="OPTION_NAVIGATOR" value="true" />
@@ -15,9 +15,9 @@
     <option name="OPTION_DOCUMENT_TAG_VERSION" value="false" />
     <option name="OPTION_DOCUMENT_TAG_DEPRECATED" value="true" />
     <option name="OPTION_DEPRECATED_LIST" value="true" />
-    <option name="OTHER_OPTIONS" />
+    <option name="OTHER_OPTIONS" value="-encoding UTF-8 -docencoding UTF-8 -charset UTF-8" />
     <option name="HEAP_SIZE" />
-    <option name="LOCALE" />
+    <option name="LOCALE" value="ru" />
     <option name="OPEN_IN_BROWSER" value="true" />
     <option name="OPTION_INCLUDE_LIBS" value="true" />
   </component>
