@@ -20,8 +20,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * Класс - оболочка для запуска игры. Предоставляет общий интерфейс для клиента и сервера.
+ */
 public abstract class GameConnection {
 
     private static final String TAG = GameConnection.class.getSimpleName();
@@ -38,10 +45,14 @@ public abstract class GameConnection {
     private ExecutorService background;
     private boolean takeMdnsPackets;
     private boolean gameRunning;
+    private View toastView;
+    private TextView toastText;
 
     public GameConnection(Activity activity) {
         this.activity = activity;
         background = Executors.newFixedThreadPool(3);
+        toastView = LayoutInflater.from(activity).inflate(R.layout.toast_view, null);
+        toastText = (TextView)toastView.findViewById(R.id.toast_text);
     }
 
     protected abstract void onConnected();
@@ -136,11 +147,15 @@ public abstract class GameConnection {
         }
     }
 
-    Handler ui = new Handler() {
+    private Handler ui = new Handler() {
 
         @Override
         public void handleMessage(Message msg) {
-            Toast.makeText(activity, msg.getData().getString(MSG_KEY), Toast.LENGTH_LONG).show();
+            Toast toast = new Toast(activity);
+            toast.setDuration(Toast.LENGTH_LONG);
+            toastText.setText(msg.getData().getString(MSG_KEY));
+            toast.setView(toastView);
+            toast.show();
         }
     };
 
