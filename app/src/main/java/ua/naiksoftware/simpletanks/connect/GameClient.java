@@ -28,6 +28,9 @@ import ua.naiksoftware.simpletanks.R;
 import ua.naiksoftware.simpletanks.User;
 import ua.naiksoftware.simpletanks.MainActivity;
 
+/**
+ * Подключется к серверу, ждет начала игры и запускает ее у себя.
+ */
 public class GameClient extends GameConnection implements ServiceListener {
 
     private static final String TAG = GameClient.class.getSimpleName();

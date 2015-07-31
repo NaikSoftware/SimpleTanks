@@ -25,6 +25,9 @@ import android.widget.TextView;
 import ua.naiksoftware.simpletanks.R;
 
 /**
+ * Оболочка которая призвана скрыть различия между обработчиком игры клиентом и сервером
+ * для других компонент.
+ *
  * Created by Naik on 10.07.15.
  */
 public abstract class GameHolder {

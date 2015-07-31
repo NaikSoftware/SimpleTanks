@@ -8,6 +8,9 @@ import android.os.AsyncTask;
 import android.util.Log;
 import ua.naiksoftware.utils.InetUtils;
 
+/**
+ * Запускает WiFi, дожидается включения и уведомляет о результате {@code WifiConnectionHandler}
+ */
 public class WifiConnector extends AsyncTask<WifiConnector.WifiConnectionHandler, Void, Boolean>{
 	
 	private static final String TAG = WifiConnector.class.getSimpleName();
@@ -91,7 +94,11 @@ public class WifiConnector extends AsyncTask<WifiConnector.WifiConnectionHandler
 	public void stop() {
 		cancel(true);
 	}
-	
+
+    /**
+     * Вы должны наследоваться от этого класса или создать замыкание чтобы обработать
+     * результат удачного или неудачного включения WiFi
+     */
 	public static abstract class WifiConnectionHandler {
 		
 		private WifiManager wifiManager;
@@ -105,12 +112,17 @@ public class WifiConnector extends AsyncTask<WifiConnector.WifiConnectionHandler
 		}
 		
 		/**
+         * Сколько ждать включения
 		 * @return timeout in milliseconds
 		 */
 		public long timeout() {
 			return 30000;
 		}
-		
+
+        /**
+         * Сюда будет передан результат включения WiFi
+         * @param result true if connected
+         */
 		public abstract void onWifiConnected(boolean result);
 		
 	}

@@ -16,6 +16,8 @@ import ua.naiksoftware.simpletanks.User;
 import ua.naiksoftware.simpletanks.res.Music;
 
 /**
+ * Управляет логикой игры клиента
+ *
  * Created by Naik on 10.07.15.
  */
 public class ClientGameHolder extends GameHolder {

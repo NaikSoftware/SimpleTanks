@@ -18,6 +18,8 @@ import ua.naiksoftware.simpletanks.res.Music;
 import ua.naiksoftware.utils.Pool;
 
 /**
+ * Управляет логикой игры сервера. Рассылает игровые события клиентам.
+ *
  * Created by Naik on 10.07.15.
  */
 public class ServerGameHolder extends GameHolder {

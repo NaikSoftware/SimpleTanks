@@ -33,6 +33,9 @@ import ua.naiksoftware.simpletanks.MainActivity;
 import ua.naiksoftware.simpletanks.R;
 import ua.naiksoftware.simpletanks.User;
 
+/**
+ * Запускает сервер, подключает клиентов и стартует игру.
+ */
 public class GameServer extends GameConnection {
 
     private static final String TAG = GameServer.class.getSimpleName();
