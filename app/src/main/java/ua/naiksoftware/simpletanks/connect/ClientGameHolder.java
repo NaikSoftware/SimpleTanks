@@ -1,6 +1,7 @@
 package ua.naiksoftware.simpletanks.connect;
 
 import android.app.Activity;
+import android.content.res.Resources;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -8,6 +9,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import ua.naiksoftware.simpletanks.Bonus;
 import ua.naiksoftware.simpletanks.Bullet;
 import ua.naiksoftware.simpletanks.Log;
 import ua.naiksoftware.simpletanks.PlayEvent;
@@ -16,7 +18,7 @@ import ua.naiksoftware.simpletanks.User;
 import ua.naiksoftware.simpletanks.res.Music;
 
 /**
- * Управляет логикой игры клиента
+ * Управляет логикой игры клиента.
  *
  * Created by Naik on 10.07.15.
  */
@@ -35,6 +37,8 @@ public class ClientGameHolder extends GameHolder {
     private boolean fire;
     private User myUser;
     private boolean finishGame;
+    private Resources res;
+    private HashMap<Long, Bonus> bonusMap = new HashMap<Long, Bonus>();
     
     public ClientGameHolder(GameClient gameClient, Activity activity, int serverTileSize) {
         super(gameClient, activity);
@@ -43,6 +47,7 @@ public class ClientGameHolder extends GameHolder {
         myUser = gameClient.getMyUser();
         output = gameClient.getServer().out;
         input = gameClient.getServer().in;
+        res = activity.getResources();
         for (User user : users) {
             usersMap.put(user.getID(), user);
         }
@@ -70,6 +75,8 @@ public class ClientGameHolder extends GameHolder {
         }
     }
 
+    /* На клиенте игнорируем следующие события, они будут приходить с сервера */
+
     @Override
     protected void bulletsBabah(Bullet bullet, Bullet bullet2) {
     }
@@ -80,7 +87,10 @@ public class ClientGameHolder extends GameHolder {
 
     @Override
     protected void bulletOnWall(Bullet bullet) {
+    }
 
+    @Override
+    protected void catchBonus(User user, Bonus bonus) {
     }
 
     /* Поток для отсылки и приема данных */
@@ -149,6 +159,7 @@ public class ClientGameHolder extends GameHolder {
 
     private void processGameEvent(DataInputStream input) throws IOException {
         Bullet bullet;
+        Bonus bonus;
         User user;
         long bulletId, userId;
         switch (input.readInt()) {
@@ -210,6 +221,19 @@ public class ClientGameHolder extends GameHolder {
                     bulletsMap.remove(bulletId);
                     bullet.release();
                 }
+                break;
+            case PlayEvent.CREATE_BONUS:
+                bonus = new Bonus(input.readLong(), input.readInt(), input.readInt(), res);
+                bonus.setPosition((int)(input.readInt() * scale), (int)(input.readInt() * scale));
+                bonusMap.put(bonus.getID(), bonus);
+                addBonus(bonus);
+                break;
+            case PlayEvent.CATCH_BONUS:
+                user = usersMap.get(input.readLong());
+                bonus = bonusMap.get(input.readLong());
+                applyBonus(user, bonus);
+                bonusMap.remove(bonus.getID());
+                removeBonus(bonus);
                 break;
         }
     }

@@ -10,6 +10,8 @@ import java.util.Random;
 import ua.naiksoftware.utils.Pool;
 
 /**
+ * Код пули.
+ *
  * Created by Naik on 19.07.15.
  */
 public class Bullet  implements Pool.Entry {
@@ -72,8 +74,8 @@ public class Bullet  implements Pool.Entry {
 
     /**
      * Установить новые параметры пули
-     * @param owner
-     * @param speed
+     * @param owner пользователь, который выстрелил
+     * @param speed скорость пули (пикселей за кадр)
      */
     public void setup(User owner, float speed) {
         this.speed = speed;

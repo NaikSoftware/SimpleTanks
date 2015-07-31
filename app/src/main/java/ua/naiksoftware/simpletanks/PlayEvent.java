@@ -11,6 +11,8 @@ public class PlayEvent implements Pool.Entry {
     public static final int BULLETS_BABAH = 2;
     public static final int USER_BOMBOM = 3;
     public static final int BULLET_ON_WALL = 4;
+    public static final int CREATE_BONUS = 5;
+    public static final int CATCH_BONUS = 6;
 
     private int type;
     private Object[] params;

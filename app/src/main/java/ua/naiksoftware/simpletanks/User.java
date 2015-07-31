@@ -281,6 +281,15 @@ public class User {
         }
     }
 
+    public void incrementLife() {
+        if (lifeProgress == 100 && lifes < DEFAULT_LIFES) lifes++;
+        else lifeProgress = 100;
+    }
+
+    public void setAlpha(int alpha) {
+        paint.setAlpha(alpha);
+    }
+
     /**
      *
      * @return сила выстрела

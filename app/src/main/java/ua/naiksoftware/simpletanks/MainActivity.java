@@ -31,6 +31,7 @@ public class MainActivity extends Activity {
     }
     
     public void showMainMenu() {
+        gameConn = null;
         setContentView(R.layout.main);
         findViewById(R.id.btnPlay).setOnClickListener(btnListener);
         findViewById(R.id.btnExit).setOnClickListener(btnListener);
@@ -107,7 +108,7 @@ public class MainActivity extends Activity {
 
                     @Override
                     public void onClick(DialogInterface di, int pos) {
-                       gameConn.stop();
+                        gameConn.stop();
                     }
                 })
                 .show();

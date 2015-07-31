@@ -1,13 +1,18 @@
 package ua.naiksoftware.simpletanks.connect;
 
 import android.app.Activity;
+import android.content.res.Resources;
+import android.graphics.Point;
 import android.graphics.Rect;
+import android.os.Handler;
+import android.os.Looper;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
+import ua.naiksoftware.simpletanks.Bonus;
 import ua.naiksoftware.simpletanks.Bullet;
 import ua.naiksoftware.simpletanks.GameMap;
 import ua.naiksoftware.simpletanks.Log;
@@ -24,13 +29,14 @@ import ua.naiksoftware.utils.Pool;
  */
 public class ServerGameHolder extends GameHolder {
 
-    private static final Random RND = new Random();
     private static final String TAG = ServerGameHolder.class.getSimpleName();
+
+    private static final Random RND = new Random();
+
     private static final int SYNC_COORDS_INTERVAL = 100;//ms
     public static final float FLAG_SYNC_NOT_NEEDED = -1000f;
 
     private final GameServer gameServer;
-    private final Activity activity;
     private final ArrayList<GameServer.Client> clients;
     private User myUser;
     private final GameMap gameMap;
@@ -39,14 +45,15 @@ public class ServerGameHolder extends GameHolder {
     private final ArrayList<Bullet> bullets = getBullets();
     private final ArrayList<PlayEvent> playEvents = new ArrayList<PlayEvent>();
     private boolean fire;
+    private Resources resources;
     
     public ServerGameHolder(GameServer gameServer, Activity activity) {
         super(gameServer, activity);
         this.gameServer = gameServer;
-        this.activity = activity;
         clients = gameServer.getUsers();
         myUser = gameServer.getMyUser();
         this.gameMap = gameServer.getGameMap();
+        resources = activity.getResources();
         initWorld();
 		connectionThread = new ConnectionThread();
     }
@@ -68,6 +75,7 @@ public class ServerGameHolder extends GameHolder {
             GameServer.Client client;
             boolean syncCoords;
             int processedEvents;
+            runDelayed(bonusRunnable, 5000 + RND.nextInt(10000));
 			while (running) {
                 // Получаем изменения от клиентов (нажатия на кнопки) и сразу обновляем мир
                 for (int i = 0; i < clients.size(); i++) {
@@ -166,6 +174,8 @@ public class ServerGameHolder extends GameHolder {
         out.writeInt(GameServer.SEND_PLAY_EVENT);
         out.writeInt(event.getType());
         Bullet bullet;
+        Bonus bonus;
+        User user;
         switch (event.getType()) {
             case PlayEvent.USER_FIRE:
                 bullet = (Bullet)event.getParams()[0];
@@ -184,10 +194,24 @@ public class ServerGameHolder extends GameHolder {
                 out.writeLong(bullet.getID());
                 break;
             case PlayEvent.USER_BOMBOM:
-                User user = (User)event.getParams()[0];
+                user = (User)event.getParams()[0];
                 out.writeLong(user.getID());
                 bullet = (Bullet)event.getParams()[1];
                 out.writeLong(bullet.getID());
+                break;
+            case PlayEvent.CREATE_BONUS:
+                bonus = (Bonus)event.getParams()[0];
+                out.writeLong(bonus.getID());
+                out.writeInt(bonus.getType());
+                out.writeInt(bonus.getDuration());
+                out.writeInt(bonus.getX());
+                out.writeInt(bonus.getY());
+                break;
+            case PlayEvent.CATCH_BONUS:
+                user = (User)event.getParams()[0];
+                out.writeLong(user.getID());
+                bonus = (Bonus)event.getParams()[1];
+                out.writeLong(bonus.getID());
                 break;
         }
     }
@@ -281,6 +305,38 @@ public class ServerGameHolder extends GameHolder {
         }
     }
 
+    private final Runnable bonusRunnable = new Runnable() {
+        @Override
+        public void run() {
+            int bonusType;
+            int rnd  = RND.nextInt(100);
+            if (rnd < 50) bonusType = Bonus.TYPE_LIFE;
+            else bonusType = Bonus.TYPE_TRANSPARENT;
+
+            int duration = 5000 + RND.nextInt(4000);
+            Bonus bonus = new Bonus(Bonus.GEN_NEW_ID, bonusType, duration, resources);
+            Rect bonusRect = bonus.getBoundsRect();
+            moveToFreePlace(bonusRect, clients);
+            bonus.setPosition(bonusRect.left, bonusRect.top);
+            addBonus(bonus);
+
+            PlayEvent event = eventsPool.obtain();
+            event.setup(PlayEvent.CREATE_BONUS, bonus);
+            playEvents.add(event);
+
+            runDelayed(this, 7000 + RND.nextInt(10000));
+        }
+    };
+
+    @Override
+    protected void catchBonus(User user, Bonus bonus) {
+        applyBonus(user, bonus);
+        removeBonus(bonus);
+        PlayEvent event = eventsPool.obtain();
+        event.setup(PlayEvent.CATCH_BONUS, user, bonus);
+        playEvents.add(event);
+    }
+
     private void initWorld() {
         User user;
         ArrayList<User> placedUsers = new ArrayList<User>();
@@ -296,36 +352,45 @@ public class ServerGameHolder extends GameHolder {
     }
 
     private void placeUser(User user, ArrayList<User> placedUsers) {
+        Rect place = user.getBoundsRect();
+        moveToFreePlace(place, placedUsers);
+        user.setX(place.left);
+        user.setY(place.top);
+    }
+
+    /* Передвигает rect на свободное место на карте */
+    private void moveToFreePlace(Rect rect, ArrayList<? extends User> placedUsers) {
         int mapW = gameMap.mapW;
         int mapH = gameMap.mapH;
         int tileSize = gameMap.TILE_SIZE;
-        Rect place = user.getBoundsRect();
         int n = 0;
         genNewPlace: while (true) {
             n++;
-            if (n > 300) { // 300 попыток найти место для юнита
-                throw new RuntimeException("Illegal game map, have not place for users");
+            if (n > 300) { // 300 попыток найти место
+                return;
             }
-            place.offsetTo(RND.nextInt(mapW) * tileSize, RND.nextInt(mapH) * tileSize);
-            if (gameMap.intersectsWith(place)) {
-                //Log.d(TAG, "Find place for user failed (intersects map): " + place);
+            rect.offsetTo(RND.nextInt(mapW) * tileSize, RND.nextInt(mapH) * tileSize);
+            if (gameMap.intersectsWith(rect)) {
                 continue;
             }
-            for (int i = 0, size = placedUsers.size(); i < size; i++) {
-                if (Rect.intersects(place, placedUsers.get(i).getBoundsRect())) {
-                    //Log.d(TAG, "Find place for user failed (intersects with other): " + place);
+            for (int i = 0; i < placedUsers.size(); i++) {
+                if (Rect.intersects(rect, placedUsers.get(i).getBoundsRect())) {
                     continue genNewPlace;
                 }
             }
-            user.setX(place.left);
-            user.setY(place.top);
-            //Log.d(TAG, "User " + user.getName() + " placed on " + place);
-            break;
+            ArrayList<Bonus> bonuses = getBonusList();
+            for (int i = 0; i < bonuses.size(); i++) {
+                if (Rect.intersects(rect, bonuses.get(i).getBoundsRect())) {
+                    continue genNewPlace;
+                }
+            }
+            break; // complete
         }
     }
 
 	@Override
 	public void stopGame() {
+        stopDelayedCallbacks();
 		connectionThread.stopRunning();
 	}
 

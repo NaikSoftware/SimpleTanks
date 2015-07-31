@@ -10,6 +10,7 @@ import android.graphics.Rect;
 
 import java.util.ArrayList;
 
+import ua.naiksoftware.simpletanks.Bonus;
 import ua.naiksoftware.simpletanks.Bullet;
 import ua.naiksoftware.simpletanks.User;
 import ua.naiksoftware.simpletanks.GameMap;
@@ -18,10 +19,12 @@ import ua.naiksoftware.simpletanks.res.Music;
 import ua.naiksoftware.simpletanks.res.ResKeeper;
 import ua.naiksoftware.utils.Pool;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
 import ua.naiksoftware.simpletanks.R;
 
 /**
@@ -58,6 +61,8 @@ public abstract class GameHolder {
     private ProgressBar lifeProgressBar;
     private TextView lifesTextView, minesTextView;
     private boolean myUserKilled;
+    private ArrayList<Bonus> bonusList = new ArrayList<Bonus>();
+    private Handler handler = new Handler();
 
     public GameHolder(GameConnection gameConnection, final Activity activity) {
         this.gameConnection = gameConnection;
@@ -169,6 +174,17 @@ public abstract class GameHolder {
             processUser(myUser, deltaTime);
             myUser.draw(canvas);
         }
+        /* Отрисуем бонусы и удалим время которых истекло */
+        Bonus bonus;
+        for (int i = 0; i < bonusList.size(); i++) {
+            bonus = bonusList.get(i);
+            if (bonus.timeOver()) {
+                bonusList.remove(bonus);
+                i--;
+                continue;
+            }
+            bonus.draw(canvas);
+        }
     }
 
     private void processUser(User user, int deltaTime) {
@@ -181,9 +197,59 @@ public abstract class GameHolder {
                 if (user != user2) user.intersectWith(user2);
             }
             if (!myUserKilled && user != myUser) user.intersectWith(myUser);
+            // Проверяем столкновения с бонусами
+            Rect userRect = user.getBoundsRect();
+            Bonus bonus;
+            for (int i = 0; i < bonusList.size(); i++) {
+                bonus = bonusList.get(i);
+                if (Rect.intersects(userRect, bonus.getBoundsRect())) {
+                    catchBonus(user, bonus);
+                }
+            }
         }
     }
-    
+
+    protected void runDelayed(Runnable runnable, long delay) {
+        handler.postDelayed(runnable, delay);
+    }
+
+    protected void stopDelayedCallbacks() {
+        handler.removeCallbacksAndMessages(null);
+    }
+
+    protected void addBonus(Bonus bonus) {
+        bonusList.add(bonus);
+    }
+
+    protected void removeBonus(Bonus bonus) {
+        bonusList.remove(bonus);
+    }
+
+    public ArrayList<Bonus> getBonusList() {
+        return bonusList;
+    }
+
+    /**
+     * Бонус поймали
+     * @param user пользователь, который его поймал
+     */
+    protected void applyBonus(final User user, Bonus bonus) {
+        int type = bonus.getType();
+        if (type == Bonus.TYPE_LIFE) {
+            user.incrementLife();
+            updateScreenInfo();
+        } else if (type == Bonus.TYPE_TRANSPARENT) {
+            if (user == myUser) user.setAlpha(100);
+            else user.setAlpha(0);
+            runDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    user.setAlpha(255);
+                }
+            }, bonus.getDuration() * 2);
+        }
+    }
+
     protected void killMyUser() {
         myUserKilled = true;
     }
@@ -249,6 +315,7 @@ public abstract class GameHolder {
     protected abstract void bulletsBabah(Bullet bullet, Bullet bullet2);
     protected abstract void userBombom(User user, Bullet bullet);
     protected abstract void bulletOnWall(Bullet bullet);
+    protected abstract void catchBonus(User user, Bonus bonus);
     
 	public abstract void stopGame();
 

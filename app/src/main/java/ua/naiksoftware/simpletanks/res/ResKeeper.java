@@ -38,6 +38,8 @@ public class ResKeeper {
             case TANK_1_RIGHT: bitmap = BitmapUtil.rotate(getImage(ImageID.TANK_1_UP, resources), 90, false); break;
             case BULLET_VERTICAL: bitmap = BitmapFactory.decodeResource(resources, R.drawable.bullet); break;
             case BULLET_HORIZONTAL: bitmap = BitmapUtil.rotate(getImage(ImageID.BULLET_VERTICAL, resources), 90, false); break;
+            case BONUS_LIFE: bitmap = BitmapFactory.decodeResource(resources, R.drawable.life); break;
+            case BONUS_TRANSPARENT: bitmap = BitmapFactory.decodeResource(resources, R.drawable.transparent); break;
         }
         if (bitmap != null) {
             cacheImages.put(imageID, bitmap);
