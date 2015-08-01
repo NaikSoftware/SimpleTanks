@@ -20,6 +20,7 @@ import ua.naiksoftware.simpletanks.res.ResKeeper;
 import ua.naiksoftware.utils.Pool;
 
 import android.os.Handler;
+import android.os.SystemClock;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -85,7 +86,11 @@ public abstract class GameHolder {
             }
         });
         myUser.setMoveVolume(1.0f); // Движение своего юнита делаем на всю громкость
-        Music.preloadSound(R.raw.move_tank); // Звук 100% будет использован, загрузим его сразу же
+        /* Звук 100% будет использован, загрузим его сразу же */
+        Music.preloadSound(R.raw.move_tank);
+        Music.preloadSound(R.raw.get_transparent);
+        Music.preloadSound(R.raw.disable_transparent);
+        Music.preloadSound(R.raw.get_life);
     }
 
     protected String tr(int stringID) {
@@ -180,6 +185,7 @@ public abstract class GameHolder {
             bonus = bonusList.get(i);
             if (bonus.timeOver()) {
                 bonusList.remove(bonus);
+                Music.playSound(bonus, R.raw.hide_bonus, 1, false);
                 i--;
                 continue;
             }
@@ -209,8 +215,9 @@ public abstract class GameHolder {
         }
     }
 
-    protected void runDelayed(Runnable runnable, long delay) {
-        handler.postDelayed(runnable, delay);
+    protected void runDelayed(Runnable runnable, Object token, long delay) {
+        handler.removeCallbacksAndMessages(token);
+        handler.postAtTime(runnable, token, SystemClock.uptimeMillis() + delay);
     }
 
     protected void stopDelayedCallbacks() {
@@ -238,15 +245,18 @@ public abstract class GameHolder {
         if (type == Bonus.TYPE_LIFE) {
             user.incrementLife();
             updateScreenInfo();
+            Music.playSound(user, R.raw.get_life, 1, false);
         } else if (type == Bonus.TYPE_TRANSPARENT) {
             if (user == myUser) user.setAlpha(100);
             else user.setAlpha(0);
+            Music.playSound(user, R.raw.get_transparent, 1, false);
             runDelayed(new Runnable() {
                 @Override
                 public void run() {
                     user.setAlpha(255);
+                    Music.playSound(user, R.raw.disable_transparent, 1, false);
                 }
-            }, bonus.getDuration() * 2);
+            }, user, bonus.getDuration() * 2);
         }
     }
 

@@ -75,7 +75,7 @@ public class ServerGameHolder extends GameHolder {
             GameServer.Client client;
             boolean syncCoords;
             int processedEvents;
-            runDelayed(bonusRunnable, 5000 + RND.nextInt(10000));
+            runDelayed(bonusRunnable, this, 5000 + RND.nextInt(10000));
 			while (running) {
                 // Получаем изменения от клиентов (нажатия на кнопки) и сразу обновляем мир
                 for (int i = 0; i < clients.size(); i++) {
@@ -319,12 +319,13 @@ public class ServerGameHolder extends GameHolder {
             moveToFreePlace(bonusRect, clients);
             bonus.setPosition(bonusRect.left, bonusRect.top);
             addBonus(bonus);
+            Music.playSound(bonus, R.raw.show_bonus, 1, false);
 
             PlayEvent event = eventsPool.obtain();
             event.setup(PlayEvent.CREATE_BONUS, bonus);
             playEvents.add(event);
 
-            runDelayed(this, 7000 + RND.nextInt(10000));
+            runDelayed(this, bonus, 7000 + RND.nextInt(10000));
         }
     };
 

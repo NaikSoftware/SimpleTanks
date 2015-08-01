@@ -108,7 +108,7 @@ public class MainActivity extends Activity {
 
                     @Override
                     public void onClick(DialogInterface di, int pos) {
-                        gameConn.stop();
+                        if (gameConn != null) gameConn.stop();
                     }
                 })
                 .show();

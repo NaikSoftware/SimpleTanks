@@ -227,6 +227,7 @@ public class ClientGameHolder extends GameHolder {
                 bonus.setPosition((int)(input.readInt() * scale), (int)(input.readInt() * scale));
                 bonusMap.put(bonus.getID(), bonus);
                 addBonus(bonus);
+                Music.playSound(bonus, R.raw.show_bonus, 1, false);
                 break;
             case PlayEvent.CATCH_BONUS:
                 user = usersMap.get(input.readLong());
