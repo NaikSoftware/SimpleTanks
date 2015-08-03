@@ -143,6 +143,11 @@ public class ClientGameHolder extends GameHolder {
                                 break;
                         }
                     }
+                    try {
+                        Thread.sleep(3);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();

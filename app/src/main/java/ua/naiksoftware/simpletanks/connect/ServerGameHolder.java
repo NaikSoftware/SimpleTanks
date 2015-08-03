@@ -141,6 +141,11 @@ public class ServerGameHolder extends GameHolder {
                 if (myUser != null && myUser.isDestroyed()) {
                     removeUser(myUser, false);
                 }
+                try {
+                    Thread.sleep(2);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 			}
 		}
 

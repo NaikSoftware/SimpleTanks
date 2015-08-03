@@ -57,7 +57,7 @@ public class User {
     public static final int MY_UNIT_COLOR = Color.BLUE;
 
     /** Для вычисления скорости юнита {@code GameMap.TILE_SIZE / DEFAULT_SPEED_FACTOR} */
-    public static final float DEFAULT_SPEED_FACTOR = 250f;
+    public static final float DEFAULT_SPEED_FACTOR = 300f;
 
     /* Поля класса */
     private String name;
