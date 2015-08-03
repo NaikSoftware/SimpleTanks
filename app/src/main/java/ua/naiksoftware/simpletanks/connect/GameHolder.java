@@ -191,6 +191,11 @@ public abstract class GameHolder {
             }
             bonus.draw(canvas);
         }
+        try {
+            Thread.sleep(5);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private void processUser(User user, int deltaTime) {

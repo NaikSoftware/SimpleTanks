@@ -56,7 +56,7 @@ public class Bonus {
             case TYPE_LIFE: bitmap = ResKeeper.getImage(ImageID.BONUS_LIFE, res); break;
             case TYPE_TRANSPARENT: bitmap = ResKeeper.getImage(ImageID.BONUS_TRANSPARENT, res); break;
         }
-        boundsRect = new Rect(x, y, bitmap.getWidth(), bitmap.getHeight());
+        boundsRect = new Rect(x, y, x + bitmap.getWidth(), y + bitmap.getHeight());
         startTime = System.currentTimeMillis();
     }
 
