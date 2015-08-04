@@ -24,4 +24,5 @@ android {
 
 dependencies {
     compile files('libs/jmdns-3.4.1.jar')
+    compile files('libs/luaj-jse-3.0.1.jar')
 }

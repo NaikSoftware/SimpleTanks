@@ -7,6 +7,7 @@ import android.media.SoundPool;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 /**
@@ -63,15 +64,14 @@ public class Music {
      */
     public static synchronized void playMusic(Object key, int rawID, boolean loop) {
         MediaPlayer music = getMusic(key, rawID);
-        if (loop) {
-            if (!music.isPlaying()) {
-                music.setLooping(true);
-                music.start();
+        if (!music.isPlaying()) {
+            music.stop();
+            try {
+                music.prepare();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } else {
-            if (music.isPlaying()) {
-                music.seekTo(0);
-            }
+            music.setLooping(loop);
             music.start();
         }
     }
@@ -82,8 +82,8 @@ public class Music {
      * @param rawID - R.raw.[...]
      */
     public static synchronized void stopMusic(Object key, int rawID) {
-        MediaPlayer sound = getMusic(key, rawID);
-        sound.stop();
+        MediaPlayer music = getMusic(key, rawID);
+        music.stop();
     }
 
     /**

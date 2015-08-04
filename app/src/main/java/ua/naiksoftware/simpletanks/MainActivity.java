@@ -27,9 +27,14 @@ public class MainActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         applySettings();
         Music.init(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         showMainMenu();
     }
-    
+
     public void showMainMenu() {
         gameConn = null;
         setContentView(R.layout.main);
