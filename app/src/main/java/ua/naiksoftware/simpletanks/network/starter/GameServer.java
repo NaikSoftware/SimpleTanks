@@ -1,4 +1,4 @@
-package ua.naiksoftware.simpletanks.connect;
+package ua.naiksoftware.simpletanks.network.starter;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -7,36 +7,34 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Map;
 
 import javax.jmdns.JmDNS;
 import javax.jmdns.ServiceInfo;
 
-import ua.naiksoftware.simpletanks.GameMap;
 import ua.naiksoftware.simpletanks.GameView;
 import ua.naiksoftware.simpletanks.MainActivity;
 import ua.naiksoftware.simpletanks.R;
-import ua.naiksoftware.simpletanks.User;
+import ua.naiksoftware.simpletanks.drawable.GameMap;
+import ua.naiksoftware.simpletanks.drawable.User;
+import ua.naiksoftware.simpletanks.holders.ServerGameHolder;
+import ua.naiksoftware.simpletanks.network.ClientsListAdapter;
 
 /**
  * Запускает сервер, подключает клиентов и стартует игру.
  */
-public class GameServer extends GameConnection {
+public class GameServer extends SinglePlayer {
 
     private static final String TAG = GameServer.class.getSimpleName();
 
@@ -73,61 +71,18 @@ public class GameServer extends GameConnection {
     }
 
     @Override
-    public void start() {
-        final View view = LayoutInflater.from(activity).inflate(R.layout.server_dialog_layout, null);
-        final Spinner mapsSpinner = (Spinner)view.findViewById(R.id.map_spinner);
-        final Map<String, String> maps;
-        try {
-            maps =  GameMap.readMapsList(activity.getResources());
-            mapsSpinner.setAdapter(new ArrayAdapter<String>(activity, android.R.layout.simple_list_item_1,
-                   maps.keySet().toArray(new String[maps.keySet().size()])));
-        } catch (IOException e) {
-            e.printStackTrace();
-            toast(R.string.error_reading_map_list);
-            return;
-        }
-        new AlertDialog.Builder(activity)
-                .setView(view)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String servName = ((EditText) view.findViewById(R.id.serverName)).getText().toString().trim();
-                        if (servName.isEmpty()) {
-                            toast(R.string.serv_name_empty_notice);
-                        } else { // Все нормально
-                            myUser = new User(servName, User.GEN_NEW_ID, activity.getString(R.string.owner_server));
-                            inBG(new Runnable() {
-
-                                @Override
-                                public void run() {
-                                    InputStream inputStream = null;
-                                    try {
-                                        pathToMap = maps.get(mapsSpinner.getSelectedItem());
-                                        inputStream = activity.getAssets().open(pathToMap);
-                                        gameMap = new GameMap(inputStream, activity.getResources());
-                                    } catch (IOException e) {
-                                        Log.e(TAG, "Error loading game map", e);
-                                        toast(R.string.error_loading_map);
-                                        return;
-                                    } finally {
-                                        if (inputStream != null) {
-                                            try {
-                                                inputStream.close();
-                                            } catch (IOException e) {
-                                                e.printStackTrace();
-                                            }
-                                        }
-                                    }
-                                    synchronized (lock) {
-                                        createNetwork(false);
-                                    }
-                                }
-                            });
-                        }
-                    }
-                }).setNegativeButton(android.R.string.cancel, null)
-                .show();
+    protected void paramsReady() {
+        gameMap = getGameMap();
+        pathToMap = gameMap.getPath();
+        myUser = getMyUser();
+        inBG(new Runnable() {
+            @Override
+            public void run() {
+                synchronized (lock) {
+                    createNetwork(false);
+                }
+            }
+        });
     }
 
     @Override
@@ -310,7 +265,7 @@ public class GameServer extends GameConnection {
                         Log.d(TAG, "End waiting clients code detected");
                         break;
                     } else if (code == CONNECT_REQUEST) { // Кто-то хочет присоединиться к игре
-                       acceptNewClient(clientSock);
+                        acceptNewClient(clientSock);
                     }
                 }
                 for (Client client : clientsList) {
@@ -361,7 +316,6 @@ public class GameServer extends GameConnection {
         }
 
 
-
         void updateListView() {
             inUI(new Runnable() {
 
@@ -409,11 +363,11 @@ public class GameServer extends GameConnection {
         }
     }
 
-    class Client extends User {
+    public class Client extends User {
 
         final Socket socket;
-        final DataInputStream in;
-        final DataOutputStream out;
+        public final DataInputStream in;
+        public final DataOutputStream out;
 
         Client(Socket socket) throws IOException {
             super(null, -1, null); // Установим параметры позже
@@ -453,16 +407,6 @@ public class GameServer extends GameConnection {
         return clientsList;
     }
 
-    @Override
-    public User getMyUser() {
-        return myUser;
-    }
-
-    @Override
-    public GameMap getGameMap() {
-        return gameMap;
-    }
-
     private void startPlay() {
         // Ожидаем готовности клиентов и готовим ресурсы
         final AlertDialog dialog = new AlertDialog.Builder(activity)
@@ -499,7 +443,7 @@ public class GameServer extends GameConnection {
                         ServerGameHolder gameHolder = new ServerGameHolder(GameServer.this, activity);
                         gameView = new GameView(gameHolder);
                         View v = LayoutInflater.from(activity).inflate(R.layout.play_screen, null);
-                        ((ViewGroup)v.findViewById(R.id.game_map_layout)).addView(gameView);
+                        ((ViewGroup) v.findViewById(R.id.game_map_layout)).addView(gameView);
                         activity.setContentView(v);
                     }
                 });

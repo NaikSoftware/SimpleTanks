@@ -1,4 +1,4 @@
-package ua.naiksoftware.simpletanks.connect;
+package ua.naiksoftware.simpletanks.network;
 
 import java.util.List;
 
@@ -10,6 +10,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import ua.naiksoftware.simpletanks.R;
+import ua.naiksoftware.simpletanks.network.starter.GameServer;
 
 public class ClientsListAdapter extends ArrayAdapter<GameServer.Client> {
 

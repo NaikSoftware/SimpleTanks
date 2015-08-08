@@ -1,4 +1,4 @@
-package ua.naiksoftware.simpletanks.connect;
+package ua.naiksoftware.simpletanks.network;
 
 import android.app.ProgressDialog;
 import android.content.Context;

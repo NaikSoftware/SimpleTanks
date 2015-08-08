@@ -1,5 +1,6 @@
 package ua.naiksoftware.simpletanks;
 
+import ua.naiksoftware.simpletanks.drawable.Bullet;
 import ua.naiksoftware.utils.Pool;
 
 /**

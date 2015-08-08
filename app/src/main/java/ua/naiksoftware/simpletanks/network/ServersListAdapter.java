@@ -1,8 +1,9 @@
-package ua.naiksoftware.simpletanks.connect;
+package ua.naiksoftware.simpletanks.network;
 
 import java.util.List;
 
-import ua.naiksoftware.simpletanks.connect.GameClient.Server;
+import ua.naiksoftware.simpletanks.network.starter.GameClient;
+import ua.naiksoftware.simpletanks.network.starter.GameClient.Server;
 import ua.naiksoftware.simpletanks.R;
 
 import android.content.Context;

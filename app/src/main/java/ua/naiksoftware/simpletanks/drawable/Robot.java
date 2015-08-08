@@ -1,4 +1,4 @@
-package ua.naiksoftware.simpletanks;
+package ua.naiksoftware.simpletanks.drawable;
 
 /**
  * Programmable bot for game

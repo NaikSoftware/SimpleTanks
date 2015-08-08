@@ -8,8 +8,14 @@
     <string name="exit">Exit</string>
     <string name="exit_notify">Do you want to exit?</string>
 
+	<string-array name="game_modes">
+		<item>Play with AI</item>
+		<item>Play via LAN</item>
+		<item>Play via Internet</item>
+	</string-array>
+	
     <!-- Server -->
-	<string-array name="online_modes">
+	<string-array name="lan_modes">
 		<item>Start server</item>
 		<item>Find servers</item>
         <item>Connect to server</item>

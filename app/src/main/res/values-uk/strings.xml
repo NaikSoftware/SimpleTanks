@@ -40,7 +40,13 @@
     <string name="input_server_ip">Введіть IP сервера або URL</string>
     <string name="notify_net_without_mdns">Підключайте клієнти напряму, мережа не підтримує пошук!</string>
 
-    <string-array name="online_modes">
+	<string-array name="game_modes">
+		<item>Грати проти AI</item>
+		<item>Грати через LAN</item>
+		<item>Грати через Internet</item>
+	</string-array>
+	
+    <string-array name="lan_modes">
         <item>Створити сервер</item>
         <item>Пошук серверів</item>
         <item>Під\'єднатись до сервера</item>

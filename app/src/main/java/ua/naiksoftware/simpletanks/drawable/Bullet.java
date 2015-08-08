@@ -1,4 +1,4 @@
-package ua.naiksoftware.simpletanks;
+package ua.naiksoftware.simpletanks.drawable;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;

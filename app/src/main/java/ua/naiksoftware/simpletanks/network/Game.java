@@ -1,15 +1,4 @@
-package ua.naiksoftware.simpletanks.connect;
-
-import java.net.InetAddress;
-import java.net.SocketException;
-import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
-import ua.naiksoftware.simpletanks.GameMap;
-import ua.naiksoftware.simpletanks.R;
-import ua.naiksoftware.simpletanks.User;
-import ua.naiksoftware.utils.InetUtils;
+package ua.naiksoftware.simpletanks.network;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -20,18 +9,28 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import ua.naiksoftware.simpletanks.drawable.GameMap;
+import ua.naiksoftware.simpletanks.R;
+import ua.naiksoftware.simpletanks.drawable.Robot;
+import ua.naiksoftware.simpletanks.drawable.User;
+import ua.naiksoftware.utils.InetUtils;
 
 /**
- * Класс - оболочка для запуска игры. Предоставляет общий интерфейс для клиента и сервера.
+ * Класс - оболочка для запуска игры. Предоставляет общий интерфейс для клиента, сервера
+ * и других способов игры.
  */
-public abstract class GameConnection {
+public abstract class Game {
 
-    private static final String TAG = GameConnection.class.getSimpleName();
+    private static final String TAG = Game.class.getSimpleName();
     public static final String MSG_KEY = "msg_key";// for handler
 
     protected static final String SERVICE_TYPE = "_simpletanks._tcp.local.";
@@ -48,7 +47,7 @@ public abstract class GameConnection {
     private View toastView;
     private TextView toastText;
 
-    public GameConnection(Activity activity) {
+    public Game(Activity activity) {
         this.activity = activity;
         background = Executors.newFixedThreadPool(3);
         toastView = LayoutInflater.from(activity).inflate(R.layout.toast_view, null);
@@ -66,6 +65,10 @@ public abstract class GameConnection {
     public abstract User getMyUser();
 
     public abstract GameMap getGameMap();
+	
+	public abstract void botsSelected(ArrayList<Robot> bots);
+	
+	public abstract ArrayList<Robot> getRobots();
 
     protected void createNetwork(boolean takeMdnsPackets) {
         this.takeMdnsPackets = takeMdnsPackets;
@@ -167,11 +170,11 @@ public abstract class GameConnection {
         ui.sendMessage(msg);
     }
 
-    protected void toast(int stringId) {
+    public void toast(int stringId) {
         toast(activity.getString(stringId));
     }
 
-    protected void inUI(Runnable r) {
+    public void inUI(Runnable r) {
         ui.post(r);
     }
 
@@ -186,5 +189,9 @@ public abstract class GameConnection {
     public boolean isGameRunning() {
         return gameRunning;
     }
+	
+	protected void showSelectBotsDialog() {
+		botsSelected(null); // TODO: implement
+	}
 
 }

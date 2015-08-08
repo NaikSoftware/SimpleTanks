@@ -3,7 +3,7 @@ package ua.naiksoftware.simpletanks;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import ua.naiksoftware.simpletanks.connect.GameHolder;
+import ua.naiksoftware.simpletanks.holders.GameHolder;
 
 /**
  * Created by Naik on 08.07.15.

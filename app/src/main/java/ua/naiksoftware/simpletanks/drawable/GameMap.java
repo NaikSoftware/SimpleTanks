@@ -1,4 +1,4 @@
-package ua.naiksoftware.simpletanks;
+package ua.naiksoftware.simpletanks.drawable;
 
 import android.content.res.AssetManager;
 import android.content.res.Resources;
@@ -28,8 +28,14 @@ public class GameMap {
     private int mapX, mapY;
     public final int mapWpix, mapHpix;
     private final Paint tilePaint = new Paint();
+    private String pathLoadedFrom;
 
-    public GameMap(InputStream input, Resources res) throws IOException {
+    public GameMap(String assetsPath, Resources res) throws IOException {
+        this(res.getAssets().open(assetsPath), res);
+        pathLoadedFrom = assetsPath;
+    }
+
+    private GameMap(InputStream input, Resources res) throws IOException {
         DataInputStream dis = new DataInputStream(input);
         name = dis.readUTF();
         mapW = dis.readInt();
@@ -149,8 +155,12 @@ public class GameMap {
                 tiles[rect.right / TILE_SIZE][rect.bottom / TILE_SIZE] != null;
     }
 
+    public String getPath() {
+        return pathLoadedFrom;
+    }
+
     public static Map<String, String> readMapsList(Resources res) throws IOException {
-        Map<String,String> maps = new HashMap<String, String>();
+        Map<String, String> maps = new HashMap<String, String>();
         AssetManager assets = res.getAssets();
         for (String path : assets.list("")) {
             try {

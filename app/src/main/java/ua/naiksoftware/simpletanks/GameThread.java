@@ -2,13 +2,13 @@ package ua.naiksoftware.simpletanks;
 
 import android.app.Activity;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.View;
 
-import ua.naiksoftware.simpletanks.connect.GameHolder;
+import ua.naiksoftware.simpletanks.drawable.User;
+import ua.naiksoftware.simpletanks.holders.GameHolder;
 
 /**
  * Created by Naik on 08.07.15.

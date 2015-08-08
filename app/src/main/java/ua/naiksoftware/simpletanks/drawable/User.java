@@ -1,4 +1,4 @@
-package ua.naiksoftware.simpletanks;
+package ua.naiksoftware.simpletanks.drawable;
 
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -8,10 +8,11 @@ import android.graphics.Rect;
 
 import java.util.Random;
 
+import ua.naiksoftware.simpletanks.R;
+import ua.naiksoftware.simpletanks.holders.GameHolder;
 import ua.naiksoftware.simpletanks.res.ImageID;
 import ua.naiksoftware.simpletanks.res.Music;
 import ua.naiksoftware.simpletanks.res.ResKeeper;
-import ua.naiksoftware.simpletanks.connect.*;
 import android.graphics.Color;
 import android.graphics.Typeface;
 

@@ -1,4 +1,4 @@
-package ua.naiksoftware.simpletanks.connect;
+package ua.naiksoftware.simpletanks.holders;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -10,10 +10,11 @@ import android.graphics.Rect;
 
 import java.util.ArrayList;
 
-import ua.naiksoftware.simpletanks.Bonus;
-import ua.naiksoftware.simpletanks.Bullet;
-import ua.naiksoftware.simpletanks.User;
-import ua.naiksoftware.simpletanks.GameMap;
+import ua.naiksoftware.simpletanks.drawable.Bonus;
+import ua.naiksoftware.simpletanks.drawable.Bullet;
+import ua.naiksoftware.simpletanks.drawable.User;
+import ua.naiksoftware.simpletanks.drawable.GameMap;
+import ua.naiksoftware.simpletanks.network.Game;
 import ua.naiksoftware.simpletanks.res.ImageID;
 import ua.naiksoftware.simpletanks.res.Music;
 import ua.naiksoftware.simpletanks.res.ResKeeper;
@@ -48,7 +49,7 @@ public abstract class GameHolder {
     }
 
     private final Activity activity;
-    private final GameConnection gameConnection;
+    private final Game game;
     private int click = NO_CLICK;
     private GameMap gameMap;
     private ArrayList<? extends User> users;
@@ -65,12 +66,12 @@ public abstract class GameHolder {
     private ArrayList<Bonus> bonusList = new ArrayList<Bonus>();
     private Handler handler = new Handler();
 
-    public GameHolder(GameConnection gameConnection, final Activity activity) {
-        this.gameConnection = gameConnection;
+    public GameHolder(Game game, final Activity activity) {
+        this.game = game;
         this.activity = activity;
-        users = gameConnection.getUsers();
-        myUser = gameConnection.getMyUser();
-        gameMap = gameConnection.getGameMap();
+        users = game.getUsers();
+        myUser = game.getMyUser();
+        gameMap = game.getGameMap();
         mapWidth = gameMap.mapWpix;
         mapHeight = gameMap.mapHpix;
         tileSize = gameMap.TILE_SIZE;
@@ -270,7 +271,7 @@ public abstract class GameHolder {
     }
     
     protected void updateScreenInfo() {
-        gameConnection.inUI(new Runnable(){
+        game.inUI(new Runnable(){
                 @Override
                 public void run() {
                     lifesTextView.setText(String.valueOf(myUser.getLifes()));
@@ -296,7 +297,7 @@ public abstract class GameHolder {
             }
             users.remove(winner);
         }
-        gameConnection.inUI(new Runnable() {
+        game.inUI(new Runnable() {
             @Override
             public void run() {
                 new AlertDialog.Builder(activity)
@@ -307,7 +308,7 @@ public abstract class GameHolder {
                             public void onClick(DialogInterface dialog, int which) {
                                 if (winner == myUser) Music.stopMusic(GameHolder.this, R.raw.music_game_won);
                                 else Music.stopMusic(GameHolder.this, R.raw.music_game_lost);
-                                gameConnection.stop();
+                                game.stop();
                             }
                         })
                         .show();

@@ -1,4 +1,4 @@
-package ua.naiksoftware.simpletanks.connect;
+package ua.naiksoftware.simpletanks.holders;
 
 import android.app.Activity;
 import android.content.res.Resources;
@@ -9,12 +9,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import ua.naiksoftware.simpletanks.Bonus;
-import ua.naiksoftware.simpletanks.Bullet;
+import ua.naiksoftware.simpletanks.drawable.Bonus;
+import ua.naiksoftware.simpletanks.drawable.Bullet;
 import ua.naiksoftware.simpletanks.Log;
 import ua.naiksoftware.simpletanks.PlayEvent;
 import ua.naiksoftware.simpletanks.R;
-import ua.naiksoftware.simpletanks.User;
+import ua.naiksoftware.simpletanks.drawable.User;
+import ua.naiksoftware.simpletanks.network.starter.GameClient;
+import ua.naiksoftware.simpletanks.network.starter.GameServer;
 import ua.naiksoftware.simpletanks.res.Music;
 
 /**
@@ -45,8 +47,8 @@ public class ClientGameHolder extends GameHolder {
         this.gameClient = gameClient;
         users = gameClient.getUsers();
         myUser = gameClient.getMyUser();
-        output = gameClient.getServer().out;
-        input = gameClient.getServer().in;
+        output = gameClient.getServer().getOutput();
+        input = gameClient.getServer().getInput();
         res = activity.getResources();
         for (User user : users) {
             usersMap.put(user.getID(), user);

@@ -7,8 +7,14 @@
     <string name="exit">Выход</string>
     <string name="exit_notify">Вы хотите выйти?</string>
 
+	<string-array name="game_modes">
+		<item>Играть против AI</item>
+		<item>Игра по LAN</item>
+		<item>Игра по Internet</item>
+	</string-array>
+	
     <!-- Server -->
-    <string-array name="online_modes">
+    <string-array name="lan_modes">
         <item>Создать сервер</item>
         <item>Поиск серверов</item>
         <item>Соединиться с сервером</item>

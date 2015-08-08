@@ -1,24 +1,21 @@
-package ua.naiksoftware.simpletanks.connect;
+package ua.naiksoftware.simpletanks.holders;
 
 import android.app.Activity;
 import android.content.res.Resources;
-import android.graphics.Point;
 import android.graphics.Rect;
-import android.os.Handler;
-import android.os.Looper;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
-import ua.naiksoftware.simpletanks.Bonus;
-import ua.naiksoftware.simpletanks.Bullet;
-import ua.naiksoftware.simpletanks.GameMap;
-import ua.naiksoftware.simpletanks.Log;
+import ua.naiksoftware.simpletanks.drawable.Bonus;
+import ua.naiksoftware.simpletanks.drawable.Bullet;
+import ua.naiksoftware.simpletanks.drawable.GameMap;
 import ua.naiksoftware.simpletanks.PlayEvent;
 import ua.naiksoftware.simpletanks.R;
-import ua.naiksoftware.simpletanks.User;
+import ua.naiksoftware.simpletanks.drawable.User;
+import ua.naiksoftware.simpletanks.network.starter.GameServer;
 import ua.naiksoftware.simpletanks.res.Music;
 import ua.naiksoftware.utils.Pool;
 
