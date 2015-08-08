@@ -227,7 +227,7 @@ public class GameServer extends SinglePlayer {
                             if (!client.ping()) {
                                 clientsList.remove(client);
                                 for (Client cli : clientsList) {
-                                    DataOutputStream out = cli.getOut();
+                                    DataOutputStream out = cli.out;
                                     try {
                                         out.writeInt(REMOVE_USER);
                                         out.writeLong(client.getID());
@@ -287,7 +287,7 @@ public class GameServer extends SinglePlayer {
         void acceptNewClient(Socket clientSock) throws IOException {
             /* Создаем нового клиента и отсылаем ему данные о владельце сервера */
             Client newClient = new Client(clientSock);
-            DataOutputStream out = newClient.getOut();
+            DataOutputStream out = newClient.out;
             out.writeInt(ADD_USER);
             out.writeUTF(myUser.getName());
             out.writeLong(myUser.getID());
@@ -298,13 +298,13 @@ public class GameServer extends SinglePlayer {
                 if (client == newClient) {
                     continue;
                 }
-                out = client.getOut();
+                out = client.out;
                 out.writeInt(ADD_USER);
                 out.writeUTF(newClient.getName());
                 out.writeLong(newClient.getID());
                 out.writeUTF(newClient.getIp());
                 /* А новому клиенту шлем остальных */
-                out = newClient.getOut();
+                out = newClient.out;
                 out.writeInt(ADD_USER);
                 out.writeUTF(client.getName());
                 out.writeLong(client.getID());
@@ -378,10 +378,6 @@ public class GameServer extends SinglePlayer {
             changeID(in.readLong());
             setIp(socket.getInetAddress().getHostAddress());
             out.writeUTF(pathToMap); // Отсылаем карту сервера
-        }
-
-        public DataOutputStream getOut() {
-            return out;
         }
 
         boolean ping() {
